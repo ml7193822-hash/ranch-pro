@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071d49">
+<title>Ranch Pro | Own Livestock, Grow Your Farm</title>
+<style>
+:root{--navy:#071d49;--navy2:#0d2c68;--orange:#ff8500;--orange2:#ffad32;--ink:#101d3c;--muted:#68738b;--bg:#f3f5fb;--line:#e2e7f1;--white:#fff;--purple:#5c25a8}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input{font:inherit}button{cursor:pointer}
+.layout{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:250px;background:linear-gradient(165deg,#09275b,#041536);color:#fff;padding:22px 15px;display:flex;flex-direction:column;z-index:5}
+.brand{padding:8px 10px 26px;text-align:center;border-bottom:1px solid #ffffff20}.brand-mark{font-size:42px}.brand h1{margin:3px 0;font-size:27px;letter-spacing:1px}.brand h1 span{color:var(--orange)}.brand p{margin:0;color:#d5deef;font-size:12px}
+.nav{display:grid;gap:7px;margin-top:24px}.nav button{border:0;background:transparent;color:#eef3ff;text-align:left;padding:13px 14px;border-radius:12px;font-weight:650;display:flex;gap:13px;align-items:center}.nav button:hover,.nav button.active{background:linear-gradient(90deg,var(--orange),#ff9e16);color:#fff}.nav .ico{width:23px;text-align:center;font-size:19px}
+.sidebar-bottom{margin-top:auto;border:1px solid #ffb44b;border-radius:16px;padding:17px 12px;text-align:center;background:#ffffff08}.sidebar-bottom strong{display:block;margin:7px 0 4px}.sidebar-bottom small{color:#d8e0f0}
+.main{margin-left:250px;min-height:100vh}.topbar{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:4}.top-left{display:flex;align-items:center;gap:18px}.hamburger{display:none;border:0;background:none;font-size:25px;color:var(--navy)}.topbar .tagline{font-weight:750;font-style:italic;color:var(--navy);font-size:18px}.user-chip{display:flex;align-items:center;gap:10px;font-weight:700}.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#e9efff;color:var(--navy);font-size:20px}
+.content{padding:22px 24px 34px;max-width:1600px;margin:auto}
+.hero{min-height:235px;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(90deg,#fff 0%,#fff 34%,#d9e8f5 100%);display:flex;align-items:center;padding:32px 38px;box-shadow:0 5px 18px #12264a12}
+.hero:after{content:"🐄  🐐  🐖  🐑  🐓  🐈";position:absolute;right:2%;bottom:24px;font-size:clamp(30px,5vw,65px);letter-spacing:4px;filter:drop-shadow(0 5px 5px #15274a30)}
+.hero:before{content:"";position:absolute;right:0;top:0;width:57%;height:100%;background:radial-gradient(ellipse at 60% 90%,#8bb56c 0 18%,transparent 19%),linear-gradient(160deg,transparent 40%,#d9ebd0 41% 58%,#9fc68a 59%);opacity:.72}
+.hero-copy{position:relative;z-index:1;max-width:540px}.hero h2{font-size:clamp(32px,4vw,55px);line-height:1;margin:0 0 10px;color:var(--navy);font-weight:900}.hero h2 span{color:var(--orange)}.hero p{font-size:19px;font-weight:750;font-style:italic;margin:0 0 18px}.pill{display:inline-block;background:var(--orange);color:#20152a;border-radius:30px;padding:11px 20px;font-weight:850}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:17px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px;display:flex;align-items:center;gap:13px;box-shadow:0 3px 10px #0b20400b}.stat-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:13px;background:#eaf0ff;font-size:24px}.stat:nth-child(3) .stat-icon{background:#fff0dc}.stat small{color:var(--muted);font-weight:650}.stat strong{display:block;font-size:clamp(17px,2vw,24px);margin-top:3px;color:var(--navy)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:17px;margin-bottom:17px;box-shadow:0 3px 12px #0b20400a}.panel-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.panel-heading h3{margin:0;font-size:21px;color:var(--navy)}.range{background:#fff0d9;color:#8b4b00;padding:8px 13px;border-radius:30px;font-weight:800;font-size:13px}
+.products{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}.product{border:1px solid var(--line);border-radius:15px;overflow:hidden;text-align:center;background:#fff;box-shadow:0 3px 10px #0b204010}.animal{height:108px;display:grid;place-items:center;background:linear-gradient(135deg,#e8f0e4,#d4e2cb);font-size:62px}.product-body{padding:11px 9px 13px}.product h4{margin:0 0 3px;font-size:17px}.product p{margin:0;color:var(--muted);font-size:13px}.price{display:block;font-size:18px;color:var(--navy);font-weight:900;margin:4px 0 10px}.btn{border:0;border-radius:30px;background:var(--orange);color:#fff;padding:10px 15px;font-weight:800}.btn:hover{background:#e87500}.btn.blue{background:var(--navy2)}.btn.light{background:#eef2fa;color:var(--navy)}.product .btn{width:100%;font-size:13px;padding:9px 5px}
+.bottom-grid{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:14px}.activity-list{display:grid;gap:0}.activity{display:flex;gap:11px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.activity:last-child{border:0}.activity-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#edf4ff}.activity strong{display:block;font-size:13px}.activity small{color:var(--muted)}
+.referral{background:linear-gradient(135deg,#48208b,#6d2fc0);color:#fff}.referral h3{color:#fff}.referral p{line-height:1.5}.ref-link{background:#fff;color:var(--navy);padding:11px;border-radius:9px;font-size:12px;overflow-wrap:anywhere;margin:12px 0}
+.support{background:linear-gradient(135deg,#ff8b0a,#ffc66c);color:#321e0a}.support h3{color:#321e0a}.support p{line-height:1.5}.support strong{font-size:21px}
+.view{display:none}.view.active{display:block}.section-title{margin:6px 0 18px;color:var(--navy);font-size:28px}.empty{padding:32px;text-align:center;color:var(--muted);background:#f8faff;border-radius:12px}
+.modal-backdrop{display:none;position:fixed;inset:0;background:#07152dcc;z-index:20;align-items:center;justify-content:center;padding:16px}.modal-backdrop.show{display:flex}.modal{background:#fff;border-radius:18px;padding:23px;width:min(100%,440px);box-shadow:0 20px 60px #0004}.modal h3{margin:0 0 8px;color:var(--navy)}.modal p{color:var(--muted);line-height:1.5}.modal label{display:block;font-weight:700;margin:14px 0 6px}.modal input{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px}.modal-actions{display:flex;gap:9px;margin-top:18px}.modal-actions button{flex:1}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;display:none;z-index:30;box-shadow:0 6px 20px #0003}.toast.show{display:block}
+@media(max-width:1100px){.products{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.bottom-grid{grid-template-columns:1fr 1fr}.support{grid-column:span 2}}
+@media(max-width:700px){.sidebar{transform:translateX(-100%);transition:.25s;width:260px}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.hamburger{display:block}.topbar{height:62px;padding:0 14px}.topbar .tagline{font-size:14px}.content{padding:14px}.hero{min-height:220px;padding:23px 20px}.hero:before{width:70%;opacity:.4}.hero:after{font-size:30px;right:8px;bottom:13px}.hero p{font-size:16px;max-width:260px}.stats{gap:9px}.stat{padding:12px;gap:8px}.stat-icon{width:38px;height:38px;font-size:19px}.stat strong{font-size:16px}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.animal{height:88px;font-size:53px}.bottom-grid{grid-template-columns:1fr}.support{grid-column:auto}.panel{padding:13px}.panel-heading h3{font-size:18px}.user-chip span:last-child{display:none}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-mark">🏡</div><h1>RANCH <span>PRO</span></h1><p>Own Livestock, Grow Your Farm</p></div>
+  <nav class="nav" aria-label="Main navigation">
+    <button class="active" data-view="dashboard"><span class="ico">⌂</span>Dashboard</button>
+    <button data-view="products"><span class="ico">📈</span>Invest Products</button>
+    <button data-view="investments"><span class="ico">💼</span>My Investments</button>
+    <button data-view="deposit"><span class="ico">▣</span>Deposit</button>
+    <button data-view="withdraw"><span class="ico">⇧</span>Withdraw</button>
+    <button data-view="referrals"><span class="ico">👥</span>Referrals</button>
+    <button data-view="transactions"><span class="ico">▤</span>Transactions</button>
+    <button data-view="support"><span class="ico">🎧</span>Support</button>
+    <button data-view="profile"><span class="ico">👤</span>Profile</button>
+    <button id="logoutBtn"><span class="ico">↪</span>Logout</button>
+  </nav>
+  <div class="sidebar-bottom"><div style="font-size:27px">🛡️</div><strong>Built on Trust</strong><small>Clear records • Real livestock</small></div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="top-left"><button class="hamburger" id="menuBtn" aria-label="Open menu">☰</button><div class="tagline">Invest Small • Grow Big</div></div><div class="user-chip"><div class="avatar">👤</div><span>Welcome,<br><b id="topName">Guest</b></span></div></header>
+<div class="content">
+<section class="view active" id="dashboard">
+  <div class="hero"><div class="hero-copy"><h2>RANCH <span>PRO</span></h2><p>Own Livestock.<br>Grow Your Farm.</p><div class="pill">Start Small. Grow Big.</div></div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-icon">👛</div><div><small>Account Balance</small><strong id="balance">UGX 0</strong></div></div>
+    <div class="stat"><div class="stat-icon">📊</div><div><small>Total Investments</small><strong id="totalInvested">UGX 0</strong></div></div>
+    <div class="stat"><div class="stat-icon">🪙</div><div><small>Recorded Earnings</small><strong id="earnings">UGX 0</strong></div></div>
+    <div class="stat"><div class="stat-icon">👥</div><div><small>Referrals</small><strong id="referralCount">0</strong></div></div>
+  </div>
+  <div class="panel"><div class="panel-heading"><h3>🐾 Our Livestock Products</h3><span class="range">Start from UGX 5,000 – 20,000</span></div><div class="products" id="dashboardProducts"></div></div>
+  <div class="bottom-grid">
+    <div class="panel"><div class="panel-heading"><h3>🏆 Recent Activity</h3><button class="btn light" data-goto="transactions">View all</button></div><div class="activity-list" id="recentActivity"><div class="empty">No activity yet. Your transactions will appear here.</div></div></div>
+    <div class="panel referral"><div class="panel-heading"><h3>👥 Refer a Friend</h3></div><p>Invite friends to explore responsible livestock ownership.</p><div class="ref-link" id="refLink">Create an account to get your referral link.</div><button class="btn" id="copyRef">Copy referral link</button></div>
+    <div class="panel support"><div class="panel-heading"><h3>🎧 Need Help?</h3></div><p>Our support team is ready to assist with your account and livestock records.</p><strong>0707728435</strong><p>WhatsApp support</p><button class="btn blue" id="whatsappBtn">Chat on WhatsApp</button></div>
+  </div>
+</section>
+<section class="view" id="products"><h2 class="section-title">Invest Products</h2><div class="panel"><p>Choose a livestock category to view its ownership details. Amounts below are proposed demo entry amounts; availability, ownership terms and costs must be verified by the farm before accepting payment.</p><div class="products" id="allProducts"></div></div></section>
+<section class="view" id="investments"><h2 class="section-title">My Investments</h2><div class="panel"><div id="investmentList" class="empty">You have no demo investments yet. Choose a livestock product to get started.</div></div></section>
+<section class="view" id="deposit"><h2 class="section-title">Deposit</h2><div class="panel"><h3>Deposit funds</h3><p>This is a front-end demo. No money is collected or transferred.</p><label for="depositAmount">Amount (UGX)</label><input id="depositAmount" type="number" min="5000" step="1000" placeholder="Enter amount"><br><br><button class="btn" id="depositSubmit">Create demo deposit request</button></div></section>
+<section class="view" id="withdraw"><h2 class="section-title">Withdraw</h2><div class="panel"><h3>Withdrawal request</h3><p>Withdrawal rules and available balance must be confirmed by the farm operator. This demo does not transfer money.</p><label for="withdrawAmount">Amount (UGX)</label><input id="withdrawAmount" type="number" min="1000" step="1000" placeholder="Enter amount"><br><br><button class="btn" id="withdrawSubmit">Create demo withdrawal request</button></div></section>
+<section class="view" id="referrals"><h2 class="section-title">Referrals</h2><div class="panel"><h3>Invite friends</h3><p>Your referral link will be available after account registration is connected.</p><div class="ref-link" id="refLink2">No referral link yet.</div><button class="btn" id="copyRef2">Copy link</button></div></section>
+<section class="view" id="transactions"><h2 class="section-title">Transactions</h2><div class="panel"><div id="transactionList" class="empty">No transactions recorded in this demo.</div></div></section>
+<section class="view" id="support"><h2 class="section-title">Support</h2><div class="panel"><h3>We're here to help</h3><p>Phone: <b>0707728435</b></p><button class="btn blue" id="whatsappBtn2">Chat on WhatsApp</button></div></section>
+<section class="view" id="profile"><h2 class="section-title">Profile</h2><div class="panel"><label for="profileName">Display name</label><input id="profileName" value="Guest"><br><br><button class="btn" id="saveProfile">Save demo profile</button></div></section>
+</div></main></div>
+<div class="modal-backdrop" id="modalBackdrop"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h3 id="modalTitle">Livestock details</h3><p id="modalText"></p><label for="investAmount">Investment amount (UGX)</label><input id="investAmount" type="number" min="5000" step="1000"><p style="font-size:12px">Demo only: this does not create legal ownership or transfer money. A real platform needs verified animal records, contracts and payment integration.</p><div class="modal-actions"><button class="btn light" id="cancelModal">Cancel</button><button class="btn" id="confirmInvest">Continue demo</button></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const products=[
+ {name:"Hens",emoji:"🐓",price:5000,detail:"Poultry livestock category"},
+ {name:"Goats",emoji:"🐐",price:10000,detail:"Goat livestock category"},
+ {name:"Pigs",emoji:"🐖",price:15000,detail:"Pig livestock category"},
+ {name:"Sheep",emoji:"🐑",price:15000,detail:"Sheep livestock category"},
+ {name:"Cows",emoji:"🐄",price:20000,detail:"Cattle livestock category"},
+ {name:"Cats",emoji:"🐈",price:5000,detail:"Animal-care category; confirm whether this belongs in the farm ownership programme"}
+];
+let investments=[],transactions=[],selected=null;
+const money=n=>"UGX "+Number(n).toLocaleString("en-US");
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
+function card(p){return `<article class="product"><div class="animal">${p.emoji}</div><div class="product-body"><h4>${p.name}</h4><p>Demo entry amount</p><strong class="price">${money(p.price)}</strong><button class="btn invest-btn" data-product="${p.name}">View / Invest</button></div></article>`}
+function renderProducts(){document.getElementById("dashboardProducts").innerHTML=products.map(card).join("");document.getElementById("allProducts").innerHTML=products.map(card).join("");document.querySelectorAll(".invest-btn").forEach(b=>b.addEventListener("click",()=>openInvest(b.dataset.product)))}
+function openInvest(name){selected=products.find(p=>p.name===name);document.getElementById("modalTitle").textContent=selected.name+" ownership";document.getElementById("modalText").textContent=selected.detail+". Proposed demo entry amount: "+money(selected.price)+". Ask the farm for animal identification, share size, care costs, risks and ownership documents before paying.";document.getElementById("investAmount").value=selected.price;document.getElementById("modalBackdrop").classList.add("show")}
+function closeModal(){document.getElementById("modalBackdrop").classList.remove("show")}
+function render(){let total=investments.reduce((s,x)=>s+x.amount,0);document.getElementById("totalInvested").textContent=money(total);document.getElementById("balance").textContent=money(0);document.getElementById("earnings").textContent=money(0);document.getElementById("investmentList").innerHTML=investments.length?investments.map(x=>`<div class="activity"><div class="activity-icon">${x.emoji}</div><div><strong>${x.name} — ${money(x.amount)}</strong><small>Demo record • ${x.date}</small></div></div>`).join(""):'<div class="empty">No demo investments yet.</div>';document.getElementById("recentActivity").innerHTML=transactions.length?transactions.slice(-3).reverse().map(x=>`<div class="activity"><div class="activity-icon">${x.icon}</div><div><strong>${x.title}</strong><small>${x.date} • ${money(x.amount)}</small></div></div>`).join(""):'<div class="empty">No activity yet. Your transactions will appear here.</div>';document.getElementById("transactionList").innerHTML=transactions.length?transactions.slice().reverse().map(x=>`<div class="activity"><div class="activity-icon">${x.icon}</div><div><strong>${x.title}</strong><small>${x.date} • ${money(x.amount)}</small></div></div>`).join(""):'<div class="empty">No demo transactions recorded.</div>'}
+function showView(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));document.querySelectorAll(".nav button[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===id));document.getElementById("sidebar").classList.remove("open");window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll(".nav button[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
+document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.goto)));
+document.getElementById("menuBtn").addEventListener("click",()=>document.getElementById("sidebar").classList.toggle("open"));
+document.getElementById("cancelModal").addEventListener("click",closeModal);
+document.getElementById("modalBackdrop").addEventListener("click",e=>{if(e.target.id==="modalBackdrop")closeModal()});
+document.getElementById("confirmInvest").addEventListener("click",()=>{const amount=Number(document.getElementById("investAmount").value);if(!selected||!Number.isFinite(amount)||amount<selected.price){toast("Enter at least "+money(selected?.price||5000));return}investments.push({name:selected.name,emoji:selected.emoji,amount,date:new Date().toLocaleDateString()});transactions.push({title:"Demo investment interest — "+selected.name,icon:selected.emoji,amount,date:new Date().toLocaleString()});render();closeModal();toast("Demo record added. No payment was made.")});
+function demoRequest(id,label){const amount=Number(document.getElementById(id).value);if(!Number.isFinite(amount)||amount<=0){toast("Enter a valid amount first.");return}transactions.push({title:label+" request (demo)",icon:label==="Deposit"?"⬇️":"⬆️",amount,date:new Date().toLocaleString()});render();document.getElementById(id).value="";toast("Demo request recorded. No money moved.") }
+document.getElementById("depositSubmit").addEventListener("click",()=>demoRequest("depositAmount","Deposit"));
+document.getElementById("withdrawSubmit").addEventListener("click",()=>demoRequest("withdrawAmount","Withdrawal"));
+function copyReferral(){const text="Referral links will be enabled after registration is connected.";if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast("Demo message copied." )).catch(()=>toast(text))}else toast(text)}
+document.getElementById("copyRef").addEventListener("click",copyReferral);document.getElementById("copyRef2").addEventListener("click",copyReferral);
+function whatsapp(){window.open("https://wa.me/256707728435","_blank","noopener")}
+document.getElementById("whatsappBtn").addEventListener("click",whatsapp);document.getElementById("whatsappBtn2").addEventListener("click",whatsapp);
+document.getElementById("saveProfile").addEventListener("click",()=>{const name=document.getElementById("profileName").value.trim()||"Guest";document.getElementById("topName").textContent=name;toast("Demo profile updated.")});
+document.getElementById("logoutBtn").addEventListener("click",()=>toast("Login and logout will be connected when authentication is added."));
+renderProducts();render();
+</script>
+</body>
+</html>
