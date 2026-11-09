@@ -1,1 +1,742 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071d49">
+<title>Ranch Pro | Own Livestock, Grow Your Farm</title>
+
+<style>
+:root{
+  --navy:#071d49;
+  --navy2:#102e63;
+  --orange:#f59e0b;
+  --gold:#facc15;
+  --white:#ffffff;
+  --bg:#f2f5fa;
+  --text:#17233d;
+  --muted:#718096;
+  --green:#138653;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button{cursor:pointer;font-family:inherit}
+header{
+  background:var(--navy);
+  color:white;
+  padding:17px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.logo{font-size:23px;font-weight:900}
+.logo span{color:var(--orange)}
+.menu-btn{
+  border:0;background:transparent;color:white;
+  font-size:27px;
+}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:240px;background:var(--navy);
+  color:white;padding:20px 12px;
+  flex-shrink:0;
+}
+.sidebar h3{
+  color:#b9c8e6;font-size:11px;
+  padding:15px 12px;
+}
+.nav-btn{
+  display:block;width:100%;padding:14px;
+  border:0;background:transparent;color:white;
+  text-align:left;border-radius:9px;
+  font-size:14px;margin-bottom:5px;
+}
+.nav-btn.active,.nav-btn:hover{
+  background:var(--orange);color:var(--navy);
+  font-weight:bold;
+}
+main{padding:22px;width:100%;max-width:1200px;margin:auto}
+.section{display:none}
+.section.active{display:block}
+.welcome{
+  background:linear-gradient(120deg,var(--navy),var(--navy2));
+  color:white;border-radius:17px;padding:25px;
+  margin-bottom:22px;
+}
+.welcome h1{font-size:24px;margin-bottom:9px}
+.welcome p{color:#d5def0;font-size:13px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:13px;margin-bottom:25px;
+}
+.stat{
+  background:white;padding:19px;
+  border-radius:13px;
+  box-shadow:0 3px 12px #00000008;
+}
+.stat small{color:var(--muted);font-size:12px}
+.stat h2{font-size:19px;margin-top:10px;color:var(--navy)}
+.stat .emoji{font-size:23px;margin-bottom:8px}
+.heading{
+  font-size:20px;color:var(--navy);
+  margin:24px 0 15px;
+}
+.products{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px;
+}
+.product{
+  background:white;border-radius:15px;
+  overflow:hidden;
+  box-shadow:0 3px 12px #00000009;
+}
+.animal{
+  background:linear-gradient(135deg,#e9effa,#fff4df);
+  padding:20px;text-align:center;
+  font-size:53px;
+}
+.product-info{padding:15px}
+.product-info h3{color:var(--navy);margin-bottom:7px}
+.price{font-weight:900;color:#c56a00;font-size:18px;margin:12px 0}
+.product-info p{font-size:12px;color:var(--muted)}
+.buy{
+  width:100%;border:0;border-radius:8px;
+  background:var(--orange);color:var(--navy);
+  padding:12px;font-weight:900;
+}
+.buy:hover{background:var(--gold)}
+.panel{
+  background:white;border-radius:14px;
+  padding:20px;margin-bottom:18px;
+  box-shadow:0 3px 12px #00000008;
+}
+.panel p{font-size:13px;color:var(--muted);line-height:1.7}
+.action{
+  padding:12px 18px;border:0;
+  background:var(--orange);color:var(--navy);
+  font-weight:bold;border-radius:8px;margin-top:12px;
+}
+.secondary{
+  background:var(--navy);color:white;
+}
+input{
+  width:100%;padding:13px;
+  border:1px solid #d9dfeb;
+  border-radius:8px;margin:10px 0;
+  font-size:14px;
+}
+.ref-link{
+  background:#f1f4fa;padding:13px;
+  border-radius:8px;overflow-wrap:anywhere;
+  font-size:12px;margin-top:12px;
+}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:13px 9px;text-align:left;border-bottom:1px solid #eee}
+th{color:var(--navy);background:#f5f7fb}
+.empty{text-align:center;padding:25px;color:var(--muted)}
+.badge{
+  display:inline-block;padding:5px 9px;
+  border-radius:20px;background:#e7f7ee;color:var(--green);
+  font-size:11px;font-weight:bold;
+}
+.wheel-wrap{text-align:center}
+.wheel{
+  width:270px;height:270px;max-width:85vw;
+  max-height:85vw;border-radius:50%;
+  margin:20px auto;
+  border:8px solid var(--navy);
+  position:relative;overflow:hidden;
+  background:conic-gradient(
+    #f59e0b 0deg 60deg,
+    #ffffff 60deg 120deg,
+    #facc15 120deg 180deg,
+    #102e63 180deg 240deg,
+    #f59e0b 240deg 300deg,
+    #ffffff 300deg 360deg
+  );
+  transition:transform 4s cubic-bezier(.12,.75,.15,1);
+}
+.wheel span{
+  position:absolute;font-size:12px;font-weight:900;
+  color:var(--navy);width:85px;
+}
+.wheel span:nth-child(1){top:30px;left:95px}
+.wheel span:nth-child(2){top:85px;right:8px}
+.wheel span:nth-child(3){bottom:40px;right:25px}
+.wheel span:nth-child(4){bottom:30px;left:25px}
+.wheel span:nth-child(5){top:85px;left:8px}
+.wheel span:nth-child(6){top:30px;right:0}
+.pointer{
+  font-size:30px;color:#e63946;
+  font-weight:bold;position:relative;
+  margin-bottom:-30px;z-index:2;
+}
+#spinResult{
+  font-weight:bold;color:var(--green);
+  margin:15px;
+}
+.notice{
+  padding:12px;background:#fff7df;
+  border-left:4px solid var(--orange);
+  font-size:12px;line-height:1.6;margin:12px 0;
+}
+.modal{
+  position:fixed;inset:0;background:#0009;
+  display:none;align-items:center;
+  justify-content:center;padding:20px;z-index:30;
+}
+.modal.show{display:flex}
+.modal-card{
+  background:white;padding:25px;
+  border-radius:15px;width:100%;max-width:390px;
+}
+.modal-card h2{color:var(--navy);margin-bottom:12px}
+.modal-card p{font-size:13px;line-height:1.7}
+.close{
+  float:right;border:0;background:none;font-size:24px;
+}
+.mobile-bottom{display:none}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}
+
+@media(max-width:800px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sidebar{
+    position:fixed;left:-260px;top:0;
+    height:100%;z-index:20;
+    width:240px;transition:.3s;
+    padding-top:75px;
+  }
+  .sidebar.open{left:0}
+  main{padding:15px 13px 90px}
+  .mobile-bottom{
+    display:flex;position:fixed;bottom:0;left:0;
+    width:100%;background:white;z-index:15;
+    justify-content:space-around;padding:10px 3px;
+    box-shadow:0 -3px 15px #00000012;
+  }
+  .mobile-bottom button{
+    border:0;background:none;color:var(--navy);
+    font-size:11px;font-weight:bold;
+  }
+}
+@media(min-width:801px){
+  header .menu-btn{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  <div class="logo">🐄 RANCH <span>PRO</span></div>
+  <div id="headerUser">Guest</div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+  <h3>MAIN MENU</h3>
+  <button class="nav-btn active" onclick="go('dashboard',this)">🏠 Dashboard</button>
+  <button class="nav-btn" onclick="go('livestock',this)">🐄 Livestock Marketplace</button>
+  <button class="nav-btn" onclick="go('purchases',this)">🛒 My Purchases</button>
+  <button class="nav-btn" onclick="go('spin',this)">🎡 Lucky Spin</button>
+  <button class="nav-btn" onclick="go('referrals',this)">👥 Referrals</button>
+  <button class="nav-btn" onclick="go('wallet',this)">💰 My Wallet</button>
+  <button class="nav-btn" onclick="go('history',this)">📋 Reward History</button>
+  <h3>ACCOUNT</h3>
+  <button class="nav-btn" onclick="go('profile',this)">👤 My Profile</button>
+</aside>
+
+<main>
+
+<!-- DASHBOARD -->
+<section class="section active" id="dashboard">
+  <div class="welcome">
+    <h1>Welcome to Ranch Pro 🐄</h1>
+    <p>Own Livestock, Grow Your Farm.</p>
+    <p style="margin-top:12px">Your farm journey starts here!</p>
+  </div>
+
+  <div class="grid">
+    <div class="stat">
+      <div class="emoji">💰</div>
+      <small>Wallet Balance</small>
+      <h2 id="balance">UGX 0</h2>
+    </div>
+    <div class="stat">
+      <div class="emoji">🐄</div>
+      <small>My Purchases</small>
+      <h2 id="purchaseCount">0</h2>
+    </div>
+    <div class="stat">
+      <div class="emoji">🎁</div>
+      <small>Rewards Earned</small>
+      <h2 id="rewards">UGX 0</h2>
+    </div>
+    <div class="stat">
+      <div class="emoji">👥</div>
+      <small>My Referrals</small>
+      <h2 id="referralCount">0</h2>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>🌱 Your Ranch Journey</h3>
+    <p>Explore livestock, purchase your preferred animals and invite friends to join Ranch Pro.</p>
+    <button class="action" onclick="go('livestock')">EXPLORE LIVESTOCK →</button>
+  </div>
+
+  <h2 class="heading">Quick Actions</h2>
+  <div class="grid">
+    <div class="stat" onclick="go('livestock')" style="cursor:pointer">
+      🛒<h3>Purchase</h3><small>Choose livestock</small>
+    </div>
+    <div class="stat" onclick="go('referrals')" style="cursor:pointer">
+      👥<h3>Invite Friends</h3><small>Share your link</small>
+    </div>
+    <div class="stat" onclick="go('spin')" style="cursor:pointer">
+      🎡<h3>Lucky Spin</h3><small>Use your spins</small>
+    </div>
+    <div class="stat" onclick="go('wallet')" style="cursor:pointer">
+      💳<h3>Wallet</h3><small>View your balance</small>
+    </div>
+  </div>
+</section>
+
+<!-- LIVESTOCK -->
+<section class="section" id="livestock">
+  <h2 class="heading">🐄 Livestock Marketplace</h2>
+  <p style="font-size:13px;color:#718096;margin-bottom:18px">
+    Select the livestock you want to purchase.
+  </p>
+  <div class="products" id="productList"></div>
+</section>
+
+<!-- PURCHASES -->
+<section class="section" id="purchases">
+  <h2 class="heading">🛒 My Purchases</h2>
+  <div class="panel">
+    <div id="purchaseList"></div>
+  </div>
+</section>
+
+<!-- SPIN -->
+<section class="section" id="spin">
+  <h2 class="heading">🎡 Ranch Pro Lucky Spin</h2>
+  <div class="panel wheel-wrap">
+    <h3>Spin and Win Rewards!</h3>
+    <p>Use your available spins to discover your reward.</p>
+    <h2 style="margin-top:15px;color:#c56a00">
+      Available Spins: <span id="spinCount">0</span>
+    </h2>
+
+    <div class="pointer">▼</div>
+    <div class="wheel" id="wheel">
+      <span>UGX 5K</span>
+      <span>UGX 8K</span>
+      <span>2 SPINS</span>
+      <span>GOAT</span>
+      <span>UGX 20K</span>
+      <span>COW</span>
+    </div>
+
+    <button class="action" id="spinButton" onclick="spinWheel()">
+      SPIN NOW 🎡
+    </button>
+    <div id="spinResult"></div>
+    <div class="notice">
+      A spin is awarded after a referred member completes a verified livestock purchase. Registration alone does not earn a spin.
+    </div>
+  </div>
+</section>
+
+<!-- REFERRALS -->
+<section class="section" id="referrals">
+  <h2 class="heading">👥 Invite Friends</h2>
+  <div class="panel">
+    <h3>Your Referral Link</h3>
+    <p>Invite friends to Ranch Pro. When an eligible referred member completes a verified purchase, you qualify for a spin.</p>
+    <div class="ref-link" id="refLink"></div>
+    <button class="action" onclick="copyLink()">COPY LINK</button>
+    <button class="action secondary" onclick="shareLink()">SHARE WHATSAPP</button>
+  </div>
+  <div class="grid">
+    <div class="stat">
+      <small>Total Referrals</small>
+      <h2 id="referralTotal">0</h2>
+    </div>
+    <div class="stat">
+      <small>Available Spins</small>
+      <h2 id="referralSpins">0</h2>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>How it works</h3>
+    <p>1. Share your referral link.</p>
+    <p>2. Your friend registers.</p>
+    <p>3. Your friend purchases livestock.</p>
+    <p>4. After purchase verification, you receive a spin.</p>
+  </div>
+</section>
+
+<!-- WALLET -->
+<section class="section" id="wallet">
+  <h2 class="heading">💰 My Wallet</h2>
+  <div class="panel">
+    <small>Available Balance</small>
+    <h1 id="walletBalance" style="color:#c56a00;margin:12px 0">UGX 0</h1>
+    <p>Your Ranch Pro wallet.</p>
+  </div>
+  <div class="panel">
+    <h3>Demo Testing</h3>
+    <p>This button adds test funds locally so you can test the purchase process. It does not deposit real money.</p>
+    <button class="action" onclick="addDemoFunds()">ADD UGX 50,000 TEST FUNDS</button>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section class="section" id="history">
+  <h2 class="heading">🎁 Reward History</h2>
+  <div class="panel">
+    <div id="rewardHistory"></div>
+  </div>
+</section>
+
+<!-- PROFILE -->
+<section class="section" id="profile">
+  <h2 class="heading">👤 My Profile</h2>
+  <div class="panel">
+    <h3>Account Details</h3>
+    <p id="profileName"></p>
+    <p id="profileId"></p>
+    <button class="action" onclick="editName()">EDIT NAME</button>
+  </div>
+</section>
+
+<footer>© 2026 Ranch Pro. Own Livestock, Grow Your Farm.</footer>
+
+</main>
+</div>
+
+<nav class="mobile-bottom">
+  <button onclick="go('dashboard')">🏠<br>Home</button>
+  <button onclick="go('livestock')">🐄<br>Animals</button>
+  <button onclick="go('purchases')">🛒<br>Purchases</button>
+  <button onclick="go('spin')">🎡<br>Spin</button>
+  <button onclick="go('referrals')">👥<br>Invite</button>
+</nav>
+
+<!-- PURCHASE MODAL -->
+<div class="modal" id="purchaseModal">
+  <div class="modal-card">
+    <button class="close" onclick="closeModal()">×</button>
+    <h2>Confirm Purchase</h2>
+    <p id="purchaseDetails"></p>
+    <button class="action" style="width:100%" onclick="confirmPurchase()">CONFIRM PURCHASE</button>
+    <button class="action secondary" style="width:100%" onclick="closeModal()">CANCEL</button>
+  </div>
+</div>
+
+<!-- ACCOUNT MODAL -->
+<div class="modal show" id="accountModal">
+  <div class="modal-card">
+    <h2>🐄 Welcome to Ranch Pro</h2>
+    <p>Enter your name to open your local demo dashboard.</p>
+    <input id="nameInput" placeholder="Enter your full name">
+    <button class="action" style="width:100%" onclick="startAccount()">CONTINUE</button>
+  </div>
+</div>
+
+<script>
+const animals = [
+  {name:"Hens",emoji:"🐔",price:5000},
+  {name:"Goats",emoji:"🐐",price:10000},
+  {name:"Pigs",emoji:"🐖",price:15000},
+  {name:"Sheep",emoji:"🐑",price:15000},
+  {name:"Cows",emoji:"🐄",price:20000},
+  {name:"Cats",emoji:"🐈",price:5000}
+];
+
+const fmt = n => "UGX " + Number(n).toLocaleString("en-US");
+
+function get(key, fallback){
+  try {
+    const value = localStorage.getItem("ranch_"+key);
+    return value === null ? fallback : JSON.parse(value);
+  } catch(e){ return fallback; }
+}
+function save(key,value){
+  localStorage.setItem("ranch_"+key,JSON.stringify(value));
+}
+
+let account = get("account",null);
+let balance = get("balance",0);
+let purchases = get("purchases",[]);
+let rewards = get("rewards",[]);
+let spins = get("spins",0);
+let totalRewards = get("totalRewards",0);
+let selectedAnimal = null;
+let rotation = 0;
+let spinning = false;
+
+function startAccount(){
+  const name=document.getElementById("nameInput").value.trim();
+  if(!name){alert("Please enter your name.");return;}
+
+  account={
+    name:name,
+    id:"RP"+Math.random().toString(36).substring(2,9).toUpperCase()
+  };
+  save("account",account);
+
+  const referral=new URLSearchParams(location.search).get("ref");
+  if(referral && referral!==account.id && !get("referredBy",null)){
+    save("referredBy",referral);
+  }
+
+  document.getElementById("accountModal").classList.remove("show");
+  render();
+}
+
+function renderProducts(){
+  document.getElementById("productList").innerHTML=animals.map((a,i)=>`
+    <div class="product">
+      <div class="animal">${a.emoji}</div>
+      <div class="product-info">
+        <h3>${a.name}</h3>
+        <p>Livestock ownership package</p>
+        <div class="price">${fmt(a.price)}</div>
+        <button class="buy" onclick="openPurchase(${i})">PURCHASE</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function openPurchase(index){
+  selectedAnimal=animals[index];
+  document.getElementById("purchaseDetails").innerHTML=
+    "Livestock: <b>"+selectedAnimal.name+"</b><br><br>"+
+    "Purchase amount: <b>"+fmt(selectedAnimal.price)+"</b><br><br>"+
+    "Wallet balance: <b>"+fmt(balance)+"</b>";
+  document.getElementById("purchaseModal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("purchaseModal").classList.remove("show");
+}
+
+function confirmPurchase(){
+  if(!selectedAnimal)return;
+
+  if(balance<selectedAnimal.price){
+    alert("Insufficient wallet balance. Please fund your wallet.");
+    closeModal();
+    go("wallet");
+    return;
+  }
+
+  balance-=selectedAnimal.price;
+  purchases.unshift({
+    animal:selectedAnimal.name,
+    emoji:selectedAnimal.emoji,
+    amount:selectedAnimal.price,
+    date:new Date().toLocaleString(),
+    status:"Demo purchase"
+  });
+
+  save("balance",balance);
+  save("purchases",purchases);
+
+  closeModal();
+  selectedAnimal=null;
+  render();
+  go("purchases");
+  alert("Demo purchase recorded successfully!");
+}
+
+function renderPurchases(){
+  const el=document.getElementById("purchaseList");
+  if(!purchases.length){
+    el.innerHTML='<div class="empty">No purchases yet. Explore the livestock marketplace.</div>';
+    return;
+  }
+
+  el.innerHTML=`<table>
+    <tr><th>Livestock</th><th>Amount</th><th>Date</th><th>Status</th></tr>
+    ${purchases.map(p=>`
+      <tr>
+        <td>${p.emoji} ${p.animal}</td>
+        <td>${fmt(p.amount)}</td>
+        <td>${p.date}</td>
+        <td><span class="badge">${p.status}</span></td>
+      </tr>`).join("")}
+  </table>`;
+}
+
+function addDemoFunds(){
+  balance+=50000;
+  save("balance",balance);
+  render();
+  alert("UGX 50,000 test funds added.");
+}
+
+function getReferralLink(){
+  return location.origin+location.pathname+"?ref="+(account?account.id:"");
+}
+
+function copyLink(){
+  const link=getReferralLink();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link)
+      .then(()=>alert("Referral link copied!"))
+      .catch(()=>prompt("Copy your referral link:",link));
+  }else{
+    prompt("Copy your referral link:",link);
+  }
+}
+
+function shareLink(){
+  const link=getReferralLink();
+  window.open("https://wa.me/?text="+encodeURIComponent(
+    "Join me on Ranch Pro! "+link
+  ),"_blank");
+}
+
+function spinWheel(){
+  if(spinning)return;
+  if(spins<=0){
+    alert("You have no spins available yet. Earn one through a verified referral purchase.");
+    return;
+  }
+
+  spinning=true;
+  document.getElementById("spinButton").disabled=true;
+  spins--;
+  save("spins",spins);
+
+  const prizes=[
+    {name:"UGX 5,000 wallet reward",weight:35,type:"money",amount:5000},
+    {name:"UGX 8,000 wallet reward",weight:20,type:"money",amount:8000},
+    {name:"2 Extra Spins",weight:25,type:"spins",amount:2},
+    {name:"UGX 20,000 wallet reward",weight:10,type:"money",amount:20000},
+    {name:"Goat reward",weight:7,type:"animal",amount:0},
+    {name:"Cow reward",weight:3,type:"animal",amount:0}
+  ];
+
+  let random=Math.random()*100;
+  let prize=prizes[0];
+  for(const p of prizes){
+    random-=p.weight;
+    if(random<0){prize=p;break;}
+  }
+
+  rotation+=1800+Math.floor(Math.random()*360);
+  const wheel=document.getElementById("wheel");
+  wheel.style.transform="rotate("+rotation+"deg)";
+
+  setTimeout(()=>{
+    if(prize.type==="money"){
+      balance+=prize.amount;
+      totalRewards+=prize.amount;
+      save("balance",balance);
+      save("totalRewards",totalRewards);
+    }else if(prize.type==="spins"){
+      spins+=prize.amount;
+      save("spins",spins);
+    }
+
+    const record={
+      prize:prize.name,
+      date:new Date().toLocaleString()
+    };
+    rewards.unshift(record);
+    save("rewards",rewards);
+
+    document.getElementById("spinResult").textContent=
+      "🎉 Congratulations! You won: "+prize.name;
+
+    spinning=false;
+    document.getElementById("spinButton").disabled=false;
+    render();
+  },4100);
+}
+
+function renderRewards(){
+  const el=document.getElementById("rewardHistory");
+  if(!rewards.length){
+    el.innerHTML='<div class="empty">No rewards yet.</div>';
+    return;
+  }
+  el.innerHTML=`<table>
+    <tr><th>Reward</th><th>Date</th></tr>
+    ${rewards.map(r=>`
+      <tr><td>🎁 ${r.prize}</td><td>${r.date}</td></tr>
+    `).join("")}
+  </table>`;
+}
+
+function editName(){
+  const name=prompt("Enter your new name:",account.name);
+  if(name && name.trim()){
+    account.name=name.trim();
+    save("account",account);
+    render();
+  }
+}
+
+function go(id,button){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  const section=document.getElementById(id);
+  if(section)section.classList.add("active");
+
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  if(button)button.classList.add("active");
+
+  document.getElementById("sidebar").classList.remove("open");
+  if(id==="spin")document.getElementById("spinResult").textContent="";
+}
+
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("open");
+}
+
+function render(){
+  if(!account)return;
+
+  document.getElementById("headerUser").textContent=account.name;
+  document.getElementById("balance").textContent=fmt(balance);
+  document.getElementById("walletBalance").textContent=fmt(balance);
+  document.getElementById("purchaseCount").textContent=purchases.length;
+  document.getElementById("rewards").textContent=fmt(totalRewards);
+  document.getElementById("spinCount").textContent=spins;
+  document.getElementById("referralSpins").textContent=spins;
+  document.getElementById("referralCount").textContent="0";
+  document.getElementById("referralTotal").textContent="0";
+  document.getElementById("refLink").textContent=getReferralLink();
+  document.getElementById("profileName").textContent="Name: "+account.name;
+  document.getElementById("profileId").textContent="Account ID: "+account.id;
+
+  renderProducts();
+  renderPurchases();
+  renderRewards();
+}
+
+if(account){
+  document.getElementById("accountModal").classList.remove("show");
+  render();
+}
+</script>
+</body>
+</html>
