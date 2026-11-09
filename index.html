@@ -1,1 +1,942 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071d49">
+<title>Ranch Pro | Own Livestock, Grow Your Farm</title>
+
+<style>
+:root{
+ --navy:#071d49;
+ --navy2:#102e60;
+ --gold:#f3bd50;
+ --green:#168653;
+ --bg:#f2f5fa;
+ --white:#fff;
+ --muted:#7c879a;
+ --border:#e8edf4;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);
+ font-family:Arial,sans-serif;color:#192641;
+}
+header{
+ height:68px;background:var(--navy);color:white;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 20px;position:sticky;top:0;z-index:50;
+ box-shadow:0 3px 15px #071d4930;
+}
+.brand{font-size:22px;font-weight:900;letter-spacing:1px}
+.brand span{color:var(--gold)}
+.menu-btn{
+ border:0;background:none;color:white;
+ font-size:27px;cursor:pointer;
+}
+.header-user{font-size:13px}
+.layout{display:flex;min-height:calc(100vh - 68px)}
+.sidebar{
+ width:245px;flex-shrink:0;background:var(--navy);
+ padding:18px 12px;color:white;
+}
+.sidebar button{
+ width:100%;padding:14px 13px;margin:4px 0;
+ border:0;border-radius:10px;background:transparent;
+ color:#e3eafa;text-align:left;font-size:14px;
+ cursor:pointer;display:flex;gap:12px;align-items:center;
+}
+.sidebar button:hover,.sidebar button.active{
+ background:#ffffff19;color:var(--gold);
+}
+main{width:100%;max-width:1350px;padding:24px;margin:auto}
+.page{display:none}
+.page.active{display:block}
+h2{color:var(--navy);margin:0 0 7px;font-size:25px}
+.subtitle{color:var(--muted);font-size:14px;margin:0 0 22px}
+.cards{
+ display:grid;grid-template-columns:repeat(4,1fr);
+ gap:14px;margin-bottom:22px;
+}
+.card,.panel{
+ background:white;border-radius:16px;
+ box-shadow:0 5px 20px #0c23400b;
+}
+.card{padding:18px}
+.card-icon{font-size:25px}
+.card-label{font-size:12px;color:var(--muted);margin:12px 0 6px}
+.card-value{font-size:21px;font-weight:900;color:var(--navy)}
+.panel{padding:20px;margin-bottom:19px}
+.panel h3{margin:0 0 15px;color:var(--navy)}
+.quick-actions{display:flex;gap:10px;flex-wrap:wrap}
+button.primary,button.secondary,button.danger{
+ border:0;border-radius:9px;padding:12px 17px;
+ font-weight:bold;cursor:pointer;
+}
+.primary{background:var(--green);color:white}
+.secondary{background:var(--navy);color:white}
+.danger{background:#ffe9e9;color:#c33}
+button:disabled{opacity:.45;cursor:not-allowed}
+.products{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:17px;
+}
+.product{
+ background:white;border-radius:16px;overflow:hidden;
+ box-shadow:0 5px 20px #0c234010;
+}
+.animal-photo{
+ height:155px;display:grid;place-items:center;
+ background:linear-gradient(140deg,#e4f0e7,#fff3d9);
+ font-size:76px;
+}
+.product-info{padding:17px}
+.product-info h3{margin:0 0 8px;color:var(--navy)}
+.price{font-size:22px;font-weight:900;color:var(--green);margin:12px 0}
+.earning{
+ background:#f0f8f3;padding:11px;border-radius:10px;
+ font-size:13px;line-height:1.8;margin:12px 0;
+}
+.earning strong{color:var(--green)}
+.total{font-size:12px;color:var(--muted)}
+input,select{
+ width:100%;padding:13px;margin:7px 0 15px;
+ border:1px solid #dce3ed;border-radius:9px;
+ font-size:15px;background:white;
+}
+label{font-size:13px;font-weight:bold;color:#34425c}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.notice{
+ padding:13px;background:#fff7df;color:#775916;
+ border-radius:10px;font-size:13px;line-height:1.6;
+ margin:13px 0;
+}
+.success{color:var(--green)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:13px 9px;border-bottom:1px solid var(--border);text-align:left}
+th{color:var(--muted)}
+.table-scroll{overflow-x:auto}
+.status{
+ display:inline-block;padding:5px 9px;border-radius:20px;
+ background:#fff2d7;color:#926400;font-size:11px;
+}
+.empty{text-align:center;color:var(--muted);padding:20px}
+.ref-link{
+ background:#f0f3f8;padding:14px;border-radius:10px;
+ overflow-wrap:anywhere;margin:12px 0;
+}
+
+/* MODERN LUCKY SPIN */
+.spin-panel{
+ background:linear-gradient(145deg,#071d49,#153d78);
+ border-radius:22px;padding:25px 15px;color:white;
+ text-align:center;overflow:hidden;
+}
+.spin-heading{
+ font-size:25px;font-weight:900;letter-spacing:1px;
+ color:#ffdc82;margin-bottom:7px;
+}
+.spin-description{font-size:13px;color:#d6e0f2}
+.spin-count{
+ display:inline-block;background:#ffffff18;
+ border:1px solid #ffffff30;border-radius:30px;
+ padding:11px 23px;margin:20px 0;
+ font-weight:800;color:#ffdb83;
+}
+.wheel-wrap{
+ width:min(360px,85vw);aspect-ratio:1;
+ position:relative;margin:5px auto 23px;
+}
+#wheel{
+ display:block;width:100%;height:100%;
+ border-radius:50%;border:8px solid #f5c45e;
+ box-shadow:0 0 0 5px #ffffff22,0 12px 35px #0007;
+ transition:transform 5s cubic-bezier(.12,.75,.12,1);
+}
+.pointer{
+ position:absolute;top:-12px;left:50%;
+ transform:translateX(-50%);z-index:4;
+ width:0;height:0;
+ border-left:20px solid transparent;
+ border-right:20px solid transparent;
+ border-top:43px solid #ff554f;
+ filter:drop-shadow(0 3px 3px #0008);
+}
+.wheel-center{
+ position:absolute;top:50%;left:50%;
+ transform:translate(-50%,-50%);
+ width:83px;height:83px;border-radius:50%;
+ background:linear-gradient(145deg,#ffe7a0,#d99b28);
+ border:6px solid white;color:#071d49;
+ display:grid;place-items:center;
+ font-size:15px;font-weight:1000;
+ box-shadow:0 5px 16px #0006;z-index:3;
+}
+.spin-button{
+ padding:17px 48px;border:2px solid #fff4cf;
+ border-radius:40px;background:linear-gradient(120deg,#f0b83e,#ffdf89);
+ color:#071d49;font-size:18px;font-weight:1000;
+ cursor:pointer;box-shadow:0 7px 20px #0004;
+}
+.spin-button:disabled{opacity:.45;cursor:not-allowed}
+.spin-result{
+ margin:18px auto 3px;min-height:28px;
+ font-weight:900;color:#ffdf87;font-size:17px;
+}
+.prize-grid{
+ display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+}
+.prize-item{
+ padding:13px;background:#f5f7fa;
+ border-radius:10px;font-size:13px;
+ display:flex;justify-content:space-between;
+}
+.prize-dot{
+ display:inline-block;width:11px;height:11px;
+ border-radius:50%;margin-right:7px;
+}
+.package-progress{
+ background:#f2f6f4;border-radius:12px;
+ padding:13px;margin:10px 0;
+}
+.progress-bg{
+ height:8px;background:#dce5e0;border-radius:10px;
+ overflow:hidden;margin-top:9px;
+}
+.progress-fill{
+ height:100%;background:var(--green);border-radius:10px;
+}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}
+
+@media(max-width:900px){
+ .cards{grid-template-columns:repeat(2,1fr)}
+ .products{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:650px){
+ .sidebar{
+  display:none;position:fixed;top:68px;bottom:0;left:0;
+  z-index:40;width:265px;overflow-y:auto;
+ }
+ .sidebar.open{display:block}
+ main{padding:15px}
+ .cards{gap:9px}
+ .card{padding:13px}
+ .card-value{font-size:17px}
+ .products{gap:10px}
+ .animal-photo{height:110px;font-size:55px}
+ .product-info{padding:11px}
+ .product-info h3{font-size:15px}
+ .price{font-size:17px}
+ .form-grid{grid-template-columns:1fr}
+ .panel{padding:15px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <button class="menu-btn" onclick="toggleMenu()">☰</button>
+ <div class="brand">🐄 RANCH <span>PRO</span></div>
+ <div class="header-user">👤 <span id="headerName">Farmer</span></div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+ <button class="active" onclick="showPage('dashboard',this)">🏠 Dashboard</button>
+ <button onclick="showPage('livestock',this)">🐄 Livestock</button>
+ <button onclick="showPage('spin',this)">🎡 Lucky Spin</button>
+ <button onclick="showPage('deposit',this)">💳 Deposit</button>
+ <button onclick="showPage('withdraw',this)">💸 Withdraw</button>
+ <button onclick="showPage('referral',this)">👥 Referrals</button>
+ <button onclick="showPage('packages',this)">📈 My Packages</button>
+ <button onclick="showPage('transactions',this)">📜 Transactions</button>
+ <button onclick="showPage('account',this)">⚙️ Account</button>
+</aside>
+
+<main>
+
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+ <h2>Welcome to Ranch Pro 👋</h2>
+ <p class="subtitle">Own livestock. Manage your farm. Grow your future.</p>
+
+ <div class="cards">
+  <div class="card">
+   <div class="card-icon">💰</div>
+   <div class="card-label">Available Wallet</div>
+   <div class="card-value" id="wallet">UGX 0</div>
+  </div>
+  <div class="card">
+   <div class="card-icon">🐄</div>
+   <div class="card-label">My Livestock</div>
+   <div class="card-value" id="animalCount">0</div>
+  </div>
+  <div class="card">
+   <div class="card-icon">📈</div>
+   <div class="card-label">Active Packages</div>
+   <div class="card-value" id="activeCount">0</div>
+  </div>
+  <div class="card">
+   <div class="card-icon">🎡</div>
+   <div class="card-label">Available Spins</div>
+   <div class="card-value" id="spinCount">0</div>
+  </div>
+ </div>
+
+ <div class="panel">
+  <h3>Quick Actions</h3>
+  <div class="quick-actions">
+   <button class="primary" onclick="showPage('deposit')">＋ Deposit</button>
+   <button class="secondary" onclick="showPage('livestock')">🐄 Purchase Livestock</button>
+   <button class="secondary" onclick="showPage('spin')">🎡 Lucky Spin</button>
+   <button class="secondary" onclick="showPage('withdraw')">Withdraw</button>
+  </div>
+ </div>
+
+ <div class="panel">
+  <h3>My Active Livestock</h3>
+  <div id="dashboardPackages" class="empty">No active packages yet.</div>
+ </div>
+
+ <div class="panel">
+  <h3>Important Information</h3>
+  <p class="subtitle">View your purchase records, farm income estimates and verified payment history in one place.</p>
+  <div class="notice">
+   Earnings and capital return are subject to actual farm performance, available funds and the agreed purchase contract. Estimated returns are not guaranteed.
+  </div>
+ </div>
+</section>
+
+<!-- LIVESTOCK -->
+<section class="page" id="livestock">
+ <h2>Our Livestock 🐄</h2>
+ <p class="subtitle">Choose the livestock package you want to purchase.</p>
+ <div class="products" id="products"></div>
+</section>
+
+<!-- LUCKY SPIN -->
+<section class="page" id="spin">
+ <h2>Lucky Spin 🎡</h2>
+ <p class="subtitle">Your Ranch Pro reward wheel.</p>
+
+ <div class="spin-panel">
+  <div class="spin-heading">RANCH PRO LUCKY SPIN</div>
+  <div class="spin-description">Spin for exciting farm rewards!</div>
+
+  <div class="spin-count">
+   AVAILABLE SPINS: <span id="spinAvailable">0</span>
+  </div>
+
+  <div class="wheel-wrap">
+   <div class="pointer"></div>
+   <canvas id="wheel" width="800" height="800"></canvas>
+   <div class="wheel-center">RANCH<br>PRO</div>
+  </div>
+
+  <button class="spin-button" id="spinButton" onclick="spinWheel()" disabled>
+   SPIN NOW
+  </button>
+
+  <div class="spin-result" id="spinResult">
+   Earn a spin when a referred purchase is verified.
+  </div>
+ </div>
+
+ <div class="panel" style="margin-top:18px">
+  <h3>Wheel Rewards</h3>
+  <div class="prize-grid" id="prizeList"></div>
+  <div class="notice">
+   Spin credits must be issued after a genuine referred purchase is verified. Cash rewards shown on the wheel are promotional results and must be confirmed before payment.
+  </div>
+ </div>
+</section>
+
+<!-- DEPOSIT -->
+<section class="page" id="deposit">
+ <h2>Deposit Funds 💳</h2>
+ <p class="subtitle">Submit your mobile money deposit details.</p>
+
+ <div class="panel">
+  <h3>Deposit Request</h3>
+  <form id="depositForm">
+   <label>Deposit Amount (UGX)</label>
+   <input type="number" id="depositAmount" min="1" placeholder="Enter any amount" required>
+
+   <label>Payment Method</label>
+   <select id="depositMethod" required>
+    <option value="">Select payment method</option>
+    <option>MTN Mobile Money</option>
+    <option>Airtel Money</option>
+   </select>
+
+   <label>Phone Number Used to Pay</label>
+   <input type="tel" id="depositPhone" placeholder="07XXXXXXXX" required>
+
+   <label>Transaction Reference</label>
+   <input type="text" id="depositReference" placeholder="Payment transaction ID" required>
+
+   <button class="primary" type="submit">SUBMIT DEPOSIT REQUEST</button>
+  </form>
+
+  <div class="notice">
+   Your deposit will remain pending until the payment provider or administrator verifies it. This form does not collect money or automatically credit your wallet.
+  </div>
+  <div id="depositMessage"></div>
+ </div>
+</section>
+
+<!-- WITHDRAW -->
+<section class="page" id="withdraw">
+ <h2>Withdraw Funds 💸</h2>
+ <p class="subtitle">Request a payment to your mobile money number.</p>
+
+ <div class="panel">
+  <h3>Withdrawal Request</h3>
+  <p>Available balance: <strong id="withdrawBalance">UGX 0</strong></p>
+
+  <form id="withdrawForm">
+   <label>Withdrawal Amount (UGX)</label>
+   <input type="number" id="withdrawAmount" min="1" placeholder="Enter amount" required>
+
+   <label>Payment Method</label>
+   <select id="withdrawMethod" required>
+    <option value="">Select payment method</option>
+    <option>MTN Mobile Money</option>
+    <option>Airtel Money</option>
+   </select>
+
+   <label>Mobile Money Number</label>
+   <input type="tel" id="withdrawPhone" placeholder="07XXXXXXXX" required>
+
+   <button class="primary" type="submit">SUBMIT WITHDRAWAL</button>
+  </form>
+
+  <div class="notice">
+   Withdrawal requests require verification. No money is transferred by this demonstration form.
+  </div>
+  <div id="withdrawMessage"></div>
+ </div>
+</section>
+
+<!-- REFERRALS -->
+<section class="page" id="referral">
+ <h2>Invite Friends 👥</h2>
+ <p class="subtitle">Share Ranch Pro with your friends.</p>
+
+ <div class="panel">
+  <h3>Your Referral Link</h3>
+  <div class="ref-link" id="referralLink"></div>
+  <button class="primary" onclick="copyReferral()">COPY LINK</button>
+  <button class="secondary" onclick="shareReferral()">WHATSAPP SHARE</button>
+  <div class="notice">
+   Referral purchases and rewards must be verified by the server. Sharing a link alone does not earn a spin.
+  </div>
+ </div>
+</section>
+
+<!-- MY PACKAGES -->
+<section class="page" id="packages">
+ <h2>My Livestock Packages 📈</h2>
+ <p class="subtitle">Track your package duration and estimated daily income.</p>
+
+ <div class="panel">
+  <div id="myPackages" class="empty">No packages purchased yet.</div>
+ </div>
+</section>
+
+<!-- TRANSACTIONS -->
+<section class="page" id="transactions">
+ <h2>Transaction History 📜</h2>
+ <p class="subtitle">Your deposit, withdrawal and purchase requests.</p>
+
+ <div class="panel">
+  <div class="table-scroll">
+   <table>
+    <thead>
+     <tr>
+      <th>Type</th>
+      <th>Details</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>Date</th>
+     </tr>
+    </thead>
+    <tbody id="transactionRows"></tbody>
+   </table>
+  </div>
+  <div id="noTransactions" class="empty">No transactions yet.</div>
+ </div>
+</section>
+
+<!-- ACCOUNT -->
+<section class="page" id="account">
+ <h2>My Account ⚙️</h2>
+ <div class="panel">
+  <label>Full Name</label>
+  <input id="accountName" placeholder="Your name">
+
+  <label>Phone Number</label>
+  <input id="accountPhone" placeholder="Your phone number">
+
+  <button class="primary" onclick="saveAccount()">SAVE PROFILE</button>
+  <p id="accountMessage"></p>
+ </div>
+</section>
+
+<footer>© 2026 Ranch Pro. Own Livestock, Grow Your Farm.</footer>
+</main>
+</div>
+
+<script>
+/* --------------------------------
+   RANCH PRO FRONT-END DEMO
+   Real balances and payouts must be
+   controlled by a secure backend.
+--------------------------------- */
+
+const products=[
+ {name:"Hens",icon:"🐔",price:5000,daily:500,days:3},
+ {name:"Goats",icon:"🐐",price:7000,daily:1000,days:7},
+ {name:"Pigs",icon:"🐖",price:30000,daily:2000,days:15},
+ {name:"Sheep",icon:"🐑",price:50000,daily:3500,days:30},
+ {name:"Cats",icon:"🐈",price:100000,daily:5000,days:60},
+ {name:"Cows",icon:"🐄",price:200000,daily:15000,days:90}
+];
+
+const prizes=[
+ {label:"UGX 500",color:"#f5c451",value:500},
+ {label:"TRY AGAIN",color:"#244d8e",value:0},
+ {label:"UGX 1,000",color:"#269b65",value:1000},
+ {label:"EXTRA SPIN",color:"#e77b3c",value:"extra"},
+ {label:"UGX 2,000",color:"#7957a7",value:2000},
+ {label:"TRY AGAIN",color:"#d94c53",value:0},
+ {label:"UGX 5,000",color:"#1595a4",value:5000},
+ {label:"EXTRA SPIN",color:"#b17b25",value:"extra"}
+];
+
+const initialData={
+ wallet:0,
+ spins:0,
+ packages:[],
+ transactions:[],
+ name:"Farmer",
+ phone:""
+};
+
+function loadData(){
+ try{
+  return {...initialData,...JSON.parse(localStorage.getItem("ranchProData")||"{}")};
+ }catch(e){
+  return {...initialData};
+ }
+}
+
+let data=loadData();
+
+function saveData(){
+ localStorage.setItem("ranchProData",JSON.stringify(data));
+ updateUI();
+}
+
+function money(amount){
+ return "UGX "+Number(amount||0).toLocaleString("en-UG");
+}
+
+function toggleMenu(){
+ document.getElementById("sidebar").classList.toggle("open");
+}
+
+function showPage(id,button){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+
+ document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+ if(button)button.classList.add("active");
+
+ document.getElementById("sidebar").classList.remove("open");
+
+ if(id==="spin")drawWheel();
+ if(id==="packages")renderPackages();
+}
+
+function addTransaction(type,details,amount,status="Pending"){
+ data.transactions.unshift({
+  type,details,amount,status,
+  date:new Date().toLocaleString()
+ });
+}
+
+function updateUI(){
+ document.getElementById("wallet").textContent=money(data.wallet);
+ document.getElementById("withdrawBalance").textContent=money(data.wallet);
+ document.getElementById("animalCount").textContent=data.packages.length;
+ document.getElementById("activeCount").textContent=
+  data.packages.filter(p=>!p.completed).length;
+ document.getElementById("spinCount").textContent=data.spins;
+ document.getElementById("spinAvailable").textContent=data.spins;
+ document.getElementById("headerName").textContent=data.name||"Farmer";
+
+ document.getElementById("accountName").value=data.name||"";
+ document.getElementById("accountPhone").value=data.phone||"";
+
+ renderDashboardPackages();
+ renderPackages();
+ renderTransactions();
+
+ document.getElementById("spinButton").disabled=
+  data.spins<1||spinning;
+}
+
+function renderProducts(){
+ document.getElementById("products").innerHTML=products.map((p,i)=>{
+  const total=p.daily*p.days;
+  return `
+   <div class="product">
+    <div class="animal-photo">${p.icon}</div>
+    <div class="product-info">
+     <h3>${p.name}</h3>
+     <div class="price">${money(p.price)}</div>
+     <div class="earning">
+      Daily estimate: <strong>${money(p.daily)}</strong><br>
+      Duration: <strong>${p.days} days</strong><br>
+      Estimated total income: <strong>${money(total)}</strong><br>
+      Capital: <strong>${money(p.price)}</strong>
+     </div>
+     <div class="total">
+      Income and capital return depend on verified farm performance and the purchase agreement.
+     </div>
+     <br>
+     <button class="primary" style="width:100%" onclick="purchaseRequest(${i})">
+      PURCHASE
+     </button>
+    </div>
+   </div>`;
+ }).join("");
+}
+
+/* A purchase is only a request here.
+   Server verification is needed to activate a package. */
+function purchaseRequest(index){
+ const p=products[index];
+
+ if(!confirm(
+  "Request purchase of "+p.name+
+  " for "+money(p.price)+"?"
+ ))return;
+
+ addTransaction(
+  "Purchase request",
+  p.name+" package",
+  p.price,
+  "Pending payment verification"
+ );
+
+ saveData();
+ alert("Purchase request recorded. Complete payment and wait for verification.");
+ showPage("transactions");
+}
+
+function packageProgress(p){
+ const elapsed=Math.max(0,Math.floor(
+  (Date.now()-new Date(p.startDate).getTime())/86400000
+ ));
+ return Math.min(elapsed,p.days);
+}
+
+function packageCard(p){
+ const elapsed=packageProgress(p);
+ const remaining=Math.max(0,p.days-elapsed);
+ const percent=Math.min(100,elapsed/p.days*100);
+ const total=p.daily*p.days;
+
+ return `
+ <div class="package-progress">
+  <strong>${p.icon} ${p.name}</strong>
+  <div style="margin:9px 0;font-size:13px">
+   Purchase capital: ${money(p.price)}<br>
+   Estimated daily income: ${money(p.daily)}<br>
+   Estimated total income: ${money(total)}<br>
+   Duration: ${p.days} days<br>
+   Days elapsed: ${elapsed}<br>
+   Days remaining: ${remaining}
+  </div>
+  <div class="progress-bg">
+   <div class="progress-fill" style="width:${percent}%"></div>
+  </div>
+  <small>${p.completed?"Completed":"Active / awaiting verified payout"}</small>
+ </div>`;
+}
+
+function renderPackages(){
+ const el=document.getElementById("myPackages");
+ if(!data.packages.length){
+  el.innerHTML="No active packages yet.";
+  return;
+ }
+ el.innerHTML=data.packages.map(packageCard).join("");
+}
+
+function renderDashboardPackages(){
+ const el=document.getElementById("dashboardPackages");
+ if(!data.packages.length){
+  el.innerHTML="No active packages yet.";
+  return;
+ }
+ el.innerHTML=data.packages.slice(0,3).map(packageCard).join("");
+}
+
+function renderTransactions(){
+ const rows=document.getElementById("transactionRows");
+ const empty=document.getElementById("noTransactions");
+
+ rows.innerHTML=data.transactions.map(t=>`
+  <tr>
+   <td>${escapeHTML(t.type)}</td>
+   <td>${escapeHTML(t.details)}</td>
+   <td>${money(t.amount)}</td>
+   <td><span class="status">${escapeHTML(t.status)}</span></td>
+   <td>${escapeHTML(t.date)}</td>
+  </tr>
+ `).join("");
+
+ empty.style.display=data.transactions.length?"none":"block";
+}
+
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",
+  '"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+/* DEPOSIT REQUEST */
+document.getElementById("depositForm").addEventListener("submit",function(e){
+ e.preventDefault();
+
+ const amount=Number(document.getElementById("depositAmount").value);
+ const method=document.getElementById("depositMethod").value;
+ const phone=document.getElementById("depositPhone").value.trim();
+ const reference=document.getElementById("depositReference").value.trim();
+
+ if(!Number.isFinite(amount)||amount<=0||!method||!phone||!reference){
+  alert("Please enter valid deposit details.");
+  return;
+ }
+
+ addTransaction("Deposit",method+" • "+phone+" • "+reference,
+  amount,"Pending verification");
+
+ saveData();
+ this.reset();
+
+ document.getElementById("depositMessage").innerHTML=
+  '<p class="success">Deposit request submitted for verification.</p>';
+});
+
+/* WITHDRAW REQUEST */
+document.getElementById("withdrawForm").addEventListener("submit",function(e){
+ e.preventDefault();
+
+ const amount=Number(document.getElementById("withdrawAmount").value);
+ const method=document.getElementById("withdrawMethod").value;
+ const phone=document.getElementById("withdrawPhone").value.trim();
+
+ if(!Number.isFinite(amount)||amount<=0||amount>data.wallet){
+  alert("Enter a valid amount within your available wallet balance.");
+  return;
+ }
+
+ if(!method||!phone){
+  alert("Complete all withdrawal details.");
+  return;
+ }
+
+ addTransaction("Withdrawal",method+" • "+phone,amount,"Pending review");
+
+ saveData();
+ this.reset();
+
+ document.getElementById("withdrawMessage").innerHTML=
+  '<p class="success">Withdrawal request submitted for review.</p>';
+});
+
+/* REFERRAL */
+function referralLink(){
+ const url=new URL(window.location.href);
+ url.searchParams.set("ref","RANCH"+getReferralCode());
+ return url.toString();
+}
+
+function getReferralCode(){
+ let code=localStorage.getItem("ranchProReferralCode");
+ if(!code){
+  code=""+Math.floor(100000+Math.random()*900000);
+  localStorage.setItem("ranchProReferralCode",code);
+ }
+ return code;
+}
+
+document.getElementById("referralLink").textContent=referralLink();
+
+function copyReferral(){
+ const link=referralLink();
+ if(navigator.clipboard&&navigator.clipboard.writeText){
+  navigator.clipboard.writeText(link)
+   .then(()=>alert("Referral link copied!"))
+   .catch(()=>prompt("Copy your link:",link));
+ }else{
+  prompt("Copy your link:",link);
+ }
+}
+
+function shareReferral(){
+ const text=encodeURIComponent("Join Ranch Pro! "+referralLink());
+ window.open("https://wa.me/?text="+text,"_blank");
+}
+
+/* MODERN WHEEL */
+const canvas=document.getElementById("wheel");
+const ctx=canvas.getContext("2d");
+let rotation=0;
+let spinning=false;
+
+function drawWheel(){
+ const center=400;
+ const radius=380;
+ const slice=Math.PI*2/prizes.length;
+
+ ctx.clearRect(0,0,800,800);
+
+ prizes.forEach((p,i)=>{
+  const start=-Math.PI/2+i*slice;
+  const end=start+slice;
+
+  ctx.beginPath();
+  ctx.moveTo(center,center);
+  ctx.arc(center,center,radius,start,end);
+  ctx.closePath();
+  ctx.fillStyle=p.color;
+  ctx.fill();
+  ctx.strokeStyle="#fff";
+  ctx.lineWidth=7;
+  ctx.stroke();
+
+  ctx.save();
+  ctx.translate(center,center);
+  ctx.rotate(start+slice/2);
+
+  ctx.textAlign="right";
+  ctx.textBaseline="middle";
+  ctx.fillStyle="#fff";
+  ctx.font="bold 29px Arial";
+  ctx.shadowColor="#0008";
+  ctx.shadowBlur=5;
+  ctx.fillText(p.label,345,0);
+
+  ctx.restore();
+ });
+
+ // Decorative inner ring
+ ctx.beginPath();
+ ctx.arc(center,center,110,0,Math.PI*2);
+ ctx.strokeStyle="#ffffffaa";
+ ctx.lineWidth=5;
+ ctx.stroke();
+}
+
+function choosePrize(){
+ // Equal chance for each wheel section in this demo.
+ return Math.floor(Math.random()*prizes.length);
+}
+
+function spinWheel(){
+ if(spinning)return;
+
+ if(data.spins<1){
+  document.getElementById("spinResult").textContent=
+   "You need a verified referral purchase to receive a spin.";
+  return;
+ }
+
+ spinning=true;
+ data.spins--;
+ saveData();
+
+ const button=document.getElementById("spinButton");
+ button.disabled=true;
+
+ const result=document.getElementById("spinResult");
+ result.textContent="GOOD LUCK! SPINNING...";
+
+ const winner=choosePrize();
+ const slice=360/prizes.length;
+ const centerAngle=winner*slice+slice/2;
+ const target=(360-centerAngle)%360;
+ const extraTurns=360*7;
+
+ rotation+=extraTurns+
+  ((target-(rotation%360)+360)%360);
+
+ canvas.style.transform=`rotate(${rotation}deg)`;
+
+ setTimeout(()=>{
+  const p=prizes[winner];
+  let message;
+
+  if(p.value==="extra"){
+   data.spins++;
+   message="🎉 YOU WON AN EXTRA SPIN!";
+  }else if(p.value>0){
+   message="🎉 YOU WON "+money(p.value)+"! PENDING VERIFICATION";
+  }else{
+   message="TRY AGAIN NEXT TIME!";
+  }
+
+  result.textContent=message;
+
+  addTransaction(
+   "Lucky Spin",
+   p.label,
+   typeof p.value==="number"?p.value:0,
+   "Demo result - verify reward"
+  );
+
+  saveData();
+  spinning=false;
+  button.disabled=data.spins<1;
+ },5100);
+}
+
+/* WHEEL PRIZE LIST */
+document.getElementById("prizeList").innerHTML=
+ prizes.map(p=>`
+  <div class="prize-item">
+   <span>
+    <span class="prize-dot" style="background:${p.color}"></span>
+    ${p.label}
+   </span>
+   <strong>Prize</strong>
+  </div>
+ `).join("");
+
+/* ACCOUNT */
+function saveAccount(){
+ data.name=document.getElementById("accountName").value.trim()||"Farmer";
+ data.phone=document.getElementById("accountPhone").value.trim();
+ saveData();
+
+ document.getElementById("accountMessage").textContent=
+  "Profile saved on this device.";
+}
+
+/* START */
+renderProducts();
+drawWheel();
+updateUI();
+</script>
+
+</body>
+</html>
