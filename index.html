@@ -1,552 +1,751 @@
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#102d20">
-<title>RANCH PRO | Own Your Farm</title>
+<meta name="theme-color" content="#83bd45">
+<title>RANCH PRO | Digital Ranch</title>
 
 <style>
 :root {
- --bg:#f1f5ef;
- --green:#174c32;
- --green2:#267448;
- --gold:#e8b84b;
- --dark:#10251b;
- --white:#fff;
- --muted:#718075;
- --border:#e2e9e1;
+ --green:#397b2e;
+ --green2:#76b83e;
+ --cream:#fff9d9;
+ --gold:#e7a52b;
+ --ink:#283b22;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:var(--bg);color:var(--dark)}
-button,input,select{font:inherit}
-button{cursor:pointer;border:0}
-.app{max-width:1400px;margin:auto;min-height:100vh}
-header{
- background:var(--dark);color:white;padding:15px 5%;
- display:flex;align-items:center;justify-content:space-between;
- position:sticky;top:0;z-index:10
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ color:var(--ink);
+ background:#83bd45;
 }
-.logo{font-size:23px;font-weight:900;letter-spacing:1px}
-.logo span{color:var(--gold)}
-.header-right{display:flex;align-items:center;gap:12px}
-.avatar{background:var(--gold);color:var(--dark);padding:10px;border-radius:50%;font-weight:bold}
-.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 60px)}
-.sidebar{background:#fff;padding:22px 14px;border-right:1px solid var(--border)}
-.nav-title{font-size:11px;color:var(--muted);font-weight:bold;margin:18px 12px 8px}
-.nav{
- width:100%;display:flex;gap:12px;align-items:center;
- padding:13px 12px;background:none;text-align:left;
- color:#526257;border-radius:10px;margin:3px 0;font-weight:600
+button,input{font:inherit}
+button{cursor:pointer}
+
+.background{
+ position:fixed;
+ inset:0;
+ z-index:-1;
+ overflow:hidden;
+ background:linear-gradient(
+ #8bd4e5 0%,
+ #b9e7c3 32%,
+ #a6d84d 60%,
+ #75b63e 100%);
 }
-.nav.active,.nav:hover{background:#e8f3e9;color:var(--green)}
-main{padding:25px;min-width:0}
-.page{display:none}
-.page.active{display:block}
-h1{font-size:25px;margin-bottom:7px}
-.subtitle{color:var(--muted);font-size:14px;margin-bottom:22px}
-.hero{
- background:linear-gradient(110deg,#103c29,#367a46);
- color:white;border-radius:18px;padding:28px;
- display:flex;justify-content:space-between;align-items:center;
- gap:15px;margin-bottom:20px;overflow:hidden
+.sun{
+ position:absolute;
+ width:115px;
+ height:115px;
+ border-radius:50%;
+ background:#ffe98c;
+ right:10%;
+ top:18%;
 }
-.hero h2{font-size:25px;margin-bottom:9px}
-.hero p{color:#d8e8dc;max-width:430px;line-height:1.5}
-.hero-art{font-size:76px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
-.stat,.panel,.animal-card{
- background:white;border:1px solid var(--border);border-radius:15px;padding:18px
+.cloud{
+ position:absolute;
+ font-size:65px;
+ color:white;
+ opacity:.7;
 }
-.stat small{color:var(--muted)}
-.stat strong{display:block;font-size:23px;margin-top:10px}
-.stat-icon{font-size:24px;margin-bottom:9px}
-.section-head{display:flex;justify-content:space-between;align-items:center;margin:22px 0 14px}
-.section-head h3{font-size:18px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.animal-card{padding:0;overflow:hidden}
-.animal-image{
- height:145px;background:linear-gradient(145deg,#c5dfb6,#e9f0d9);
- display:grid;place-items:center;font-size:76px
+.cloud.one{top:16%;left:5%}
+.cloud.two{top:38%;right:12%}
+.hills{
+ position:absolute;
+ bottom:0;
+ width:100%;
+ height:40%;
+ background:linear-gradient(#9aca45,#70b43d);
+ border-radius:50% 50% 0 0;
 }
-.animal-content{padding:16px}
-.animal-content h3{margin-bottom:7px}
-.animal-content p{font-size:13px;color:var(--muted);line-height:1.6}
-.price{font-weight:900;color:var(--green);font-size:20px;margin:13px 0}
-.btn{
- background:var(--green2);color:white;padding:12px 17px;
- border-radius:9px;font-weight:bold
+.house{
+ position:absolute;
+ bottom:20%;
+ right:10%;
+ font-size:85px;
 }
-.btn:hover{filter:brightness(1.1)}
-.btn.gold{background:var(--gold);color:#263222}
-.btn.light{background:#edf3ed;color:var(--green)}
-.btn.red{background:#b83232}
-.btn.full{width:100%}
-.actions{display:flex;gap:9px;flex-wrap:wrap}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:500px}
-th,td{padding:14px 10px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
-th{color:var(--muted);font-size:12px}
-.tag{background:#e5f4e8;color:#247044;padding:5px 9px;border-radius:20px;font-size:11px}
-.form-group{margin:15px 0}
-.form-group label{display:block;font-size:13px;font-weight:bold;margin-bottom:7px}
-.form-group input,.form-group select{
- width:100%;padding:13px;border:1px solid var(--border);
- border-radius:9px;background:#fff;outline-color:var(--green2)
+.tree{
+ position:absolute;
+ bottom:20%;
+ left:5%;
+ font-size:75px;
 }
-.notice{background:#fff6df;border:1px solid #f0d99e;padding:13px;border-radius:10px;font-size:12px;line-height:1.6;margin:14px 0}
-.wallet-card{background:linear-gradient(120deg,#143b29,#38764b);color:white;border-radius:16px;padding:24px;margin-bottom:18px}
-.wallet-card strong{font-size:32px;display:block;margin:12px 0}
-.spin-wheel{
- width:210px;height:210px;border-radius:50%;
- background:conic-gradient(#f2c14e 0 25%,#28764a 25% 50%,#f2c14e 50% 75%,#28764a 75%);
- margin:20px auto;display:grid;place-items:center;
- border:9px solid white;box-shadow:0 2px 12px #0002;
+
+.container{
+ max-width:760px;
+ margin:auto;
+ padding:18px 15px 35px;
 }
-.spin-wheel span{background:white;border-radius:50%;padding:25px;font-size:23px}
+
+.header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+ gap:15px;
+ color:white;
+ text-shadow:0 2px 5px #315b2580;
+ margin-bottom:28px;
+}
+.logo{
+ font-size:30px;
+ font-weight:900;
+}
+.logo span{color:#ffe27a}
+
+.profile{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ font-weight:bold;
+}
+.avatar{
+ background:#fff6bf;
+ color:#54812c;
+ border-radius:50%;
+ width:65px;
+ height:65px;
+ display:grid;
+ place-items:center;
+ text-align:center;
+ font-weight:900;
+}
+.welcome{
+ color:white;
+ font-size:20px;
+ font-weight:900;
+ margin:20px 8px;
+ text-shadow:0 2px 5px #315b2580;
+}
+
+.panel{
+ background:#fffbdce8;
+ border:2px solid #fff9d8;
+ border-radius:28px;
+ padding:17px;
+ margin-bottom:18px;
+ box-shadow:0 8px 22px #315b2530;
+}
+
+.balance-title{
+ font-size:27px;
+ font-weight:900;
+ margin:5px 0 18px;
+}
+.balance-title span{color:#c77a25}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:9px;
+}
+.stat{
+ background:#fff9df;
+ border:1px solid white;
+ border-radius:20px;
+ min-height:135px;
+ padding:12px 5px;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ text-align:center;
+ box-shadow:0 4px 9px #546b2930;
+}
+.coin{
+ width:48px;
+ height:48px;
+ border-radius:50%;
+ background:linear-gradient(145deg,#ffd65c,#e68d12);
+ border:3px solid #ffdf7d;
+ color:white;
+ display:grid;
+ place-items:center;
+ font-size:23px;
+ font-weight:900;
+ margin-bottom:9px;
+}
+.stat b{
+ color:#bd7929;
+ font-size:22px;
+ margin-bottom:7px;
+}
+.stat span{
+ font-weight:bold;
+ line-height:1.3;
+}
+
+.actions{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px;
+ margin-top:22px;
+}
+.action{
+ background:#fff9d7;
+ border:2px solid #d3d0b8;
+ box-shadow:3px 3px 0 #302f25;
+ border-radius:10px;
+ padding:14px 5px;
+ color:#493b1e;
+ font-size:21px;
+ font-weight:900;
+}
+.action span{
+ font-size:30px;
+}
+
+.menu{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;
+}
+.menu button{
+ min-height:135px;
+ background:#fff9d9;
+ border:2px solid #d2cfb9;
+ box-shadow:3px 3px 0 #343326;
+ border-radius:10px;
+ color:#493e22;
+ font-weight:900;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ gap:8px;
+}
+.menu .emoji{
+ font-size:45px;
+}
+
+.section-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:14px;
+}
+.section-head h2{margin:0}
+.section-head button{
+ border:0;
+ background:transparent;
+ color:#477b2c;
+ font-weight:bold;
+}
+
+.products{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+}
+.product{
+ background:#fff9df;
+ border-radius:20px;
+ padding:14px;
+ text-align:center;
+ border:1px solid white;
+ box-shadow:0 4px 10px #506d2930;
+}
+.animal{font-size:55px}
+.product h3{margin:7px 0}
+.product p{
+ font-size:13px;
+ color:#64734a;
+}
+.price{
+ font-size:19px;
+ font-weight:900;
+ color:#b96c1d;
+ margin:12px 0;
+}
+.buy{
+ width:100%;
+ border:0;
+ border-radius:10px;
+ padding:12px;
+ background:linear-gradient(90deg,#4e9636,#78b940);
+ color:white;
+ font-weight:900;
+}
+.empty{
+ text-align:center;
+ padding:25px 10px;
+ color:#66734d;
+ font-weight:bold;
+}
+.animal-row{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ background:#fff9df;
+ padding:13px;
+ border-radius:13px;
+ margin:8px 0;
+}
+.news{
+ color:#536641;
+ line-height:1.6;
+}
+.footer{
+ text-align:center;
+ color:white;
+ padding:15px;
+ font-size:12px;
+}
+
+.modal-bg{
+ position:fixed;
+ inset:0;
+ background:#142414aa;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:18px;
+ z-index:10;
+}
+.modal-bg.show{display:flex}
 .modal{
- display:none;position:fixed;inset:0;background:#0009;
- z-index:30;align-items:center;justify-content:center;padding:18px
+ background:#fffbe0;
+ border-radius:20px;
+ padding:22px;
+ width:min(100%,420px);
 }
-.modal.show{display:flex}
-.modal-card{background:white;padding:25px;border-radius:16px;width:100%;max-width:420px}
-.modal-card h2{margin-bottom:15px}
-.close{float:right;background:#eee;padding:6px 10px;border-radius:7px}
-.empty{text-align:center;padding:35px;color:var(--muted)}
-#toast{
- position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
- background:#152c20;color:white;padding:13px 20px;
- border-radius:9px;display:none;z-index:50
+.modal input{
+ width:100%;
+ padding:13px;
+ border:1px solid #ccc;
+ border-radius:10px;
+ margin:10px 0;
 }
-.mobile-bottom{display:none}
-@media(max-width:850px){
- .layout{grid-template-columns:1fr}
- .sidebar{display:none}
- main{padding:17px}
+.modal button{
+ padding:12px;
+ border:0;
+ border-radius:10px;
+ font-weight:bold;
+}
+.confirm{background:#4d9638;color:white}
+.cancel{background:#e8e3c6}
+.toast{
+ position:fixed;
+ bottom:20px;
+ left:50%;
+ transform:translateX(-50%);
+ background:#263d24;
+ color:white;
+ padding:13px 18px;
+ border-radius:30px;
+ display:none;
+ z-index:20;
+ width:max-content;
+ max-width:90%;
+ text-align:center;
+}
+
+@media(max-width:520px){
+ .container{padding:13px 12px}
+ .stats{gap:6px}
+ .stat{min-height:120px}
+ .stat span{font-size:13px}
+ .menu{gap:8px}
+ .menu button{min-height:115px;font-size:13px}
+ .menu .emoji{font-size:38px}
+ .panel{padding:14px}
+ .action{font-size:16px}
+}
+@media(max-width:360px){
  .stats{grid-template-columns:repeat(2,1fr)}
- .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:550px){
- header{padding:13px 16px}
- .logo{font-size:19px}
- .hero{padding:20px}
- .hero-art{font-size:48px}
- .hero h2{font-size:21px}
- .grid{grid-template-columns:1fr}
- .stats{gap:9px}
- .stat{padding:13px}
- .stat strong{font-size:19px}
- main{padding:14px 12px 90px}
- .mobile-bottom{
-  display:flex;position:fixed;bottom:0;left:0;right:0;
-  background:white;border-top:1px solid var(--border);
-  justify-content:space-around;padding:9px 3px;z-index:15
- }
- .mobile-bottom button{background:none;color:#637167;font-size:10px}
- .mobile-bottom span{display:block;font-size:19px;margin-bottom:4px}
+ .menu{grid-template-columns:repeat(2,1fr)}
+ .products{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
-<div class="app">
-<header>
+
+<div class="background">
+ <div class="sun"></div>
+ <div class="cloud one">☁</div>
+ <div class="cloud two">☁</div>
+ <div class="hills"></div>
+ <div class="house">🏡</div>
+ <div class="tree">🌳</div>
+</div>
+
+<main class="container">
+
+<header class="header">
  <div class="logo">🌿 RANCH <span>PRO</span></div>
- <div class="header-right">
-  <span id="headerName">Guest Farmer</span>
-  <div class="avatar" id="avatar">G</div>
+
+ <div class="profile">
+  <div class="avatar">RANCH<br>PRO</div>
+  <div>
+   <div id="farmerName">Guest Farmer</div>
+   <div>Account ID: RP-63998</div>
+   <div>Points: <span id="points">0</span></div>
+  </div>
  </div>
 </header>
 
-<div class="layout">
-<aside class="sidebar">
- <div class="nav-title">MAIN MENU</div>
- <button class="nav active" onclick="showPage('home',this)">🏡 Dashboard</button>
- <button class="nav" onclick="showPage('market',this)">🐄 Livestock Market</button>
- <button class="nav" onclick="showPage('myfarm',this)">🌳 My Ranch</button>
- <button class="nav" onclick="showPage('wallet',this)">💰 My Wallet</button>
- <div class="nav-title">TRANSACTIONS</div>
- <button class="nav" onclick="showPage('deposit',this)">⬇️ Deposit</button>
- <button class="nav" onclick="showPage('withdraw',this)">⬆️ Withdraw</button>
- <button class="nav" onclick="showPage('history',this)">📋 History</button>
- <div class="nav-title">REWARDS</div>
- <button class="nav" onclick="showPage('referral',this)">👥 Referrals</button>
- <button class="nav" onclick="showPage('spin',this)">🎡 Lucky Spin</button>
- <button class="nav" onclick="showPage('profile',this)">⚙️ My Profile</button>
-</aside>
+<div class="welcome">
+ 🌾 Welcome, <span id="welcomeName">Guest Farmer</span>!
+</div>
 
-<main>
-<!-- DASHBOARD -->
-<section class="page active" id="home">
- <div class="hero">
-  <div>
-   <h2>Welcome to your Ranch! 🌱</h2>
-   <p>Build your farm, own livestock and manage your ranch from one place.</p>
-   <br><button class="btn gold" onclick="showPage('market')">Explore Livestock →</button>
-  </div>
-  <div class="hero-art">🐄🌳</div>
+<!-- ACCOUNT BALANCE -->
+
+<section class="panel">
+
+ <div class="balance-title">
+  My Balance: <span id="balance">UGX 0</span>
  </div>
+
  <div class="stats">
-  <div class="stat"><div class="stat-icon">💰</div><small>Wallet Balance</small><strong id="dashBalance">UGX 0</strong></div>
-  <div class="stat"><div class="stat-icon">🐄</div><small>Animals Owned</small><strong id="animalCount">0</strong></div>
-  <div class="stat"><div class="stat-icon">📈</div><small>Recorded Earnings</small><strong id="dashEarnings">UGX 0</strong></div>
-  <div class="stat"><div class="stat-icon">👥</div><small>Referral Count</small><strong id="refCount">0</strong></div>
- </div>
- <div class="section-head"><h3>Explore the livestock market</h3><button class="btn light" onclick="showPage('market')">View all</button></div>
- <div class="grid" id="featured"></div>
- <div class="section-head"><h3>Recent activity</h3><button class="btn light" onclick="showPage('history')">View all</button></div>
- <div class="panel table-wrap"><table><thead><tr><th>Activity</th><th>Amount</th><th>Status</th></tr></thead><tbody id="recentRows"></tbody></table></div>
-</section>
 
-<!-- MARKET -->
-<section class="page" id="market">
- <h1>Livestock Market 🐄</h1>
- <p class="subtitle">Choose livestock to add to your ranch.</p>
- <div class="grid" id="marketGrid"></div>
-</section>
-
-<!-- MY FARM -->
-<section class="page" id="myfarm">
- <h1>My Ranch 🌳</h1>
- <p class="subtitle">Manage the livestock you have purchased.</p>
- <div class="grid" id="myAnimals"></div>
-</section>
-
-<!-- WALLET -->
-<section class="page" id="wallet">
- <h1>My Wallet</h1>
- <p class="subtitle">Your ranch account overview.</p>
- <div class="wallet-card">
-  <small>AVAILABLE DEMO BALANCE</small>
-  <strong id="walletBalance">UGX 0</strong>
-  <div class="actions">
-   <button class="btn gold" onclick="showPage('deposit')">Deposit</button>
-   <button class="btn light" onclick="showPage('withdraw')">Withdraw</button>
+  <div class="stat">
+   <div class="coin">C</div>
+   <b id="teamIncome">0</b>
+   <span>Team<br>Income</span>
   </div>
- </div>
- <div class="stats">
-  <div class="stat"><small>Total deposits</small><strong id="totalDeposits">UGX 0</strong></div>
-  <div class="stat"><small>Total withdrawals</small><strong id="totalWithdrawals">UGX 0</strong></div>
- </div>
- <div class="notice">This is a demonstration wallet. No real money is transferred or stored. Connect a secure backend and payment provider before accepting payments.</div>
-</section>
 
-<!-- DEPOSIT -->
-<section class="page" id="deposit">
- <h1>Deposit Funds</h1>
- <p class="subtitle">Submit a deposit request for your account.</p>
- <div class="panel">
-  <div class="form-group"><label>Amount (UGX)</label><input id="depositAmount" type="number" min="1000" placeholder="Enter amount"></div>
-  <div class="form-group"><label>Payment method</label>
-   <select id="depositMethod"><option>MTN Mobile Money</option><option>Airtel Money</option></select>
+  <div class="stat">
+   <div class="coin">C</div>
+   <b id="ranchIncome">0</b>
+   <span>Ranch<br>Income</span>
   </div>
-  <div class="form-group"><label>Mobile money number</label><input id="depositPhone" placeholder="07XXXXXXXX"></div>
-  <button class="btn full" onclick="requestDeposit()">Submit deposit request</button>
-  <div class="notice">Demo only: this form does not charge your mobile money account. A verified payment API and server-side confirmation are required for real deposits.</div>
- </div>
-</section>
 
-<!-- WITHDRAW -->
-<section class="page" id="withdraw">
- <h1>Withdraw Funds</h1>
- <p class="subtitle">Submit a withdrawal request.</p>
- <div class="panel">
-  <div class="form-group"><label>Amount (UGX)</label><input id="withdrawAmount" type="number" min="1000" placeholder="Enter amount"></div>
-  <div class="form-group"><label>Mobile money network</label><select id="withdrawMethod"><option>MTN Mobile Money</option><option>Airtel Money</option></select></div>
-  <div class="form-group"><label>Mobile number</label><input id="withdrawPhone" placeholder="07XXXXXXXX"></div>
-  <button class="btn full" onclick="requestWithdrawal()">Submit withdrawal request</button>
-  <div class="notice">Demo only: requests are not paid. Real withdrawals need secure server-side balance checks and payment-provider integration.</div>
- </div>
-</section>
-
-<!-- HISTORY -->
-<section class="page" id="history">
- <h1>Transaction History</h1>
- <p class="subtitle">View your account activities.</p>
- <div class="panel table-wrap"><table><thead><tr><th>Activity</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead><tbody id="historyRows"></tbody></table></div>
-</section>
-
-<!-- REFERRAL -->
-<section class="page" id="referral">
- <h1>Invite Friends 👥</h1>
- <p class="subtitle">Share your ranch with friends.</p>
- <div class="panel">
-  <h3>Your referral link</h3>
-  <p style="color:var(--muted);font-size:13px;margin:10px 0">Invite friends using your personal link.</p>
-  <input id="refLink" readonly style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px">
-  <br><br><div class="actions">
-   <button class="btn" onclick="copyReferral()">Copy link</button>
-   <button class="btn light" onclick="shareReferral()">Share WhatsApp</button>
+  <div class="stat">
+   <div class="coin">C</div>
+   <b id="teamSize">0</b>
+   <span>Team Size</span>
   </div>
-  <div class="notice">Referral counts and rewards must be verified by the server. Sharing a link alone does not create a commission.</div>
+
+  <div class="stat">
+   <div class="coin">C</div>
+   <b id="todayIncome">0</b>
+   <span>Today<br>Income</span>
+  </div>
+
+ </div>
+
+ <div class="actions">
+  <button class="action" onclick="openRequest('Recharge')">
+   💰 Recharge ›
+  </button>
+
+  <button class="action" onclick="openRequest('Withdraw')">
+   💸 Withdraw ›
+  </button>
+ </div>
+
+</section>
+
+<!-- MENU -->
+
+<section class="panel">
+ <div class="menu">
+
+  <button onclick="showPage('Company','RANCH PRO company information and support.')">
+   <span class="emoji">🏢</span>Company
+  </button>
+
+  <button onclick="showPage('My Bill','Your transaction records will appear here.')">
+   <span class="emoji">📩</span>My Bill
+  </button>
+
+  <button onclick="showPage('My Wallet','Your wallet and account activity.')">
+   <span class="emoji">🧰</span>My Wallet
+  </button>
+
+  <button onclick="showPage('CDK Exchange','CDK exchange information.')">
+   <span class="emoji">🏘️</span>CDK Exchange
+  </button>
+
+  <button onclick="showPage('Points System','Your points are displayed on your account.')">
+   <span class="emoji">💝</span>Points System
+  </button>
+
+  <button onclick="showPage('Profit','Your livestock profit records will appear here when the accounting system is connected.')">
+   <span class="emoji">🪙</span>Profit
+  </button>
+
+  <button onclick="showPage('Password','Password management will be connected to secure authentication.')">
+   <span class="emoji">🔐</span>Password
+  </button>
+
+  <button onclick="showPage('Download','You can save this page using your browser menu.')">
+   <span class="emoji">📥</span>Download
+  </button>
+
+  <button onclick="showPage('Exit','You are currently using the guest demo.')">
+   <span class="emoji">🚪</span>Exit
+  </button>
+
  </div>
 </section>
 
-<!-- SPIN -->
-<section class="page" id="spin">
- <h1>Lucky Spin 🎡</h1>
- <p class="subtitle">A fun demo rewards game.</p>
- <div class="panel" style="text-align:center">
-  <div class="spin-wheel" id="wheel"><span>🎁</span></div>
-  <h3 id="spinResult">Ready to spin?</h3>
-  <p class="subtitle">Demo points have no cash value.</p>
-  <button class="btn gold" id="spinButton" onclick="spinWheel()">SPIN NOW</button>
+<!-- LIVESTOCK SHOP -->
+
+<section class="panel" id="shop">
+
+ <div class="section-head">
+  <h2>🐄 Livestock Shop</h2>
+  <button onclick="document.getElementById('shop').scrollIntoView()">
+   View all ›
+  </button>
  </div>
+
+ <div class="products">
+
+  <div class="product">
+   <div class="animal">🐄</div>
+   <h3>Dairy Cow</h3>
+   <p>Dairy livestock package</p>
+   <div class="price">UGX 150,000</div>
+   <button class="buy" onclick="purchase('Dairy Cow',150000,'🐄')">Purchase</button>
+  </div>
+
+  <div class="product">
+   <div class="animal">🐖</div>
+   <h3>Pig</h3>
+   <p>Pig-rearing package</p>
+   <div class="price">UGX 80,000</div>
+   <button class="buy" onclick="purchase('Pig',80000,'🐖')">Purchase</button>
+  </div>
+
+  <div class="product">
+   <div class="animal">🐐</div>
+   <h3>Goat</h3>
+   <p>Goat-rearing package</p>
+   <div class="price">UGX 50,000</div>
+   <button class="buy" onclick="purchase('Goat',50000,'🐐')">Purchase</button>
+  </div>
+
+  <div class="product">
+   <div class="animal">🐑</div>
+   <h3>Sheep</h3>
+   <p>Sheep-rearing package</p>
+   <div class="price">UGX 65,000</div>
+   <button class="buy" onclick="purchase('Sheep',65000,'🐑')">Purchase</button>
+  </div>
+
+  <div class="product">
+   <div class="animal">🐓</div>
+   <h3>Hen</h3>
+   <p>Poultry livestock package</p>
+   <div class="price">UGX 25,000</div>
+   <button class="buy" onclick="purchase('Hen',25000,'🐓')">Purchase</button>
+  </div>
+
+ </div>
+
+ <p class="news">
+  Welcome to the RANCH PRO livestock shop.
+  Explore the available animals and their packages.
+ </p>
+
 </section>
 
-<!-- PROFILE -->
-<section class="page" id="profile">
- <h1>My Profile</h1>
- <p class="subtitle">Your account information.</p>
- <div class="panel">
-  <div class="form-group"><label>Full name</label><input id="profileName" placeholder="Your name"></div>
-  <div class="form-group"><label>Email address</label><input id="profileEmail" type="email" placeholder="Your email"></div>
-  <button class="btn" onclick="saveProfile()">Save profile</button>
-  <button class="btn red" onclick="resetDemo()">Reset demo account</button>
+<!-- MY RANCH -->
+
+<section class="panel">
+
+ <div class="section-head">
+  <h2>🌱 My Ranch</h2>
+  <button onclick="showPage('My Animals','Your purchased demo animals appear below.')">
+   My animals ›
+  </button>
  </div>
+
+ <div id="myAnimals" class="empty">
+  Your livestock will appear here after purchase.
+ </div>
+
 </section>
+
+<!-- NEWS -->
+
+<section class="panel">
+ <h2>📢 Ranch News</h2>
+
+ <p class="news">
+  Welcome to RANCH PRO. Check your account activity
+  and ranch updates here. Your Growth, Your Ranch!
+ </p>
+</section>
+
+<div class="footer">
+ RANCH PRO • OWN YOUR RANCH • GROW WITH CARE
+</div>
 
 </main>
-</div>
 
-<div class="mobile-bottom">
- <button onclick="showPage('home')"><span>🏡</span>Home</button>
- <button onclick="showPage('market')"><span>🐄</span>Market</button>
- <button onclick="showPage('myfarm')"><span>🌳</span>My Ranch</button>
- <button onclick="showPage('wallet')"><span>💰</span>Wallet</button>
- <button onclick="showPage('profile')"><span>👤</span>Profile</button>
-</div>
-</div>
+<!-- POPUP -->
 
-<div class="modal" id="purchaseModal">
- <div class="modal-card">
-  <button class="close" onclick="closeModal()">✕</button>
-  <h2>Confirm Livestock Purchase</h2>
-  <p id="purchaseDetails" style="margin:15px 0"></p>
-  <div class="notice">This demo purchase uses the local demo wallet only.</div>
-  <div class="actions">
-   <button class="btn full" id="confirmPurchase">Confirm purchase</button>
+<div class="modal-bg" id="modalBg">
+ <div class="modal">
+
+  <h2 id="modalTitle">RANCH PRO</h2>
+  <p id="modalText"></p>
+
+  <div id="modalFields"></div>
+
+  <div style="display:flex;gap:10px;margin-top:15px">
+   <button class="cancel" onclick="closeModal()">Close</button>
+   <button class="confirm" id="confirmBtn" onclick="confirmAction()">Continue</button>
   </div>
+
  </div>
 </div>
-<div id="toast"></div>
- 
+
+<div class="toast" id="toast"></div>
+
 <script>
-const animals = [
- {id:1,name:"Dairy Cow",emoji:"🐄",price:150000,desc:"A dairy livestock package for your ranch."},
- {id:2,name:"Pigs",emoji:"🐖",price:80000,desc:"Raise and manage pigs on your farm."},
- {id:3,name:"Goats",emoji:"🐐",price:50000,desc:"Add goats to your livestock collection."},
- {id:4,name:"Sheep",emoji:"🐑",price:65000,desc:"Manage your sheep livestock."},
- {id:5,name:"Hens",emoji:"🐔",price:25000,desc:"Start your poultry collection."},
- {id:6,name:"Cats",emoji:"🐈",price:15000,desc:"Add farm cats to your ranch."}
-];
 
-let data = JSON.parse(localStorage.getItem("ranchProDemo") || "null") || {
- name:"Guest Farmer",email:"",balance:500000,earnings:0,
- animals:[],transactions:[],referrals:0,spinPoints:0
-};
+let points = 0;
+let animals = [];
+let pendingAction = null;
 
-let pendingAnimal=null;
-
-function save(){
- localStorage.setItem("ranchProDemo",JSON.stringify(data));
- render();
+function money(amount){
+ return 'UGX ' + Number(amount).toLocaleString('en-US');
 }
 
-function money(n){
- return "UGX "+Number(n).toLocaleString("en-UG");
-}
+function toast(message){
+ const el = document.getElementById('toast');
+ el.textContent = message;
+ el.style.display = 'block';
 
-function toast(msg){
- const el=document.getElementById("toast");
- el.textContent=msg;
- el.style.display="block";
- setTimeout(()=>el.style.display="none",2500);
-}
+ clearTimeout(window.toastTimer);
 
-function showPage(id,btn){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
- if(btn) btn.classList.add("active");
- else {
-  const match=[...document.querySelectorAll(".nav")].find(n=>n.getAttribute("onclick")?.includes("'"+id+"'"));
-  if(match)match.classList.add("active");
- }
- render();
- window.scrollTo(0,0);
-}
-
-function animalCard(a){
- return `<article class="animal-card">
- <div class="animal-image">${a.emoji}</div>
- <div class="animal-content">
- <h3>${a.name}</h3>
- <p>${a.desc}</p>
- <div class="price">${money(a.price)}</div>
- <button class="btn full" onclick="buyAnimal(${a.id})">Purchase</button>
- </div></article>`;
-}
-
-function render(){
- document.getElementById("headerName").textContent=data.name;
- document.getElementById("avatar").textContent=(data.name[0]||"G").toUpperCase();
- document.getElementById("dashBalance").textContent=money(data.balance);
- document.getElementById("walletBalance").textContent=money(data.balance);
- document.getElementById("animalCount").textContent=data.animals.length;
- document.getElementById("dashEarnings").textContent=money(data.earnings);
- document.getElementById("refCount").textContent=data.referrals;
- document.getElementById("totalDeposits").textContent=money(
- data.transactions.filter(t=>t.type==="Deposit").reduce((s,t)=>s+t.amount,0));
- document.getElementById("totalWithdrawals").textContent=money(
- data.transactions.filter(t=>t.type==="Withdrawal").reduce((s,t)=>s+t.amount,0));
-
- document.getElementById("featured").innerHTML=animals.slice(0,3).map(animalCard).join("");
- document.getElementById("marketGrid").innerHTML=animals.map(animalCard).join("");
-
- document.getElementById("myAnimals").innerHTML=data.animals.length?
- data.animals.map(a=>`<article class="animal-card">
- <div class="animal-image">${a.emoji}</div>
- <div class="animal-content"><h3>${a.name}</h3>
- <p>Purchased: ${a.date}</p><p>Purchase value: ${money(a.price)}</p>
- <span class="tag">Owned</span></div></article>`).join("")
- :'<div class="panel empty">🐄 You have not purchased any livestock yet.</div>';
-
- const rows=data.transactions.slice().reverse();
- const rowHTML=rows.map(t=>`<tr>
- <td>${t.type}</td><td>${money(t.amount)}</td>
- <td>${t.date}</td><td><span class="tag">${t.status}</span></td>
- </tr>`).join("");
-
- document.getElementById("historyRows").innerHTML=rowHTML||'<tr><td colspan="4">No transactions yet</td></tr>';
- document.getElementById("recentRows").innerHTML=rows.slice(0,5).map(t=>`<tr>
- <td>${t.type}</td><td>${money(t.amount)}</td><td><span class="tag">${t.status}</span></td>
- </tr>`).join("")||'<tr><td colspan="3">No recent activity</td></tr>';
-
- document.getElementById("profileName").value=data.name;
- document.getElementById("profileEmail").value=data.email;
- document.getElementById("refLink").value=location.href.split("?")[0]+"?ref=RANCH-"+data.name.replace(/\W/g,"").toUpperCase();
-}
-
-function record(type,amount,status="Demo"){
- data.transactions.push({
- type,amount,status,date:new Date().toLocaleString()
- });
-}
-
-function buyAnimal(id){
- const a=animals.find(x=>x.id===id);
- if(!a)return;
- pendingAnimal=a;
- document.getElementById("purchaseDetails").textContent=
- "Purchase "+a.name+" for "+money(a.price)+"?";
- document.getElementById("purchaseModal").classList.add("show");
-}
-
-function closeModal(){
- document.getElementById("purchaseModal").classList.remove("show");
-}
-
-document.getElementById("confirmPurchase").onclick=()=>{
- if(!pendingAnimal)return;
- if(data.balance<pendingAnimal.price){
- toast("Insufficient demo wallet balance.");
- return;
- }
- data.balance-=pendingAnimal.price;
- data.animals.push({...pendingAnimal,date:new Date().toLocaleDateString()});
- record("Livestock purchase",pendingAnimal.price);
- save();
- closeModal();
- pendingAnimal=null;
- toast("Demo purchase completed!");
-};
-
-function requestDeposit(){
- const amount=Number(document.getElementById("depositAmount").value);
- const phone=document.getElementById("depositPhone").value.trim();
- const method=document.getElementById("depositMethod").value;
- if(amount<1000||!Number.isFinite(amount)||!phone){
- toast("Enter a valid amount and phone number.");
- return;
- }
- record("Deposit request - "+method,amount,"Pending");
- save();
- toast("Demo request recorded. No payment was made.");
-}
-
-function requestWithdrawal(){
- const amount=Number(document.getElementById("withdrawAmount").value);
- const phone=document.getElementById("withdrawPhone").value.trim();
- const method=document.getElementById("withdrawMethod").value;
- if(amount<1000||!Number.isFinite(amount)||!phone){
- toast("Enter a valid amount and phone number.");
- return;
- }
- if(amount>data.balance){
- toast("Insufficient demo balance.");
- return;
- }
- data.balance-=amount;
- record("Withdrawal request - "+method,amount,"Demo pending");
- save();
- toast("Demo withdrawal request recorded.");
-}
-
-function copyReferral(){
- const link=document.getElementById("refLink").value;
- if(navigator.clipboard){
- navigator.clipboard.writeText(link).then(()=>toast("Referral link copied!"))
- .catch(()=>toast("Please copy the link manually."));
- }else toast("Please copy your referral link manually.");
-}
-
-function shareReferral(){
- const link=document.getElementById("refLink").value;
- window.open("https://wa.me/?text="+encodeURIComponent("Join my Ranch Pro farm: "+link),"_blank");
-}
-
-function saveProfile(){
- const name=document.getElementById("profileName").value.trim();
- const email=document.getElementById("profileEmail").value.trim();
- if(!name){toast("Enter your name.");return;}
- data.name=name;
- data.email=email;
- save();
- toast("Demo profile saved.");
-}
-
-function spinWheel(){
- const button=document.getElementById("spinButton");
- if(button.disabled)return;
- button.disabled=true;
- document.getElementById("wheel").style.transition="transform 3s ease-out";
- document.getElementById("wheel").style.transform="rotate(1440deg)";
- setTimeout(()=>{
- const prizes=[5,10,15,20,25];
- const prize=prizes[Math.floor(Math.random()*prizes.length)];
- data.spinPoints+=prize;
- document.getElementById("spinResult").textContent="You won "+prize+" demo points!";
- save();
- button.disabled=false;
- document.getElementById("wheel").style.transition="none";
- document.getElementById("wheel").style.transform="rotate(0deg)";
+ window.toastTimer = setTimeout(()=>{
+  el.style.display = 'none';
  },3000);
 }
 
-function resetDemo(){
- if(!confirm("Reset all local demo account data?"))return;
- localStorage.removeItem("ranchProDemo");
- location.reload();
+function showPage(title,message){
+
+ pendingAction = null;
+
+ document.getElementById('modalTitle').textContent = title;
+ document.getElementById('modalText').textContent = message;
+ document.getElementById('modalFields').innerHTML = '';
+
+ document.getElementById('confirmBtn').style.display = 'none';
+ document.getElementById('modalBg').classList.add('show');
+
 }
 
-render();
+function closeModal(){
+ document.getElementById('modalBg').classList.remove('show');
+ pendingAction = null;
+}
+
+function openRequest(type){
+
+ pendingAction = {type:type};
+
+ document.getElementById('modalTitle').textContent = type;
+
+ document.getElementById('modalText').textContent =
+ 'Enter your requested amount in UGX. This is a demonstration only; no payment or transfer will occur.';
+
+ document.getElementById('modalFields').innerHTML = `
+ <input type="number" id="requestAmount"
+ min="1000" placeholder="Enter amount in UGX">
+ `;
+
+ document.getElementById('confirmBtn').style.display = 'block';
+ document.getElementById('confirmBtn').textContent = 'Submit request';
+
+ document.getElementById('modalBg').classList.add('show');
+
+}
+
+function purchase(name,price,emoji){
+
+ pendingAction = {
+  type:'purchase',
+  name:name,
+  price:price,
+  emoji:emoji
+ };
+
+ document.getElementById('modalTitle').textContent = 'Confirm Purchase';
+
+ document.getElementById('modalText').textContent =
+ 'Do you want to add '+name+' to your demo ranch at '+money(price)+'? No money will be charged.';
+
+ document.getElementById('modalFields').innerHTML = '';
+
+ document.getElementById('confirmBtn').style.display = 'block';
+ document.getElementById('confirmBtn').textContent = 'Confirm demo purchase';
+
+ document.getElementById('modalBg').classList.add('show');
+
+}
+
+function confirmAction(){
+
+ if(!pendingAction)return;
+
+ if(pendingAction.type === 'purchase'){
+
+  animals.push({
+   name:pendingAction.name,
+   emoji:pendingAction.emoji
+  });
+
+  renderAnimals();
+
+  toast(pendingAction.name+' added to your demo ranch!');
+
+  closeModal();
+
+  return;
+ }
+
+ const amount = Number(
+  document.getElementById('requestAmount').value
+ );
+
+ if(amount < 1000){
+  toast('Enter at least UGX 1,000.');
+  return;
+ }
+
+ toast('Demo only: request not sent. Payment backend required.');
+
+ closeModal();
+
+}
+
+function renderAnimals(){
+
+ const area = document.getElementById('myAnimals');
+
+ if(animals.length === 0){
+  area.className = 'empty';
+  area.textContent = 'Your livestock will appear here after purchase.';
+  return;
+ }
+
+ area.className = '';
+
+ area.innerHTML = animals.map(animal=>`
+  <div class="animal-row">
+   <strong>${animal.emoji} ${animal.name}</strong>
+   <span>Demo owned</span>
+  </div>
+ `).join('');
+
+}
+
+document.getElementById('modalBg').addEventListener('click',function(event){
+ if(event.target === this)closeModal();
+});
+
 </script>
-</body>
-</html>
 
 </body>
 </html>
+
