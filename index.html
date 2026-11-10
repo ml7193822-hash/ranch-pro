@@ -5,661 +5,770 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#091c35">
-<title>RANCH PRO | Livestock Ownership</title>
+<meta name="theme-color" content="#071d49">
+<title>Ranch Pro | Own Livestock, Grow Your Farm</title>
 
 <style>
-:root{
- --navy:#091c35;
- --navy2:#102c4d;
- --gold:#e6b94f;
- --green:#16865a;
- --bg:#f3f6fa;
- --white:#fff;
- --muted:#8290a3;
- --border:#e8edf3;
- --shadow:0 8px 30px rgba(12,31,55,.07);
+:root {
+  --navy:#071d49;
+  --navy2:#102c60;
+  --gold:#e8ae42;
+  --bg:#f3f6fb;
+  --white:#fff;
+  --text:#19243a;
+  --muted:#778196;
+  --green:#15966b;
+  --red:#d84c55;
+  --border:#e8edf4;
+  --shadow:0 8px 30px rgba(13,35,75,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:#17283e}
+body{
+ font-family:Inter,Arial,sans-serif;
+ background:var(--bg);color:var(--text);
+}
 button,input{font:inherit}
 button{cursor:pointer}
-.layout{display:flex;min-height:100vh}
+.app{display:flex;min-height:100vh}
 .sidebar{
- width:255px;background:var(--navy);color:white;
- position:fixed;top:0;bottom:0;left:0;padding:25px 17px;
- z-index:20;overflow-y:auto
+ width:250px;background:var(--navy);color:white;
+ padding:25px 17px;position:fixed;inset:0 auto 0 0;
+ z-index:20;overflow-y:auto;
 }
-.brand{display:flex;align-items:center;gap:12px;padding:5px 10px 30px}
-.brand-logo{width:43px;height:43px;border-radius:13px;
- background:var(--gold);color:var(--navy);display:grid;
- place-items:center;font-size:25px;font-weight:900}
-.brand h2{font-size:20px;letter-spacing:1px}
-.brand small{display:block;color:#aab8c8;font-size:10px;margin-top:4px}
-.nav-label{font-size:10px;color:#8194aa;padding:15px 12px 9px;letter-spacing:1.5px}
+.brand{display:flex;align-items:center;gap:12px;padding:5px 9px 30px}
+.brand-icon{
+ width:43px;height:43px;border-radius:13px;
+ background:var(--gold);display:grid;place-items:center;
+ color:var(--navy);font-size:23px;font-weight:900;
+}
+.brand h2{font-size:21px;letter-spacing:1px}
+.brand small{display:block;color:#b8c6df;font-size:10px;margin-top:3px}
+.nav-label{font-size:10px;color:#8296ba;letter-spacing:1.5px;padding:15px 12px 9px}
 .nav-btn{
- display:flex;align-items:center;gap:13px;width:100%;
- border:0;background:transparent;color:#c4d0df;
- padding:13px 14px;border-radius:10px;text-align:left;
- font-size:13px;margin:3px 0;transition:.2s
+ width:100%;border:0;background:transparent;color:#c9d3e6;
+ padding:13px 14px;text-align:left;border-radius:10px;
+ margin:3px 0;display:flex;align-items:center;gap:12px;
+ font-size:13px;transition:.2s;
 }
-.nav-btn:hover,.nav-btn.active{background:#1b3858;color:var(--gold)}
-.nav-btn .ico{font-size:18px;width:23px;text-align:center}
-.sidebar-bottom{margin-top:30px;border-top:1px solid #29415b;padding-top:20px}
-.main{margin-left:255px;width:calc(100% - 255px);min-width:0}
+.nav-btn:hover,.nav-btn.active{background:#183765;color:white}
+.nav-btn.active{border-left:3px solid var(--gold)}
+.nav-icon{width:20px;font-size:17px;text-align:center}
+.sidebar-bottom{
+ margin-top:40px;padding:16px;background:#102c60;
+ border-radius:12px;font-size:12px;color:#c7d3e8;line-height:1.7;
+}
+.sidebar-bottom strong{color:var(--gold)}
+.main{margin-left:250px;width:calc(100% - 250px);min-width:0}
 .topbar{
  height:75px;background:white;border-bottom:1px solid var(--border);
  display:flex;align-items:center;justify-content:space-between;
- padding:0 30px;position:sticky;top:0;z-index:10
+ padding:0 30px;position:sticky;top:0;z-index:10;
 }
 .top-left{display:flex;align-items:center;gap:15px}
-.topbar h3{font-size:17px}
-.top-actions{display:flex;align-items:center;gap:17px}
-.icon-btn{border:0;background:#f2f5f9;width:39px;height:39px;border-radius:11px;font-size:18px}
-.avatar{width:39px;height:39px;background:var(--navy2);color:white;
- border-radius:50%;display:grid;place-items:center;font-weight:bold}
+.topbar h3{font-size:18px}
+.topbar p{font-size:11px;color:var(--muted);margin-top:4px}
+.top-actions{display:flex;align-items:center;gap:14px}
+.avatar{
+ width:39px;height:39px;border-radius:50%;background:#eaf0fa;
+ display:grid;place-items:center;color:var(--navy);font-weight:bold;
+}
+.icon-btn{border:0;background:#f2f5fa;padding:10px;border-radius:10px}
 .menu-toggle{display:none}
-.content{padding:28px;max-width:1500px;margin:auto}
+.content{padding:28px 30px;max-width:1500px;margin:auto}
 .page{display:none}
 .page.active{display:block}
 .welcome{
- background:linear-gradient(120deg,#102b4b,#174c53);
- color:white;padding:30px;border-radius:18px;
+ background:linear-gradient(120deg,#071d49,#174276);
+ border-radius:18px;padding:30px;color:white;
  display:flex;justify-content:space-between;align-items:center;
- gap:20px;position:relative;overflow:hidden;box-shadow:var(--shadow)
+ position:relative;overflow:hidden;gap:20px;
 }
-.welcome:after{content:"🐄";position:absolute;right:12%;font-size:110px;opacity:.13}
-.welcome h1{font-size:25px;margin-bottom:9px}
-.welcome p{color:#d0dfdf;font-size:13px;line-height:1.7}
-.welcome .welcome-tag{color:var(--gold);font-size:10px;letter-spacing:2px;margin-bottom:12px}
-.btn{
- border:0;border-radius:9px;padding:12px 17px;
- font-size:12px;font-weight:700;transition:.2s
+.welcome:after{
+ content:"";position:absolute;width:250px;height:250px;
+ border:35px solid rgba(255,255,255,.05);
+ border-radius:50%;right:5%;top:-110px;
 }
-.btn:hover{transform:translateY(-1px)}
-.btn-gold{background:var(--gold);color:var(--navy)}
-.btn-dark{background:var(--navy);color:white}
-.btn-green{background:var(--green);color:white}
-.btn-light{background:#edf2f7;color:var(--navy)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:23px 0}
-.stat-card{background:white;border:1px solid var(--border);padding:20px;border-radius:14px;box-shadow:var(--shadow)}
-.stat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.stat-icon{width:42px;height:42px;border-radius:12px;background:#edf4f0;display:grid;place-items:center;font-size:21px}
-.stat-card small{color:var(--muted);font-size:11px}
-.stat-card h2{font-size:22px;margin-top:8px}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 16px}
-.section-head h2{font-size:17px}
-.section-head p{font-size:11px;color:var(--muted);margin-top:5px}
-.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
-.product-card{background:white;border:1px solid var(--border);border-radius:15px;overflow:hidden;box-shadow:var(--shadow)}
-.product-img{height:165px;position:relative;background:#e6ebed}
-.product-img img{width:100%;height:100%;object-fit:cover}
-.product-tag{position:absolute;top:12px;left:12px;background:white;padding:6px 10px;border-radius:20px;font-size:10px;font-weight:bold}
-.product-info{padding:17px}
-.product-info h3{font-size:16px}
-.product-info p{color:var(--muted);font-size:11px;margin:8px 0 13px;line-height:1.5}
-.product-meta{display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px}
-.product-meta small{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}
-.product-meta strong{font-size:13px}
-.product-info .btn{width:100%}
-.two-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-top:22px}
-.panel{background:white;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow);min-width:0}
-.panel h3{font-size:15px;margin-bottom:17px}
-.activity{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.welcome h1{font-size:25px;margin-bottom:10px}
+.welcome p{font-size:13px;color:#cbd8eb;line-height:1.7;max-width:470px}
+.welcome .gold-text{color:var(--gold)}
+.primary-btn{
+ border:0;background:var(--gold);color:var(--navy);
+ font-weight:800;padding:13px 20px;border-radius:9px;
+}
+.secondary-btn{
+ border:1px solid var(--border);background:white;
+ color:var(--navy);padding:11px 17px;border-radius:9px;
+ font-weight:700;
+}
+.stats{
+ display:grid;grid-template-columns:repeat(4,1fr);
+ gap:17px;margin:22px 0;
+}
+.stat{
+ background:white;padding:20px;border:1px solid var(--border);
+ border-radius:14px;box-shadow:var(--shadow);
+}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{
+ width:39px;height:39px;border-radius:11px;
+ background:#edf2fb;display:grid;place-items:center;font-size:18px;
+}
+.stat small{font-size:11px;color:var(--muted)}
+.stat h2{font-size:23px;margin-top:14px}
+.stat .change{font-size:10px;color:var(--green);margin-top:7px}
+.section-heading{
+ display:flex;align-items:center;justify-content:space-between;
+ margin:26px 0 15px;gap:10px;
+}
+.section-heading h2{font-size:18px}
+.section-heading p{font-size:11px;color:var(--muted);margin-top:5px}
+.products{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;
+}
+.product{
+ background:white;border:1px solid var(--border);
+ border-radius:15px;overflow:hidden;box-shadow:var(--shadow);
+}
+.product-image{
+ height:145px;display:grid;place-items:center;
+ background:linear-gradient(135deg,#e9eff8,#dce7f5);
+ font-size:75px;position:relative;
+}
+.product-image span{
+ position:absolute;top:12px;left:12px;
+ background:white;color:var(--navy);
+ font-size:10px;padding:6px 9px;border-radius:20px;font-weight:bold;
+}
+.product-body{padding:17px}
+.product-body h3{font-size:16px;margin-bottom:6px}
+.product-body p{font-size:11px;color:var(--muted);line-height:1.6}
+.product-details{
+ display:flex;justify-content:space-between;
+ border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+ padding:13px 0;margin:13px 0;
+}
+.product-details small{display:block;color:var(--muted);font-size:10px}
+.product-details strong{font-size:13px;display:block;margin-top:5px}
+.purchase-btn{
+ background:var(--navy);color:white;border:0;width:100%;
+ padding:12px;border-radius:8px;font-weight:700;font-size:12px;
+}
+.purchase-btn:hover{background:var(--navy2)}
+.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+.panel{
+ background:white;border:1px solid var(--border);
+ border-radius:14px;padding:20px;min-width:0;
+}
+.panel h3{font-size:15px;margin-bottom:16px}
+.activity{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:13px 0;border-bottom:1px solid var(--border);gap:10px;
+}
 .activity:last-child{border:0}
-.activity-icon{width:38px;height:38px;border-radius:11px;background:#eff5f2;display:grid;place-items:center}
-.activity div:nth-child(2){flex:1}
-.activity strong{font-size:12px;display:block}
-.activity small{font-size:10px;color:var(--muted)}
-.activity b{font-size:12px}
-.progress{height:8px;background:#eaf0f2;border-radius:20px;overflow:hidden;margin:12px 0}
-.progress span{display:block;height:100%;width:35%;background:var(--green);border-radius:20px}
-.referral-box{background:#edf6f0;border-radius:12px;padding:16px;margin-top:10px}
-.referral-box p{font-size:11px;line-height:1.6;color:#526b5d}
-.copy-row{display:flex;gap:8px;margin-top:13px}
-.copy-row input{min-width:0;flex:1;border:1px solid #d7e4dc;background:white;padding:11px;border-radius:8px;font-size:11px}
-.form-control{width:100%;padding:13px;border:1px solid var(--border);border-radius:9px;background:white;outline:none;margin:8px 0 15px;font-size:13px}
-.form-control:focus{border-color:var(--green)}
-.form-label{font-size:12px;font-weight:700}
-.table-wrap{overflow-x:auto;background:white;border:1px solid var(--border);border-radius:13px}
-table{width:100%;border-collapse:collapse;min-width:550px}
-th,td{padding:15px;text-align:left;border-bottom:1px solid var(--border);font-size:12px}
-th{background:#f7f9fb;color:#6c7c8f;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
-.empty{text-align:center;padding:35px;color:var(--muted);font-size:12px}
-.wallet-hero{background:linear-gradient(120deg,#102b4b,#14724d);padding:27px;border-radius:16px;color:white}
-.wallet-hero small{color:#c8d9d5}
-.wallet-hero h1{font-size:30px;margin:12px 0}
-.wallet-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
-.wallet-actions .btn-light{background:white}
-.spin-area{text-align:center;padding:25px}
-.wheel{
- width:260px;height:260px;border-radius:50%;margin:20px auto;
- border:8px solid white;box-shadow:0 5px 25px #17283e30;
- background:conic-gradient(#e7b84e 0 60deg,#153d60 60deg 120deg,
- #16865a 120deg 180deg,#d96d45 180deg 240deg,
- #244e78 240deg 300deg,#bd9a42 300deg 360deg);
- position:relative;display:grid;place-items:center
+.activity-left{display:flex;align-items:center;gap:11px}
+.activity-icon{
+ width:36px;height:36px;border-radius:10px;
+ background:#edf3fa;display:grid;place-items:center;
 }
-.wheel:before{content:"R";position:absolute;width:58px;height:58px;
- background:white;color:var(--navy);border-radius:50%;display:grid;
- place-items:center;font-size:23px;font-weight:900;border:5px solid var(--gold);z-index:2}
-.pointer{font-size:28px;color:var(--gold)}
-.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.modal-bg{display:none;position:fixed;inset:0;background:#07172bd9;z-index:100;align-items:center;justify-content:center;padding:16px}
-.modal-bg.show{display:flex}
-.modal{background:white;width:100%;max-width:440px;border-radius:17px;padding:25px;max-height:90vh;overflow:auto}
-.modal h2{font-size:19px;margin-bottom:10px}
-.modal p{font-size:12px;color:var(--muted);line-height:1.7}
+.activity strong{font-size:12px;display:block}
+.activity small{font-size:10px;color:var(--muted);display:block;margin-top:4px}
+.activity .amount{font-size:12px;font-weight:bold}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:450px}
+th,td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--border);font-size:12px}
+th{font-size:10px;color:var(--muted);font-weight:700}
+.status{padding:5px 9px;border-radius:20px;background:#e9f7f0;color:var(--green);font-size:10px}
+.form-card{max-width:550px}
+.form-group{margin:15px 0}
+.form-group label{font-size:12px;font-weight:700;display:block;margin-bottom:8px}
+.form-group input,.form-group select{
+ width:100%;padding:13px;border:1px solid var(--border);
+ border-radius:9px;background:white;outline:none;
+}
+.form-group input:focus{border-color:var(--navy)}
+.full-btn{width:100%;padding:14px;background:var(--navy);color:white;border:0;border-radius:9px;font-weight:bold}
+.notice{
+ background:#fff7e6;border:1px solid #f1dfb9;color:#79571d;
+ padding:13px;border-radius:9px;font-size:11px;line-height:1.7;margin:15px 0;
+}
+.referral-box{
+ background:linear-gradient(120deg,#102c60,#071d49);
+ padding:25px;border-radius:14px;color:white;
+}
+.referral-box h2{font-size:22px;margin-bottom:10px}
+.referral-box p{font-size:12px;color:#c9d7ec;line-height:1.7}
+.copy-row{display:flex;gap:8px;margin-top:20px}
+.copy-row input{flex:1;min-width:0;padding:12px;border:0;border-radius:8px}
+.copy-row button{padding:12px;background:var(--gold);color:var(--navy);border:0;border-radius:8px;font-weight:bold}
+.spin-area{text-align:center;padding:15px}
+.wheel-wrap{position:relative;width:270px;height:270px;margin:20px auto}
+.wheel{
+ width:100%;height:100%;border-radius:50%;
+ border:9px solid white;box-shadow:0 0 0 3px var(--gold),var(--shadow);
+ background:conic-gradient(
+ #e8ae42 0deg 60deg,#102c60 60deg 120deg,
+ #15966b 120deg 180deg,#d84c55 180deg 240deg,
+ #315d9b 240deg 300deg,#b78bce 300deg 360deg
+ );
+ transition:transform 4s cubic-bezier(.12,.75,.12,1);
+}
+.wheel-pointer{
+ position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+ width:0;height:0;border-left:15px solid transparent;
+ border-right:15px solid transparent;border-top:30px solid var(--gold);z-index:2;
+}
+.wheel-center{
+ position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+ background:white;border-radius:50%;width:75px;height:75px;
+ display:grid;place-items:center;font-size:12px;font-weight:900;color:var(--navy);
+ border:5px solid var(--gold);
+}
+.spin-labels{
+ display:grid;grid-template-columns:repeat(2,1fr);gap:8px;
+ max-width:350px;margin:15px auto;
+}
+.spin-labels div{background:#f2f5fa;padding:9px;border-radius:8px;font-size:11px}
+.profile-card{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.profile-avatar{
+ width:65px;height:65px;border-radius:50%;background:#e9eff9;
+ display:grid;place-items:center;font-size:26px;
+}
+.modal{
+ display:none;position:fixed;inset:0;background:rgba(4,15,37,.7);
+ z-index:100;align-items:center;justify-content:center;padding:18px;
+}
+.modal.show{display:flex}
+.modal-card{
+ background:white;width:100%;max-width:440px;padding:25px;
+ border-radius:16px;max-height:90vh;overflow:auto;
+}
+.modal-card h2{font-size:20px;margin-bottom:10px;color:var(--navy)}
+.modal-card p{font-size:12px;color:var(--muted);line-height:1.7}
 .modal-actions{display:flex;gap:10px;margin-top:20px}
 .modal-actions button{flex:1}
-.toast{position:fixed;bottom:25px;right:25px;background:var(--navy);color:white;padding:14px 20px;border-radius:10px;z-index:200;font-size:12px;display:none;box-shadow:var(--shadow)}
-.toast.show{display:block}
-.badge{padding:5px 9px;background:#eaf5ed;color:#16865a;border-radius:20px;font-size:10px}
-.footer{text-align:center;padding:25px;color:var(--muted);font-size:10px}
+.close-btn{float:right;border:0;background:#f1f3f7;padding:7px 10px;border-radius:8px}
+.empty{text-align:center;padding:35px;color:var(--muted);font-size:12px}
+.footer{text-align:center;color:var(--muted);font-size:10px;padding:30px}
+.auth-screen{
+ position:fixed;inset:0;background:linear-gradient(130deg,#071d49,#174276);
+ z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.auth-card{
+ width:100%;max-width:420px;background:white;border-radius:18px;padding:28px;
+}
+.auth-brand{text-align:center;margin-bottom:22px}
+.auth-brand .brand-icon{margin:auto auto 12px}
+.auth-card h2{text-align:center;color:var(--navy);margin-bottom:8px}
+.auth-card>p{text-align:center;color:var(--muted);font-size:12px;margin-bottom:20px}
+.auth-switch{text-align:center;font-size:12px;margin-top:18px}
+.auth-switch button{border:0;background:none;color:#1764ae;font-weight:bold}
+#toast{
+ position:fixed;bottom:25px;left:50%;transform:translateX(-50%);
+ background:#102c60;color:white;padding:12px 20px;
+ border-radius:9px;font-size:12px;z-index:300;
+ display:none;box-shadow:var(--shadow);
+}
 @media(max-width:1050px){
  .stats{grid-template-columns:repeat(2,1fr)}
- .product-grid{grid-template-columns:repeat(2,1fr)}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:700px){
  .sidebar{transform:translateX(-100%);transition:.25s}
  .sidebar.open{transform:translateX(0)}
  .main{margin-left:0;width:100%}
  .menu-toggle{display:block}
- .topbar{height:65px;padding:0 15px}
- .content{padding:16px}
- .welcome{padding:23px}
+ .topbar{padding:0 15px}
+ .content{padding:18px 14px}
+ .welcome{padding:22px;align-items:flex-start;flex-direction:column}
  .welcome h1{font-size:21px}
- .welcome:after{right:2%;font-size:70px}
  .stats{gap:10px}
- .stat-card{padding:14px}
- .stat-card h2{font-size:17px}
- .product-grid{grid-template-columns:1fr}
- .two-grid{grid-template-columns:1fr}
- .profile-grid{grid-template-columns:1fr}
+ .stat{padding:14px}
+ .stat h2{font-size:19px}
+ .products{grid-template-columns:1fr}
+ .two-col{grid-template-columns:1fr}
+ .topbar p{display:none}
  .top-actions{gap:8px}
+}
+@media(max-width:360px){
+ .stats{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
-<div class="layout">
+
+<!-- LOGIN / REGISTRATION -->
+<div class="auth-screen" id="authScreen">
+ <div class="auth-card">
+  <div class="auth-brand">
+   <div class="brand-icon">R</div>
+   <h2>RANCH PRO</h2>
+   <small style="color:#778196">OWN LIVESTOCK • GROW YOUR FARM</small>
+  </div>
+  <h2 id="authTitle">Welcome Back</h2>
+  <p id="authDescription">Sign in to access your Ranch Pro account.</p>
+  <form id="authForm">
+   <div class="form-group" id="nameField" style="display:none">
+    <label>Full name</label>
+    <input id="authName" placeholder="Enter your name">
+   </div>
+   <div class="form-group">
+    <label>Email address</label>
+    <input type="email" id="authEmail" required placeholder="example@email.com">
+   </div>
+   <div class="form-group">
+    <label>Password</label>
+    <input type="password" id="authPassword" required minlength="6" placeholder="Enter password">
+   </div>
+   <button class="full-btn" id="authSubmit">LOGIN</button>
+  </form>
+  <div class="auth-switch">
+   <span id="authSwitchText">Don't have an account?</span>
+   <button onclick="toggleAuth()">Register</button>
+  </div>
+  <p style="margin-top:20px;font-size:10px">Demo interface. Connect secure authentication before accepting real accounts.</p>
+ </div>
+</div>
+
+<div class="app" id="app" style="display:none">
 
 <aside class="sidebar" id="sidebar">
  <div class="brand">
-  <div class="brand-logo">R</div>
+  <div class="brand-icon">R</div>
   <div><h2>RANCH PRO</h2><small>OWN LIVESTOCK • GROW YOUR FARM</small></div>
  </div>
 
  <div class="nav-label">MAIN MENU</div>
- <button class="nav-btn active" data-page="dashboard"> <span class="ico">⌂</span> Dashboard</button>
- <button class="nav-btn" data-page="livestock"><span class="ico">🐄</span> Livestock Market</button>
- <button class="nav-btn" data-page="purchases"><span class="ico">🛒</span> My Purchases</button>
- <button class="nav-btn" data-page="wallet"><span class="ico">💳</span> My Wallet</button>
+ <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">▦</span>Dashboard</button>
+ <button class="nav-btn" data-page="livestock"><span class="nav-icon">🐄</span>Livestock</button>
+ <button class="nav-btn" data-page="purchases"><span class="nav-icon">🛒</span>My Purchases</button>
+ <button class="nav-btn" data-page="wallet"><span class="nav-icon">💳</span>My Wallet</button>
 
  <div class="nav-label">REWARDS & GROWTH</div>
- <button class="nav-btn" data-page="referrals"><span class="ico">👥</span> Referrals</button>
- <button class="nav-btn" data-page="spin"><span class="ico">🎡</span> Lucky Spin</button>
- <button class="nav-btn" data-page="transactions"><span class="ico">📋</span> Transactions</button>
+ <button class="nav-btn" data-page="referrals"><span class="nav-icon">👥</span>Referrals</button>
+ <button class="nav-btn" data-page="spin"><span class="nav-icon">🎡</span>Lucky Spin</button>
+ <button class="nav-btn" data-page="rewards"><span class="nav-icon">🏆</span>Rewards</button>
 
  <div class="nav-label">ACCOUNT</div>
- <button class="nav-btn" data-page="profile"><span class="ico">👤</span> My Profile</button>
- <button class="nav-btn" data-page="notifications"><span class="ico">🔔</span> Notifications</button>
+ <button class="nav-btn" data-page="transactions"><span class="nav-icon">📋</span>Transactions</button>
+ <button class="nav-btn" data-page="profile"><span class="nav-icon">👤</span>My Profile</button>
+ <button class="nav-btn" onclick="logout()"><span class="nav-icon">↪</span>Logout</button>
 
  <div class="sidebar-bottom">
-  <button class="nav-btn" data-page="admin"><span class="ico">⚙️</span> Admin Panel</button>
-  <button class="nav-btn" onclick="logout()"><span class="ico">↪</span> Sign Out</button>
+  <strong>RANCH PRO SUPPORT</strong><br>
+  Have a question? Contact our support team for assistance.
  </div>
 </aside>
 
 <main class="main">
-<header class="topbar">
- <div class="top-left">
-  <button class="icon-btn menu-toggle" onclick="toggleMenu()">☰</button>
-  <h3 id="pageTitle">Dashboard</h3>
- </div>
- <div class="top-actions">
-  <button class="icon-btn" onclick="showPage('notifications')">🔔</button>
-  <div class="avatar" id="topAvatar">U</div>
- </div>
-</header>
-
-<div class="content">
-
-<!-- DASHBOARD -->
-<section class="page active" id="dashboard">
- <div class="welcome">
-  <div>
-   <div class="welcome-tag">WELCOME TO RANCH PRO</div>
-   <h1>Hello, <span id="welcomeName">Farmer</span> 👋</h1>
-   <p>Own livestock. Build your farm. Manage your purchases<br>and follow your farming journey in one place.</p>
-   <button class="btn btn-gold" style="margin-top:19px" onclick="showPage('livestock')">EXPLORE LIVESTOCK →</button>
+ <header class="topbar">
+  <div class="top-left">
+   <button class="icon-btn menu-toggle" onclick="toggleSidebar()">☰</button>
+   <div><h3 id="pageTitle">Dashboard</h3><p>Welcome to your Ranch Pro account</p></div>
   </div>
- </div>
-
- <div class="stats">
-  <div class="stat-card"><div class="stat-top"><small>Wallet Balance</small><div class="stat-icon">💰</div></div><h2 id="dashBalance">UGX 0</h2></div>
-  <div class="stat-card"><div class="stat-top"><small>My Purchases</small><div class="stat-icon">🐄</div></div><h2 id="dashPurchases">0</h2></div>
-  <div class="stat-card"><div class="stat-top"><small>My Referrals</small><div class="stat-icon">👥</div></div><h2 id="dashReferrals">0</h2></div>
-  <div class="stat-card"><div class="stat-top"><small>Available Spins</small><div class="stat-icon">🎡</div></div><h2 id="dashSpins">0</h2></div>
- </div>
-
- <div class="section-head"><div><h2>Explore Livestock</h2><p>Choose livestock available in our marketplace</p></div><button class="btn btn-light" onclick="showPage('livestock')">View all →</button></div>
- <div class="product-grid" id="dashProducts"></div>
-
- <div class="two-grid">
-  <div class="panel">
-   <h3>Recent Activity</h3>
-   <div id="recentActivity"><div class="empty">Your activities will appear here.</div></div>
+  <div class="top-actions">
+   <button class="icon-btn" onclick="showPage('notifications')">🔔</button>
+   <div class="avatar" id="topAvatar">U</div>
   </div>
-  <div class="panel">
-   <h3>Referral Programme</h3>
-   <p style="font-size:12px;color:var(--muted)">Invite friends to join Ranch Pro and track their activity.</p>
-   <div class="referral-box">
-    <strong style="font-size:13px">Your referral link</strong>
-    <div class="copy-row"><input id="refLink" readonly><button class="btn btn-green" onclick="copyReferral()">COPY</button></div>
+ </header>
+
+ <div class="content">
+
+ <!-- DASHBOARD -->
+ <section class="page active" id="dashboard">
+  <div class="welcome">
+   <div>
+    <h1>Welcome back, <span class="gold-text" id="welcomeName">Farmer</span>!</h1>
+    <p>Build your livestock portfolio and manage your farm ownership from one place. Welcome to a smarter farming experience.</p>
    </div>
-   <button class="btn btn-dark" style="width:100%;margin-top:14px" onclick="showPage('referrals')">View Referrals</button>
+   <button class="primary-btn" onclick="showPage('livestock')">EXPLORE LIVESTOCK →</button>
   </div>
- </div>
-</section>
 
-<!-- LIVESTOCK -->
-<section class="page" id="livestock">
- <div class="section-head">
-  <div><h2>Livestock Marketplace</h2><p>Explore our available livestock categories</p></div>
- </div>
- <input class="form-control" id="searchProducts" placeholder="Search livestock..." oninput="renderProducts()" style="max-width:400px">
- <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px" id="filters">
-  <button class="btn btn-dark" onclick="filterProducts('All',this)">All</button>
-  <button class="btn btn-light" onclick="filterProducts('Hens',this)">Hens</button>
-  <button class="btn btn-light" onclick="filterProducts('Cows',this)">Cows</button>
-  <button class="btn btn-light" onclick="filterProducts('Pigs',this)">Pigs</button>
-  <button class="btn btn-light" onclick="filterProducts('Goats',this)">Goats</button>
-  <button class="btn btn-light" onclick="filterProducts('Sheep',this)">Sheep</button>
-  <button class="btn btn-light" onclick="filterProducts('Cats',this)">Cats</button>
- </div>
- <div class="product-grid" id="allProducts"></div>
-</section>
-
-<!-- PURCHASES -->
-<section class="page" id="purchases">
- <div class="section-head"><div><h2>My Purchases</h2><p>Livestock you have purchased</p></div></div>
- <div class="table-wrap"><table>
- <thead><tr><th>Livestock</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
- <tbody id="purchaseTable"></tbody></table></div>
-</section>
-
-<!-- WALLET -->
-<section class="page" id="wallet">
- <div class="wallet-hero">
-  <small>AVAILABLE WALLET BALANCE</small>
-  <h1 id="walletBalance">UGX 0</h1>
-  <p style="font-size:11px;color:#d5e4df">Your Ranch Pro account balance</p>
-  <div class="wallet-actions">
-   <button class="btn btn-light" onclick="openWalletModal('Deposit')">＋ Deposit</button>
-   <button class="btn btn-gold" onclick="openWalletModal('Withdraw')">↗ Withdraw</button>
+  <div class="stats">
+   <div class="stat"><div class="stat-top"><small>Wallet Balance</small><div class="stat-icon">💳</div></div><h2 id="dashBalance">UGX 0</h2><div class="change">Available demo balance</div></div>
+   <div class="stat"><div class="stat-top"><small>My Purchases</small><div class="stat-icon">🐄</div></div><h2 id="dashPurchases">0</h2><div class="change">Recorded purchases</div></div>
+   <div class="stat"><div class="stat-top"><small>Referrals</small><div class="stat-icon">👥</div></div><h2 id="dashReferrals">0</h2><div class="change">Verified referrals only</div></div>
+   <div class="stat"><div class="stat-top"><small>Reward Points</small><div class="stat-icon">🏆</div></div><h2 id="dashPoints">0</h2><div class="change">Demo reward points</div></div>
   </div>
- </div>
- <div class="section-head"><div><h2>Wallet information</h2><p>Manage your account funds</p></div></div>
- <div class="two-grid">
-  <div class="panel"><h3>Deposit instructions</h3><p style="font-size:12px;line-height:1.8;color:var(--muted)">Submit a deposit request with your payment details. Actual mobile money processing will be connected to the payment provider during backend integration.</p></div>
-  <div class="panel"><h3>Withdrawal information</h3><p style="font-size:12px;line-height:1.8;color:var(--muted)">Withdrawal requests must be verified by the platform before any money is transferred.</p></div>
- </div>
-</section>
 
-<!-- REFERRALS -->
-<section class="page" id="referrals">
- <div class="section-head"><div><h2>Referral Centre</h2><p>Invite friends and track your referrals</p></div></div>
- <div class="panel">
-  <h3>Your personal referral link</h3>
-  <div class="copy-row"><input id="refLink2" readonly><button class="btn btn-green" onclick="copyReferral()">COPY LINK</button></div>
-  <button class="btn btn-dark" style="margin-top:14px" onclick="shareReferral()">Share with friends</button>
- </div>
- <div class="stats">
-  <div class="stat-card"><small>Total referrals</small><h2 id="refTotal">0</h2></div>
-  <div class="stat-card"><small>Successful purchases</small><h2 id="refPurchases">0</h2></div>
-  <div class="stat-card"><small>Referral rewards</small><h2>UGX 0</h2></div>
-  <div class="stat-card"><small>Available spins</small><h2 id="refSpins">0</h2></div>
- </div>
- <div class="panel"><h3>Referral records</h3><div class="empty">Referral records will appear after backend integration.</div></div>
-</section>
+  <div class="section-heading"><div><h2>Popular Livestock</h2><p>Explore available livestock products</p></div><button class="secondary-btn" onclick="showPage('livestock')">View all</button></div>
+  <div class="products" id="featuredProducts"></div>
 
-<!-- SPIN -->
-<section class="page" id="spin">
- <div class="panel spin-area">
-  <div class="welcome-tag" style="color:var(--green)">RANCH PRO REWARDS</div>
-  <h2>Lucky Spin Wheel 🎡</h2>
-  <p style="font-size:12px;color:var(--muted);margin-top:8px">Use available spins to try your luck.</p>
-  <div class="wheel" id="wheel"></div>
-  <p id="spinCount" style="font-size:12px;font-weight:bold">Available spins: 0</p>
-  <button class="btn btn-gold" style="margin-top:16px;min-width:150px" id="spinButton" onclick="spinWheel()">SPIN NOW</button>
-  <p style="margin-top:15px;font-size:10px;color:var(--muted)">Demo rewards only. Real reward eligibility and prize allocation require secure server-side verification.</p>
-  <h3 style="margin-top:25px">Spin history</h3>
-  <div id="spinHistory" class="empty">No spins yet.</div>
- </div>
-</section>
+  <div class="section-heading"><div><h2>Recent Activity</h2><p>Your latest account activities</p></div></div>
+  <div class="panel" id="recentActivity"></div>
+ </section>
 
-<!-- TRANSACTIONS -->
-<section class="page" id="transactions">
- <div class="section-head"><div><h2>Transactions</h2><p>Your wallet and purchase activity</p></div></div>
- <div class="table-wrap"><table>
- <thead><tr><th>Reference</th><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
- <tbody id="transactionTable"></tbody></table></div>
-</section>
+ <!-- LIVESTOCK -->
+ <section class="page" id="livestock">
+  <div class="section-heading"><div><h2>Our Livestock</h2><p>Choose the livestock you want to purchase</p></div></div>
+  <div class="notice">Prices below are editable sample prices for the demonstration. Confirm actual livestock availability, ownership terms, delivery and payment arrangements before accepting purchases.</div>
+  <div class="products" id="allProducts"></div>
+ </section>
 
-<!-- PROFILE -->
-<section class="page" id="profile">
- <div class="section-head"><div><h2>My Profile</h2><p>Manage your personal information</p></div></div>
- <div class="panel" style="max-width:650px">
-  <div style="display:flex;align-items:center;gap:15px;margin-bottom:25px">
-   <div class="avatar" style="width:65px;height:65px;font-size:24px" id="profileAvatar">U</div>
-   <div><h3 id="profileDisplay">Farmer</h3><span class="badge">Ranch Pro Member</span></div>
+ <!-- PURCHASES -->
+ <section class="page" id="purchases">
+  <div class="section-heading"><div><h2>My Purchases</h2><p>Your livestock purchase records</p></div><button class="secondary-btn" onclick="showPage('livestock')">Buy livestock</button></div>
+  <div class="panel table-wrap">
+   <table><thead><tr><th>PRODUCT</th><th>AMOUNT</th><th>DATE</th><th>STATUS</th></tr></thead><tbody id="purchaseRows"></tbody></table>
   </div>
-  <label class="form-label">Full name</label><input class="form-control" id="profileName" placeholder="Your name">
-  <label class="form-label">Email address</label><input class="form-control" id="profileEmail" type="email" placeholder="Your email">
-  <label class="form-label">Phone number</label><input class="form-control" id="profilePhone" placeholder="Your phone">
-  <button class="btn btn-green" onclick="saveProfile()">SAVE PROFILE</button>
- </div>
-</section>
+ </section>
 
-<!-- NOTIFICATIONS -->
-<section class="page" id="notifications">
- <div class="section-head"><div><h2>Notifications</h2><p>Updates from Ranch Pro</p></div></div>
- <div class="panel">
-  <div class="activity"><div class="activity-icon">👋</div><div><strong>Welcome to Ranch Pro</strong><small>Explore the livestock marketplace and your dashboard.</small></div></div>
-  <div class="activity"><div class="activity-icon">🔔</div><div><strong>Account information</strong><small>Connect your account to the backend to receive live notifications.</small></div></div>
- </div>
-</section>
+ <!-- WALLET -->
+ <section class="page" id="wallet">
+  <div class="section-heading"><div><h2>My Wallet</h2><p>Manage your account funds</p></div></div>
+  <div class="stats">
+   <div class="stat"><small>Available Balance</small><h2 id="walletBalance">UGX 0</h2></div>
+   <div class="stat"><small>Total Deposits</small><h2 id="walletDeposits">UGX 0</h2></div>
+   <div class="stat"><small>Total Purchases</small><h2 id="walletSpent">UGX 0</h2></div>
+   <div class="stat"><small>Reward Points</small><h2 id="walletPoints">0</h2></div>
+  </div>
+  <div class="panel form-card">
+   <h3>Deposit Request</h3>
+   <div class="notice">This demo cannot receive money. Connect a verified payment provider and secure server-side payment verification before enabling deposits.</div>
+   <div class="form-group"><label>Deposit amount (UGX)</label><input type="number" id="depositAmount" min="5000" placeholder="Enter amount"></div>
+   <div class="form-group"><label>Payment method</label><select id="depositMethod"><option>MTN Mobile Money</option><option>Airtel Money</option></select></div>
+   <div class="form-group"><label>Mobile number</label><input id="depositPhone" placeholder="07XXXXXXXX"></div>
+   <button class="full-btn" onclick="requestDeposit()">SUBMIT DEMO REQUEST</button>
+  </div>
+ </section>
 
-<!-- ADMIN -->
-<section class="page" id="admin">
- <div class="section-head"><div><h2>Administration</h2><p>Demo management overview</p></div><span class="badge">Demo mode</span></div>
- <div class="stats">
-  <div class="stat-card"><small>Registered demo user</small><h2>1</h2></div>
-  <div class="stat-card"><small>Demo purchases</small><h2 id="adminPurchases">0</h2></div>
-  <div class="stat-card"><small>Listed livestock</small><h2 id="adminProducts">6</h2></div>
-  <div class="stat-card"><small>Demo transactions</small><h2 id="adminTransactions">0</h2></div>
- </div>
- <div class="panel">
-  <h3>Livestock management</h3>
-  <p style="font-size:12px;color:var(--muted);line-height:1.7">Product prices, stock, users, payment approvals and reward settings must be managed through a secure administrator account and database. This frontend does not provide real admin authorization.</p>
- </div>
-</section>
+ <!-- REFERRALS -->
+ <section class="page" id="referrals">
+  <div class="section-heading"><div><h2>Referral Programme</h2><p>Invite friends to discover Ranch Pro</p></div></div>
+  <div class="referral-box">
+   <h2>Grow Together 🌱</h2>
+   <p>Share your referral link with friends. Referral rewards should only be credited after genuine referrals are verified under the published programme rules.</p>
+   <div class="copy-row"><input id="referralLink" readonly><button onclick="copyReferral()">COPY LINK</button></div>
+  </div>
+  <div class="stats">
+   <div class="stat"><small>Total Referrals</small><h2 id="refCount">0</h2></div>
+   <div class="stat"><small>Verified Referrals</small><h2 id="verifiedCount">0</h2></div>
+   <div class="stat"><small>Referral Points</small><h2 id="refPoints">0</h2></div>
+   <div class="stat"><small>Programme Status</small><h2 style="font-size:15px">Active demo</h2></div>
+  </div>
+  <div class="panel"><h3>How referrals work</h3>
+   <div class="activity"><div class="activity-left"><div class="activity-icon">1</div><div><strong>Share your link</strong><small>Invite people you know</small></div></div></div>
+   <div class="activity"><div class="activity-left"><div class="activity-icon">2</div><div><strong>Friend registers</strong><small>Registration must be verified</small></div></div></div>
+   <div class="activity"><div class="activity-left"><div class="activity-icon">3</div><div><strong>Reward verification</strong><small>Eligible rewards are issued according to published rules</small></div></div></div>
+  </div>
+ </section>
 
-<div class="footer">© 2026 RANCH PRO. OWN LIVESTOCK • GROW YOUR FARM.</div>
-</div>
+ <!-- SPIN -->
+ <section class="page" id="spin">
+  <div class="section-heading"><div><h2>Lucky Spin 🎡</h2><p>Try your luck and collect demo reward points</p></div></div>
+  <div class="panel spin-area">
+   <h3>RANCH PRO LUCKY WHEEL</h3>
+   <p style="font-size:12px;color:var(--muted)">Eligible demonstration accounts receive one practice spin after a qualifying action.</p>
+   <div class="wheel-wrap">
+    <div class="wheel-pointer"></div><div class="wheel" id="wheel"></div>
+    <div class="wheel-center">SPIN!</div>
+   </div>
+   <button class="primary-btn" id="spinButton" onclick="spinWheel()">SPIN THE WHEEL</button>
+   <p id="spinMessage" style="margin-top:15px;font-size:12px;color:var(--muted)">Available spins: 0</p>
+   <div class="spin-labels">
+    <div>⭐ 10 Points</div><div>🎁 20 Points</div>
+    <div>🌟 50 Points</div><div>🔄 Try Again</div>
+    <div>🏆 100 Points</div><div>✨ 5 Points</div>
+   </div>
+  </div>
+ </section>
+
+ <!-- REWARDS -->
+ <section class="page" id="rewards">
+  <div class="section-heading"><div><h2>My Rewards</h2><p>Track your reward points and eligibility</p></div></div>
+  <div class="stat"><small>Total Reward Points</small><h2 id="rewardTotal">0</h2><p style="font-size:11px;color:var(--muted);margin-top:8px">Points have no cash value in this demonstration.</p></div>
+  <div class="panel" style="margin-top:18px"><h3>Reward History</h3><div id="rewardHistory" class="empty">No rewards yet.</div></div>
+ </section>
+
+ <!-- TRANSACTIONS -->
+ <section class="page" id="transactions">
+  <div class="section-heading"><div><h2>Transactions</h2><p>Your account activity records</p></div></div>
+  <div class="panel table-wrap"><table><thead><tr><th>DESCRIPTION</th><th>TYPE</th><th>AMOUNT</th><th>DATE</th></tr></thead><tbody id="transactionRows"></tbody></table></div>
+ </section>
+
+ <!-- PROFILE -->
+ <section class="page" id="profile">
+  <div class="section-heading"><div><h2>My Profile</h2><p>Manage your account information</p></div></div>
+  <div class="panel form-card">
+   <div class="profile-card"><div class="profile-avatar">👤</div><div><h3 id="profileDisplayName">Farmer</h3><small id="profileEmail" style="color:var(--muted)">Email</small></div></div>
+   <div class="form-group"><label>Full name</label><input id="profileName"></div>
+   <div class="form-group"><label>Email address</label><input id="profileEmailInput" disabled></div>
+   <button class="full-btn" onclick="saveProfile()">SAVE PROFILE</button>
+   <button class="secondary-btn" style="width:100%;margin-top:10px" onclick="logout()">LOG OUT</button>
+  </div>
+ </section>
+
+ <!-- NOTIFICATIONS -->
+ <section class="page" id="notifications">
+  <div class="section-heading"><div><h2>Notifications</h2><p>Account announcements and updates</p></div></div>
+  <div class="panel"><div class="empty">You're all caught up.</div></div>
+ </section>
+
+ <div class="footer">© 2026 RANCH PRO. All rights reserved. <br>Livestock ownership and all financial services are subject to verified agreements and applicable laws.</div>
+ </div>
 </main>
 </div>
 
 <!-- PURCHASE MODAL -->
-<div class="modal-bg" id="purchaseModal">
- <div class="modal">
-  <h2>Confirm Livestock Purchase</h2>
-  <p id="purchaseDescription">Please confirm your purchase.</p>
-  <div class="referral-box">
-   <p>Livestock: <strong id="modalProduct"></strong></p>
-   <p style="margin-top:10px">Purchase price: <strong id="modalPrice"></strong></p>
-  </div>
+<div class="modal" id="purchaseModal">
+ <div class="modal-card">
+  <button class="close-btn" onclick="closeModal('purchaseModal')">✕</button>
+  <h2>Confirm Purchase</h2>
+  <p id="purchaseDescription"></p>
+  <div class="notice">This is a front-end demonstration. No money is transferred and no livestock ownership is created by this action.</div>
+  <h3 id="purchasePrice" style="margin:15px 0;color:var(--navy)"></h3>
   <div class="modal-actions">
-   <button class="btn btn-light" onclick="closeModal('purchaseModal')">Cancel</button>
-   <button class="btn btn-green" onclick="confirmPurchase()">CONFIRM PURCHASE</button>
+   <button class="secondary-btn" onclick="closeModal('purchaseModal')">CANCEL</button>
+   <button class="primary-btn" id="confirmPurchase">CONFIRM DEMO</button>
   </div>
  </div>
 </div>
 
-<!-- WALLET MODAL -->
-<div class="modal-bg" id="walletModal">
- <div class="modal">
-  <h2 id="walletModalTitle">Deposit</h2>
-  <p>Enter your request details below.</p>
-  <label class="form-label">Amount (UGX)</label>
-  <input class="form-control" type="number" id="walletAmount" min="1000" placeholder="Enter amount">
-  <label class="form-label">Mobile money number</label>
-  <input class="form-control" id="walletPhone" placeholder="07XXXXXXXX">
-  <div class="modal-actions">
-   <button class="btn btn-light" onclick="closeModal('walletModal')">Cancel</button>
-   <button class="btn btn-green" onclick="submitWalletRequest()">SUBMIT REQUEST</button>
-  </div>
- </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
 <script>
-// RANCH PRO FRONTEND DEMO
-// Replace demo state with secure backend calls before launch.
+// ======================================================
+// RANCH PRO FRONT END
+// DEMO ONLY: replace local storage with secure backend.
+// ======================================================
 
-const products=[
- {id:1,name:"Premium Hens",category:"Hens",price:85000,tag:"POULTRY",image:"https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=800"},
- {id:2,name:"Dairy Cows",category:"Cows",price:1800000,tag:"CATTLE",image:"https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=800"},
- {id:3,name:"Farm Pigs",category:"Pigs",price:350000,tag:"PIG FARMING",image:"https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=800"},
- {id:4,name:"Boer Goats",category:"Goats",price:250000,tag:"GOAT FARMING",image:"https://images.unsplash.com/photo-1524024973431-2ad916746881?w=800"},
- {id:5,name:"Merino Sheep",category:"Sheep",price:220000,tag:"SHEEP FARMING",image:"https://images.unsplash.com/photo-1484557985045-edf25e08da73?w=800"},
- {id:6,name:"Farm Cats",category:"Cats",price:45000,tag:"FARM CATS",image:"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800"}
+// EDIT SAMPLE PRODUCT PRICES HERE.
+const products = [
+ {id:"HEN",name:"Poultry / Hens",emoji:"🐔",price:50000,description:"Poultry livestock ownership option.",tag:"POPULAR"},
+ {id:"COW",name:"Cattle / Cows",emoji:"🐄",price:500000,description:"Cattle livestock ownership option.",tag:"PREMIUM"},
+ {id:"PIG",name:"Pigs",emoji:"🐖",price:150000,description:"Pig farming livestock option.",tag:"POPULAR"},
+ {id:"GOAT",name:"Goats",emoji:"🐐",price:100000,description:"Goat livestock ownership option.",tag:"AVAILABLE"},
+ {id:"SHEEP",name:"Sheep",emoji:"🐑",price:120000,description:"Sheep livestock ownership option.",tag:"AVAILABLE"},
+ {id:"CAT",name:"Cats",emoji:"🐈",price:30000,description:"Cat ownership option.",tag:"AVAILABLE"}
 ];
 
-let state={
- name:localStorage.getItem("rp_name")||"Farmer",
- email:localStorage.getItem("rp_email")||"",
- phone:localStorage.getItem("rp_phone")||"",
- balance:Number(localStorage.getItem("rp_balance")||0),
- purchases:JSON.parse(localStorage.getItem("rp_purchases")||"[]"),
- transactions:JSON.parse(localStorage.getItem("rp_transactions")||"[]"),
- spins:Number(localStorage.getItem("rp_spins")||0),
- spinHistory:JSON.parse(localStorage.getItem("rp_spin_history")||"[]"),
- referrals:Number(localStorage.getItem("rp_referrals")||0)
-};
-
-let selectedProduct=null;
-let currentFilter="All";
-let walletAction="Deposit";
+let currentUser=null;
+let pendingProduct=null;
+let isRegister=false;
 let spinning=false;
 
-function save(){
- localStorage.setItem("rp_name",state.name);
- localStorage.setItem("rp_email",state.email);
- localStorage.setItem("rp_phone",state.phone);
- localStorage.setItem("rp_balance",state.balance);
- localStorage.setItem("rp_purchases",JSON.stringify(state.purchases));
- localStorage.setItem("rp_transactions",JSON.stringify(state.transactions));
- localStorage.setItem("rp_spins",state.spins);
- localStorage.setItem("rp_spin_history",JSON.stringify(state.spinHistory));
- localStorage.setItem("rp_referrals",state.referrals);
+const money = n => "UGX "+Number(n||0).toLocaleString("en-UG");
+const today = () => new Date().toLocaleDateString("en-UG");
+
+function getData(){
+ return JSON.parse(localStorage.getItem("ranchpro_data")||"{}");
 }
-
-function money(n){return "UGX "+Number(n).toLocaleString("en-US")}
-function toast(message){
- const el=document.getElementById("toast");
- el.textContent=message;el.classList.add("show");
- setTimeout(()=>el.classList.remove("show"),2800);
+function saveData(data){
+ localStorage.setItem("ranchpro_data",JSON.stringify(data));
 }
-
-function toggleMenu(){document.getElementById("sidebar").classList.toggle("open")}
-
-function showPage(id){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
- const names={dashboard:"Dashboard",livestock:"Livestock Marketplace",purchases:"My Purchases",wallet:"My Wallet",referrals:"Referrals",spin:"Lucky Spin",transactions:"Transactions",profile:"My Profile",notifications:"Notifications",admin:"Admin Panel"};
- document.getElementById("pageTitle").textContent=names[id];
- document.getElementById("sidebar").classList.remove("open");
- renderAll();
- window.scrollTo(0,0);
+function userKey(){return "ranchpro_user_"+currentUser.email.toLowerCase()}
+function getAccount(){
+ return JSON.parse(localStorage.getItem(userKey())||JSON.stringify({
+  name:currentUser.name,email:currentUser.email,
+  balance:0,deposits:0,spent:0,points:0,spins:0,
+  purchases:[],transactions:[],rewards:[],referrals:0
+ }));
 }
-
-document.querySelectorAll(".nav-btn[data-page]").forEach(b=>{
- b.addEventListener("click",()=>showPage(b.dataset.page));
+function saveAccount(a){localStorage.setItem(userKey(),JSON.stringify(a))}
+function notify(msg){
+ const t=document.getElementById("toast");
+ t.textContent=msg;t.style.display="block";
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>t.style.display="none",3000);
+}
+function toggleAuth(){
+ isRegister=!isRegister;
+ document.getElementById("authTitle").textContent=isRegister?"Create Account":"Welcome Back";
+ document.getElementById("authDescription").textContent=isRegister?"Join Ranch Pro today.":"Sign in to access your account.";
+ document.getElementById("nameField").style.display=isRegister?"block":"none";
+ document.getElementById("authName").required=isRegister;
+ document.getElementById("authSubmit").textContent=isRegister?"CREATE ACCOUNT":"LOGIN";
+ document.getElementById("authSwitchText").textContent=isRegister?"Already have an account?":"Don't have an account?";
+ document.querySelector(".auth-switch button").textContent=isRegister?"Login":"Register";
+}
+document.getElementById("authForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const email=document.getElementById("authEmail").value.trim().toLowerCase();
+ const password=document.getElementById("authPassword").value;
+ const name=document.getElementById("authName").value.trim();
+ let accounts=JSON.parse(localStorage.getItem("ranchpro_accounts")||"{}");
+ if(isRegister){
+  if(!name){notify("Enter your full name");return}
+  if(accounts[email]){notify("Account already exists. Please login.");return}
+  accounts[email]={password,name};
+  localStorage.setItem("ranchpro_accounts",JSON.stringify(accounts));
+  notify("Demo account created");
+ }else{
+  if(!accounts[email]||accounts[email].password!==password){
+   notify("Invalid email or password");return;
+  }
+ }
+ currentUser={email,name:isRegister?name:accounts[email].name};
+ sessionStorage.setItem("ranchpro_session",email);
+ startApp();
 });
 
-function productCard(p){
- return `<article class="product-card">
- <div class="product-img"><img src="${p.image}" alt="${p.name}" loading="lazy"><span class="product-tag">${p.tag}</span></div>
- <div class="product-info">
- <h3>${p.name}</h3>
- <p>Explore our ${p.category.toLowerCase()} livestock selection and manage your ownership through Ranch Pro.</p>
- <div class="product-meta"><div><small>Purchase price</small><strong>${money(p.price)}</strong></div><div><small>Category</small><strong>${p.category}</strong></div></div>
- <button class="btn btn-dark" onclick="buyProduct(${p.id})">PURCHASE NOW</button>
- </div></article>`;
+function startApp(){
+ document.getElementById("authScreen").style.display="none";
+ document.getElementById("app").style.display="flex";
+ renderAll();
 }
-
-function renderProducts(){
- const query=(document.getElementById("searchProducts")?.value||"").toLowerCase();
- const list=products.filter(p=>(currentFilter==="All"||p.category===currentFilter)&&p.name.toLowerCase().includes(query));
- document.getElementById("allProducts").innerHTML=list.map(productCard).join("")||'<div class="empty">No livestock found.</div>';
+function logout(){
+ currentUser=null;
+ sessionStorage.removeItem("ranchpro_session");
+ document.getElementById("app").style.display="none";
+ document.getElementById("authScreen").style.display="flex";
+ document.getElementById("authForm").reset();
 }
-
-function filterProducts(category,button){
- currentFilter=category;
- document.querySelectorAll("#filters button").forEach(b=>b.className="btn btn-light");
- button.className="btn btn-dark";
+function renderAll(){
+ let a=getAccount();
+ document.getElementById("welcomeName").textContent=a.name;
+ document.getElementById("topAvatar").textContent=a.name.charAt(0).toUpperCase();
+ document.getElementById("dashBalance").textContent=money(a.balance);
+ document.getElementById("dashPurchases").textContent=a.purchases.length;
+ document.getElementById("dashReferrals").textContent=a.referrals;
+ document.getElementById("dashPoints").textContent=a.points;
+ document.getElementById("walletBalance").textContent=money(a.balance);
+ document.getElementById("walletDeposits").textContent=money(a.deposits);
+ document.getElementById("walletSpent").textContent=money(a.spent);
+ document.getElementById("walletPoints").textContent=a.points;
+ document.getElementById("refCount").textContent=a.referrals;
+ document.getElementById("verifiedCount").textContent=a.referrals;
+ document.getElementById("refPoints").textContent=a.points;
+ document.getElementById("rewardTotal").textContent=a.points;
+ document.getElementById("dashPoints").textContent=a.points;
+ document.getElementById("spinMessage").textContent="Available spins: "+a.spins;
+ document.getElementById("profileDisplayName").textContent=a.name;
+ document.getElementById("profileEmail").textContent=a.email;
+ document.getElementById("profileName").value=a.name;
+ document.getElementById("profileEmailInput").value=a.email;
+ document.getElementById("referralLink").value=location.origin+location.pathname+"?ref="+encodeURIComponent(a.email);
  renderProducts();
+ renderPurchases();
+ renderTransactions();
+ renderRewards();
+ renderActivity();
 }
-
-function buyProduct(id){
- selectedProduct=products.find(p=>p.id===id);
- document.getElementById("modalProduct").textContent=selectedProduct.name;
- document.getElementById("modalPrice").textContent=money(selectedProduct.price);
- document.getElementById("purchaseDescription").textContent="Confirm that you want to purchase this livestock.";
+function productCard(p){
+ return `<article class="product">
+  <div class="product-image">${p.emoji}<span>${p.tag}</span></div>
+  <div class="product-body">
+   <h3>${p.name}</h3><p>${p.description}</p>
+   <div class="product-details">
+    <div><small>Sample price</small><strong>${money(p.price)}</strong></div>
+    <div><small>Product code</small><strong>${p.id}</strong></div>
+   </div>
+   <button class="purchase-btn" onclick="openPurchase('${p.id}')">PURCHASE NOW</button>
+  </div></article>`;
+}
+function renderProducts(){
+ document.getElementById("allProducts").innerHTML=products.map(productCard).join("");
+ document.getElementById("featuredProducts").innerHTML=products.slice(0,3).map(productCard).join("");
+}
+function openPurchase(id){
+ pendingProduct=products.find(p=>p.id===id);
+ if(!pendingProduct)return;
+ document.getElementById("purchaseDescription").textContent="You selected "+pendingProduct.name+".";
+ document.getElementById("purchasePrice").textContent=money(pendingProduct.price);
  document.getElementById("purchaseModal").classList.add("show");
 }
-
-function confirmPurchase(){
- if(!selectedProduct)return;
- if(state.balance<selectedProduct.price){
-  closeModal("purchaseModal");
-  toast("Insufficient demo wallet balance. Please deposit first.");
-  showPage("wallet");
-  return;
- }
- state.balance-=selectedProduct.price;
- const item={id:Date.now(),name:selectedProduct.name,price:selectedProduct.price,date:new Date().toLocaleString(),status:"Demo confirmed"};
- state.purchases.unshift(item);
- state.transactions.unshift({ref:"RP"+Date.now(),type:"Purchase",amount:selectedProduct.price,date:new Date().toLocaleString(),status:"Demo"});
- save();closeModal("purchaseModal");renderAll();
- toast("Demo purchase recorded successfully.");
-}
-
+document.getElementById("confirmPurchase").onclick=()=>{
+ if(!pendingProduct)return;
+ let a=getAccount();
+ const p=pendingProduct;
+ a.purchases.unshift({name:p.name,price:p.price,date:today(),status:"Demo"});
+ a.spent+=p.price;
+ a.transactions.unshift({description:p.name,type:"Demo purchase",amount:p.price,date:today()});
+ // One practice spin per demo purchase.
+ a.spins++;
+ saveAccount(a);
+ closeModal("purchaseModal");
+ pendingProduct=null;
+ renderAll();
+ notify("Demo purchase recorded. No payment was taken.");
+ showPage("purchases");
+};
 function closeModal(id){document.getElementById(id).classList.remove("show")}
-
-function openWalletModal(action){
- walletAction=action;
- document.getElementById("walletModalTitle").textContent=action+" Request";
- document.getElementById("walletAmount").value="";
- document.getElementById("walletModal").classList.add("show");
+function renderPurchases(){
+ const rows=getAccount().purchases;
+ document.getElementById("purchaseRows").innerHTML=rows.length?rows.map(p=>`<tr><td>${p.name}</td><td>${money(p.price)}</td><td>${p.date}</td><td><span class="status">Demo record</span></td></tr>`).join(""):`<tr><td colspan="4" class="empty">No purchases yet.</td></tr>`;
 }
-
-function submitWalletRequest(){
- const amount=Number(document.getElementById("walletAmount").value);
- const phone=document.getElementById("walletPhone").value.trim();
- if(!Number.isFinite(amount)||amount<1000){toast("Enter a valid amount of at least UGX 1,000.");return}
- if(!/^(\+?256|0)\d{9}$/.test(phone)){toast("Enter a valid Uganda phone number.");return}
- if(walletAction==="Withdraw"&&amount>state.balance){toast("Insufficient wallet balance.");return}
- // Requests are recorded as DEMO only. No money is moved.
- state.transactions.unshift({ref:"RP"+Date.now(),type:walletAction+" request",amount,date:new Date().toLocaleString(),status:"Pending demo"});
- save();closeModal("walletModal");renderAll();
- toast("Demo request recorded. No real payment was processed.");
+function renderTransactions(){
+ const rows=getAccount().transactions;
+ document.getElementById("transactionRows").innerHTML=rows.length?rows.map(t=>`<tr><td>${t.description}</td><td>${t.type}</td><td>${money(t.amount)}</td><td>${t.date}</td></tr>`).join(""):`<tr><td colspan="4" class="empty">No transactions yet.</td></tr>`;
 }
-
+function renderRewards(){
+ const rows=getAccount().rewards;
+ document.getElementById("rewardHistory").innerHTML=rows.length?rows.map(r=>`<div class="activity"><div class="activity-left"><div class="activity-icon">🏆</div><div><strong>${r.description}</strong><small>${r.date}</small></div></div><strong>+${r.points} points</strong></div>`).join(""):`<div class="empty">No rewards yet.</div>`;
+}
+function renderActivity(){
+ const rows=getAccount().transactions.slice(0,5);
+ document.getElementById("recentActivity").innerHTML=rows.length?rows.map(t=>`<div class="activity"><div class="activity-left"><div class="activity-icon">📋</div><div><strong>${t.description}</strong><small>${t.date}</small></div></div><span class="amount">${money(t.amount)}</span></div>`).join(""):`<div class="empty">Your activities will appear here.</div>`;
+}
+function requestDeposit(){
+ const amount=Number(document.getElementById("depositAmount").value);
+ const phone=document.getElementById("depositPhone").value.trim();
+ if(!amount||amount<5000||!phone){notify("Enter a valid amount and phone number");return}
+ notify("Demo only: no payment request was sent.");
+}
 function copyReferral(){
- const field=document.getElementById("refLink2");
- const text=field?.value||document.getElementById("refLink").value;
+ const input=document.getElementById("referralLink");
+ input.select();input.setSelectionRange(0,99999);
  if(navigator.clipboard&&window.isSecureContext){
-  navigator.clipboard.writeText(text).then(()=>toast("Referral link copied!")).catch(()=>toast("Copy not available."));
+  navigator.clipboard.writeText(input.value).then(()=>notify("Referral link copied"));
  }else{
-  const temp=document.createElement("textarea");temp.value=text;document.body.appendChild(temp);temp.select();document.execCommand("copy");temp.remove();toast("Referral link copied!");
+  document.execCommand("copy");notify("Referral link copied");
  }
 }
-
-function shareReferral(){
- const link=document.getElementById("refLink2").value;
- window.open("https://wa.me/?text="+encodeURIComponent("Join me on Ranch Pro: "+link),"_blank");
-}
-
 function spinWheel(){
  if(spinning)return;
- if(state.spins<1){toast("You do not have any available spins.");return}
- spinning=true;state.spins--;save();renderAll();
+ let a=getAccount();
+ if(a.spins<1){notify("No practice spins available yet.");return}
+ spinning=true;
+ document.getElementById("spinButton").disabled=true;
  const wheel=document.getElementById("wheel");
- const button=document.getElementById("spinButton");
- button.disabled=true;button.textContent="SPINNING...";
- const prizes=["UGX 500 demo prize","UGX 1,000 demo prize","Try Again","UGX 2,000 demo prize","Bonus spin","Better luck next time"];
- const prize=prizes[Math.floor(Math.random()*prizes.length)];
- const rotation=1800+Math.floor(Math.random()*1800);
- wheel.style.transition="transform 4s cubic-bezier(.15,.8,.2,1)";
- wheel.style.transform=`rotate(${rotation}deg)`;
+ const prizes=[10,20,50,0,100,5];
+ const index=Math.floor(Math.random()*prizes.length);
+ const prize=prizes[index];
+ const degrees=1800+(index*60)+Math.floor(Math.random()*45);
+ wheel.style.transform=`rotate(${degrees}deg)`;
  setTimeout(()=>{
-  state.spinHistory.unshift({prize,date:new Date().toLocaleString()});
-  if(prize==="Bonus spin")state.spins++;
-  save();spinning=false;button.disabled=false;button.textContent="SPIN NOW";
-  wheel.style.transition="none";wheel.style.transform="rotate(0deg)";
-  renderAll();toast("Spin result: "+prize);
+  let account=getAccount();
+  account.spins--;
+  if(prize>0){
+   account.points+=prize;
+   account.rewards.unshift({description:"Lucky Spin",points:prize,date:today()});
+  }
+  saveAccount(account);
+  renderAll();
+  document.getElementById("spinMessage").textContent=prize?"You won "+prize+" demo points!":"Try again next time!";
+  document.getElementById("spinButton").disabled=false;
+  spinning=false;
  },4100);
 }
-
 function saveProfile(){
+ let a=getAccount();
  const name=document.getElementById("profileName").value.trim();
- const email=document.getElementById("profileEmail").value.trim();
- if(!name){toast("Enter your name.");return}
- state.name=name;state.email=email;
- state.phone=document.getElementById("profilePhone").value.trim();
- save();renderAll();toast("Demo profile saved.");
+ if(!name){notify("Enter your name");return}
+ a.name=name;saveAccount(a);renderAll();notify("Profile updated");
 }
+function showPage(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ const selected=document.getElementById(page);
+ if(!selected)return;
+ selected.classList.add("active");
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ const titles={dashboard:"Dashboard",livestock:"Livestock",purchases:"My Purchases",wallet:"My Wallet",referrals:"Referrals",spin:"Lucky Spin",rewards:"Rewards",transactions:"Transactions",profile:"My Profile",notifications:"Notifications"};
+ document.getElementById("pageTitle").textContent=titles[page]||"Ranch Pro";
+ document.getElementById("sidebar").classList.remove("open");
+}
+document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+function toggleSidebar(){document.getElementById("sidebar").classList.toggle("open")}
 
-function logout(){
- if(confirm("Clear the demo session and return to the dashboard?")){
-  toast("Demo session remains on this device. Clear browser storage to reset.");
-  showPage("dashboard");
+// Restore demo session
+const savedSession=sessionStorage.getItem("ranchpro_session");
+if(savedSession){
+ const accounts=JSON.parse(localStorage.getItem("ranchpro_accounts")||"{}");
+ if(accounts[savedSession]){
+  currentUser={email:savedSession,name:accounts[savedSession].name};
+  startApp();
  }
 }
-
-function renderAll(){
- document.getElementById("welcomeName").textContent=state.name;
- document.getElementById("topAvatar").textContent=state.name.charAt(0).toUpperCase();
- document.getElementById("profileAvatar").textContent=state.name.charAt(0).toUpperCase();
- document.getElementById("profileDisplay").textContent=state.name;
- document.getElementById("profileName").value=state.name;
- document.getElementById("profileEmail").value=state.email;
- document.getElementById("profilePhone").value=state.phone;
-
- document.getElementById("dashBalance").textContent=money(state.balance);
- document.getElementById("walletBalance").textContent=money(state.balance);
- document.getElementById("dashPurchases").textContent=state.purchases.length;
- document.getElementById("dashReferrals").textContent=state.referrals;
- document.getElementById("dashSpins").textContent=state.spins;
- document.getElementById("refTotal").textContent=state.referrals;
- document.getElementById("refPurchases").textContent="0";
- document.getElementById("refSpins").textContent=state.spins;
- document.getElementById("spinCount").textContent="Available spins: "+state.spins;
-
- const link=location.href.split("?")[0]+"?ref=DEMO-USER";
- document.getElementById("refLink").value=link;
- document.getElementById("refLink2").value=link;
-
- document.getElementById("dashProducts").innerHTML=products.slice(0,3).map(productCard).join("");
- renderProducts();
-
- document.getElementById("purchaseTable").innerHTML=state.purchases.map(p=>
- `<tr><td>${p.name}</td><td>${money(p.price)}</td><td>${p.date}</td><td><span class="badge">${p.status}</span></td></tr>`
- ).join("")||'<tr><td colspan="4" class="empty">No purchases yet.</td></tr>';
-
- document.getElementById("transactionTable").innerHTML=state.transactions.map(t=>
- `<tr><td>${t.ref}</td><td>${t.type}</td><td>${money(t.amount)}</td><td>${t.date}</td><td><span class="badge">${t.status}</span></td></tr>`
- ).join("")||'<tr><td colspan="5" class="empty">No transactions yet.</td></tr>';
-
- document.getElementById("recentActivity").innerHTML=state.transactions.slice(0,4).map(t=>
- `<div class="activity"><div class="activity-icon">📋</div><div><strong>${t.type}</strong><small>${t.date}</small></div><b>${money(t.amount)}</b></div>`
- ).join("")||'<div class="empty">Your activities will appear here.</div>';
-
- document.getElementById("spinHistory").innerHTML=state.spinHistory.map(s=>
- `<div class="activity"><div class="activity-icon">🎡</div><div><strong>${s.prize}</strong><small>${s.date}</small></div></div>`
- ).join("")||'<div class="empty">No spins yet.</div>';
-
- document.getElementById("adminPurchases").textContent=state.purchases.length;
- document.getElementById("adminTransactions").textContent=state.transactions.length;
- document.getElementById("adminProducts").textContent=products.length;
-}
-
-renderAll();
 </script>
 </body>
 </html>
