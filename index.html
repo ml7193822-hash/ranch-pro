@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,7 @@
 <title>RANCH PRO | Digital Ranch</title>
 
 <style>
-:root {
+:root{
  --green:#397b2e;
  --green2:#76b83e;
  --cream:#fff9d9;
@@ -17,344 +18,169 @@
 }
 *{box-sizing:border-box}
 body{
- margin:0;
- font-family:Arial,sans-serif;
- color:var(--ink);
+ margin:0;font-family:Arial,sans-serif;color:var(--ink);
  background:#83bd45;
 }
 button,input{font:inherit}
 button{cursor:pointer}
+button:active{transform:scale(.97)}
 
 .background{
- position:fixed;
- inset:0;
- z-index:-1;
- overflow:hidden;
- background:linear-gradient(
- #8bd4e5 0%,
- #b9e7c3 32%,
- #a6d84d 60%,
- #75b63e 100%);
+ position:fixed;inset:0;z-index:-1;overflow:hidden;
+ background:linear-gradient(#80cfe4 0%,#c2e8c4 35%,#a8d64e 65%,#70ad38 100%);
 }
 .sun{
- position:absolute;
- width:115px;
- height:115px;
- border-radius:50%;
- background:#ffe98c;
- right:10%;
- top:18%;
+ position:absolute;width:100px;height:100px;border-radius:50%;
+ background:#ffe88a;right:10%;top:12%;
+ box-shadow:0 0 45px #ffe88a;
 }
-.cloud{
- position:absolute;
- font-size:65px;
- color:white;
- opacity:.7;
+.cloud{position:absolute;font-size:65px;opacity:.8}
+.cloud.one{top:10%;left:5%}
+.cloud.two{top:30%;right:15%}
+.hill{
+ position:absolute;bottom:0;width:120%;height:40%;
+ left:-10%;border-radius:50% 50% 0 0;
+ background:linear-gradient(#a5d64c,#579b35);
 }
-.cloud.one{top:16%;left:5%}
-.cloud.two{top:38%;right:12%}
-.hills{
- position:absolute;
- bottom:0;
- width:100%;
- height:40%;
- background:linear-gradient(#9aca45,#70b43d);
- border-radius:50% 50% 0 0;
-}
-.house{
- position:absolute;
- bottom:20%;
- right:10%;
- font-size:85px;
-}
-.tree{
- position:absolute;
- bottom:20%;
- left:5%;
- font-size:75px;
-}
+.house{position:absolute;bottom:18%;right:8%;font-size:95px}
+.tree{position:absolute;bottom:17%;left:3%;font-size:85px}
+.cow-scene{position:absolute;bottom:10%;left:37%;font-size:55px}
+.chicken-scene{position:absolute;bottom:13%;right:32%;font-size:35px}
 
-.container{
- max-width:760px;
- margin:auto;
- padding:18px 15px 35px;
-}
-
+.container{max-width:780px;margin:auto;padding:14px 13px 35px}
 .header{
- display:flex;
- justify-content:space-between;
- align-items:center;
- flex-wrap:wrap;
- gap:15px;
- color:white;
+ display:flex;justify-content:space-between;align-items:center;
+ gap:12px;flex-wrap:wrap;color:white;margin-bottom:20px;
  text-shadow:0 2px 5px #315b2580;
- margin-bottom:28px;
 }
-.logo{
- font-size:30px;
- font-weight:900;
-}
+.logo{font-size:28px;font-weight:1000}
 .logo span{color:#ffe27a}
-
-.profile{
- display:flex;
- align-items:center;
- gap:10px;
- font-weight:bold;
-}
+.profile{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:bold}
 .avatar{
- background:#fff6bf;
- color:#54812c;
- border-radius:50%;
- width:65px;
- height:65px;
- display:grid;
- place-items:center;
- text-align:center;
- font-weight:900;
+ width:55px;height:55px;border-radius:50%;
+ background:#fff5bb;color:#52812d;display:grid;
+ place-items:center;text-align:center;font-weight:1000;
+ border:3px solid white;
 }
 .welcome{
- color:white;
- font-size:20px;
- font-weight:900;
- margin:20px 8px;
- text-shadow:0 2px 5px #315b2580;
+ color:white;font-weight:1000;font-size:20px;
+ margin:20px 5px;text-shadow:0 2px 5px #315b2580;
 }
-
 .panel{
- background:#fffbdce8;
- border:2px solid #fff9d8;
- border-radius:28px;
- padding:17px;
- margin-bottom:18px;
- box-shadow:0 8px 22px #315b2530;
+ background:#fffbdff0;border:2px solid white;
+ border-radius:23px;padding:16px;margin-bottom:15px;
+ box-shadow:0 7px 20px #315b2540;
 }
-
-.balance-title{
- font-size:27px;
- font-weight:900;
- margin:5px 0 18px;
-}
-.balance-title span{color:#c77a25}
-
-.stats{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:9px;
-}
+.balance-title{font-size:23px;font-weight:1000;margin-bottom:15px}
+.balance-title span{color:#bd7929}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .stat{
- background:#fff9df;
- border:1px solid white;
- border-radius:20px;
- min-height:135px;
- padding:12px 5px;
- display:flex;
- flex-direction:column;
- justify-content:center;
- align-items:center;
- text-align:center;
- box-shadow:0 4px 9px #546b2930;
+ background:#fff8d9;border-radius:16px;padding:12px 4px;
+ min-height:112px;display:flex;flex-direction:column;
+ justify-content:center;align-items:center;text-align:center;
+ border:1px solid white;box-shadow:0 3px 8px #546b2930;
 }
 .coin{
- width:48px;
- height:48px;
- border-radius:50%;
+ width:40px;height:40px;border-radius:50%;
  background:linear-gradient(145deg,#ffd65c,#e68d12);
- border:3px solid #ffdf7d;
- color:white;
- display:grid;
- place-items:center;
- font-size:23px;
- font-weight:900;
- margin-bottom:9px;
+ border:3px solid #ffdf7d;color:white;
+ display:grid;place-items:center;font-weight:1000;margin-bottom:7px;
 }
-.stat b{
- color:#bd7929;
- font-size:22px;
- margin-bottom:7px;
-}
-.stat span{
- font-weight:bold;
- line-height:1.3;
-}
-
-.actions{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:12px;
- margin-top:22px;
-}
+.stat b{color:#bd7929;font-size:19px;margin-bottom:5px}
+.stat span{font-size:12px;font-weight:bold}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:17px}
 .action{
- background:#fff9d7;
- border:2px solid #d3d0b8;
- box-shadow:3px 3px 0 #302f25;
- border-radius:10px;
- padding:14px 5px;
- color:#493b1e;
- font-size:21px;
- font-weight:900;
+ border:2px solid #d3d0b8;border-radius:12px;
+ background:linear-gradient(#fffbe5,#f3e8bb);
+ box-shadow:3px 4px 0 #645a39;
+ padding:13px 5px;color:#493b1e;font-weight:1000;font-size:17px;
 }
-.action span{
- font-size:30px;
-}
-
-.menu{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:12px;
-}
+.action span{font-size:25px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.section-head h2{font-size:19px;margin:0}
+.section-head button{border:0;background:transparent;color:#477b2c;font-weight:bold}
+.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .menu button{
- min-height:135px;
- background:#fff9d9;
- border:2px solid #d2cfb9;
- box-shadow:3px 3px 0 #343326;
- border-radius:10px;
- color:#493e22;
- font-weight:900;
- display:flex;
- flex-direction:column;
- justify-content:center;
- align-items:center;
- gap:8px;
+ min-height:110px;background:linear-gradient(#fffce6,#f2e9c3);
+ border:2px solid #d2cfb9;box-shadow:3px 4px 0 #514b35;
+ border-radius:12px;color:#493e22;font-weight:900;
+ display:flex;flex-direction:column;justify-content:center;
+ align-items:center;gap:7px;font-size:12px;
 }
-.menu .emoji{
- font-size:45px;
-}
-
-.section-head{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin-bottom:14px;
-}
-.section-head h2{margin:0}
-.section-head button{
- border:0;
- background:transparent;
- color:#477b2c;
- font-weight:bold;
-}
-
-.products{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:12px;
-}
+.menu .emoji{font-size:36px}
+.products{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
 .product{
- background:#fff9df;
- border-radius:20px;
- padding:14px;
- text-align:center;
- border:1px solid white;
+ background:#fff9df;border:1px solid white;
+ border-radius:17px;padding:13px;text-align:center;
  box-shadow:0 4px 10px #506d2930;
 }
-.animal{font-size:55px}
-.product h3{margin:7px 0}
-.product p{
- font-size:13px;
- color:#64734a;
-}
-.price{
- font-size:19px;
- font-weight:900;
- color:#b96c1d;
- margin:12px 0;
-}
+.animal{font-size:53px}
+.product h3{margin:5px 0;font-size:17px}
+.product p{font-size:12px;color:#64734a;line-height:1.4}
+.price{font-size:18px;font-weight:1000;color:#b96c1d;margin:9px 0}
+.earning{font-size:12px;color:#397b2e;font-weight:bold;margin:7px 0}
 .buy{
- width:100%;
- border:0;
- border-radius:10px;
- padding:12px;
+ width:100%;border:0;border-radius:10px;padding:11px;
  background:linear-gradient(90deg,#4e9636,#78b940);
- color:white;
- font-weight:900;
-}
-.empty{
- text-align:center;
- padding:25px 10px;
- color:#66734d;
- font-weight:bold;
+ color:white;font-weight:1000;
 }
 .animal-row{
- display:flex;
- justify-content:space-between;
- align-items:center;
- background:#fff9df;
- padding:13px;
- border-radius:13px;
- margin:8px 0;
+ display:flex;justify-content:space-between;align-items:center;
+ background:#fff9df;padding:12px;border-radius:12px;margin:8px 0;
+ font-size:13px;
 }
-.news{
- color:#536641;
- line-height:1.6;
-}
-.footer{
- text-align:center;
- color:white;
- padding:15px;
- font-size:12px;
-}
+.news{color:#536641;line-height:1.6;font-size:13px}
+.footer{text-align:center;color:white;padding:15px;font-size:12px;font-weight:bold}
 
 .modal-bg{
- position:fixed;
- inset:0;
- background:#142414aa;
- display:none;
- align-items:center;
- justify-content:center;
- padding:18px;
- z-index:10;
+ position:fixed;inset:0;background:#142414bb;display:none;
+ align-items:center;justify-content:center;padding:15px;z-index:10;
 }
 .modal-bg.show{display:flex}
 .modal{
- background:#fffbe0;
- border-radius:20px;
- padding:22px;
- width:min(100%,420px);
+ background:#fffbe0;border-radius:20px;padding:21px;
+ width:min(100%,420px);max-height:90vh;overflow:auto;
+ box-shadow:0 10px 40px #0005;
 }
 .modal input{
- width:100%;
- padding:13px;
- border:1px solid #ccc;
- border-radius:10px;
- margin:10px 0;
+ width:100%;padding:13px;border:1px solid #c8c8ad;
+ border-radius:10px;margin:8px 0;background:white;
 }
 .modal button{
- padding:12px;
- border:0;
- border-radius:10px;
- font-weight:bold;
+ padding:12px;border:0;border-radius:10px;font-weight:bold;
 }
 .confirm{background:#4d9638;color:white}
-.cancel{background:#e8e3c6}
+.cancel{background:#e8e3c6;color:#493e22}
+.modal-actions{display:flex;gap:9px;margin-top:15px}
+.modal-actions button{flex:1}
 .toast{
- position:fixed;
- bottom:20px;
- left:50%;
- transform:translateX(-50%);
- background:#263d24;
- color:white;
- padding:13px 18px;
- border-radius:30px;
- display:none;
- z-index:20;
- width:max-content;
- max-width:90%;
- text-align:center;
+ position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+ background:#263d24;color:white;padding:13px 18px;
+ border-radius:30px;display:none;z-index:20;
+ width:max-content;max-width:90%;text-align:center;font-size:13px;
 }
-
+.notice{
+ background:#fff0c8;padding:10px;border-radius:10px;
+ color:#74551c;font-size:12px;line-height:1.5;
+}
+.auth-buttons{display:flex;gap:8px}
+.auth-buttons button{
+ border:0;border-radius:20px;padding:9px 13px;
+ background:#fff3bd;color:#477b2c;font-weight:bold;
+}
 @media(max-width:520px){
- .container{padding:13px 12px}
- .stats{gap:6px}
- .stat{min-height:120px}
- .stat span{font-size:13px}
+ .container{padding:12px 10px}
+ .stats{gap:5px}
+ .stat{min-height:105px}
+ .stat b{font-size:16px}
+ .stat span{font-size:11px}
  .menu{gap:8px}
- .menu button{min-height:115px;font-size:13px}
- .menu .emoji{font-size:38px}
- .panel{padding:14px}
- .action{font-size:16px}
+ .menu button{min-height:100px}
+ .menu .emoji{font-size:32px}
+ .panel{padding:13px}
+ .action{font-size:15px}
 }
-@media(max-width:360px){
+@media(max-width:350px){
  .stats{grid-template-columns:repeat(2,1fr)}
  .menu{grid-template-columns:repeat(2,1fr)}
  .products{grid-template-columns:1fr}
@@ -368,23 +194,28 @@ button{cursor:pointer}
  <div class="sun"></div>
  <div class="cloud one">☁</div>
  <div class="cloud two">☁</div>
- <div class="hills"></div>
+ <div class="hill"></div>
  <div class="house">🏡</div>
  <div class="tree">🌳</div>
+ <div class="cow-scene">🐄</div>
+ <div class="chicken-scene">🐓🐥</div>
 </div>
 
 <main class="container">
 
 <header class="header">
  <div class="logo">🌿 RANCH <span>PRO</span></div>
-
  <div class="profile">
   <div class="avatar">RANCH<br>PRO</div>
   <div>
    <div id="farmerName">Guest Farmer</div>
-   <div>Account ID: RP-63998</div>
+   <div>Account ID: <span id="accountId">RP-63998</span></div>
    <div>Points: <span id="points">0</span></div>
   </div>
+ </div>
+ <div class="auth-buttons" id="authButtons">
+  <button onclick="openAuth('login')">Login</button>
+  <button onclick="openAuth('register')">Register</button>
  </div>
 </header>
 
@@ -392,107 +223,46 @@ button{cursor:pointer}
  🌾 Welcome, <span id="welcomeName">Guest Farmer</span>!
 </div>
 
-<!-- ACCOUNT BALANCE -->
-
 <section class="panel">
-
- <div class="balance-title">
-  My Balance: <span id="balance">UGX 0</span>
- </div>
+ <div class="balance-title">My Balance: <span id="balance">UGX 0</span></div>
 
  <div class="stats">
-
-  <div class="stat">
-   <div class="coin">C</div>
-   <b id="teamIncome">0</b>
-   <span>Team<br>Income</span>
-  </div>
-
-  <div class="stat">
-   <div class="coin">C</div>
-   <b id="ranchIncome">0</b>
-   <span>Ranch<br>Income</span>
-  </div>
-
-  <div class="stat">
-   <div class="coin">C</div>
-   <b id="teamSize">0</b>
-   <span>Team Size</span>
-  </div>
-
-  <div class="stat">
-   <div class="coin">C</div>
-   <b id="todayIncome">0</b>
-   <span>Today<br>Income</span>
-  </div>
-
+  <div class="stat"><div class="coin">C</div><b id="teamIncome">0</b><span>Team<br>Income</span></div>
+  <div class="stat"><div class="coin">C</div><b id="ranchIncome">0</b><span>Ranch<br>Income</span></div>
+  <div class="stat"><div class="coin">C</div><b id="teamSize">0</b><span>Team Size</span></div>
+  <div class="stat"><div class="coin">C</div><b id="todayIncome">0</b><span>Today<br>Income</span></div>
  </div>
 
  <div class="actions">
-  <button class="action" onclick="openRequest('Recharge')">
-   💰 Recharge ›
-  </button>
-
-  <button class="action" onclick="openRequest('Withdraw')">
-   💸 Withdraw ›
-  </button>
+  <button class="action" onclick="openRequest('Recharge')"><span>💰</span><br>Recharge ›</button>
+  <button class="action" onclick="openRequest('Withdraw')"><span>💸</span><br>Withdraw ›</button>
  </div>
-
 </section>
-
-<!-- MENU -->
 
 <section class="panel">
+ <div class="section-head"><h2>🏡 Ranch Services</h2></div>
  <div class="menu">
-
-  <button onclick="showPage('Company','RANCH PRO company information and support.')">
-   <span class="emoji">🏢</span>Company
-  </button>
-
-  <button onclick="showPage('My Bill','Your transaction records will appear here.')">
-   <span class="emoji">📩</span>My Bill
-  </button>
-
-  <button onclick="showPage('My Wallet','Your wallet and account activity.')">
-   <span class="emoji">🧰</span>My Wallet
-  </button>
-
-  <button onclick="showPage('CDK Exchange','CDK exchange information.')">
-   <span class="emoji">🏘️</span>CDK Exchange
-  </button>
-
-  <button onclick="showPage('Points System','Your points are displayed on your account.')">
-   <span class="emoji">💝</span>Points System
-  </button>
-
-  <button onclick="showPage('Profit','Your livestock profit records will appear here when the accounting system is connected.')">
-   <span class="emoji">🪙</span>Profit
-  </button>
-
-  <button onclick="showPage('Password','Password management will be connected to secure authentication.')">
-   <span class="emoji">🔐</span>Password
-  </button>
-
-  <button onclick="showPage('Download','You can save this page using your browser menu.')">
-   <span class="emoji">📥</span>Download
-  </button>
-
-  <button onclick="showPage('Exit','You are currently using the guest demo.')">
-   <span class="emoji">🚪</span>Exit
-  </button>
-
+  <button onclick="showPage('Company','Welcome to RANCH PRO. Your digital ranch dashboard.')"><span class="emoji">🏢</span>Company</button>
+  <button onclick="showPage('My Bill','Your transaction records will appear here.')"><span class="emoji">📩</span>My Bill</button>
+  <button onclick="showPage('My Wallet','View your demo wallet balance and activity.')"><span class="emoji">🧰</span>My Wallet</button>
+  <button onclick="showPage('CDK Exchange','CDK exchange is not yet connected.')"><span class="emoji">🏘️</span>CDK Exchange</button>
+  <button onclick="showPage('Points System','Your account points are displayed on your dashboard.')"><span class="emoji">💝</span>Points System</button>
+  <button onclick="showPage('Profit','See your livestock package information below.')"><span class="emoji">🪙</span>Profit</button>
+  <button onclick="showPage('Password','Secure password management requires a connected authentication service.')"><span class="emoji">🔐</span>Password</button>
+  <button onclick="showPage('Download','Use your browser menu to save or download this page.')"><span class="emoji">📥</span>Download</button>
+  <button onclick="logout()"><span class="emoji">🚪</span>Exit</button>
  </div>
 </section>
 
-<!-- LIVESTOCK SHOP -->
-
 <section class="panel" id="shop">
-
  <div class="section-head">
   <h2>🐄 Livestock Shop</h2>
-  <button onclick="document.getElementById('shop').scrollIntoView()">
-   View all ›
-  </button>
+  <button onclick="document.getElementById('shop').scrollIntoView()">View all ›</button>
+ </div>
+
+ <div class="notice">
+  Livestock earnings below are demonstration figures, not guaranteed returns.
+  Real purchases and payouts require a verified business and backend.
  </div>
 
  <div class="products">
@@ -502,7 +272,8 @@ button{cursor:pointer}
    <h3>Dairy Cow</h3>
    <p>Dairy livestock package</p>
    <div class="price">UGX 150,000</div>
-   <button class="buy" onclick="purchase('Dairy Cow',150000,'🐄')">Purchase</button>
+   <div class="earning">Demo: UGX 8,000/day · 30 days</div>
+   <button class="buy" onclick="purchase('Dairy Cow',150000,'🐄',8000,30)">Select Ranch</button>
   </div>
 
   <div class="product">
@@ -510,7 +281,8 @@ button{cursor:pointer}
    <h3>Pig</h3>
    <p>Pig-rearing package</p>
    <div class="price">UGX 80,000</div>
-   <button class="buy" onclick="purchase('Pig',80000,'🐖')">Purchase</button>
+   <div class="earning">Demo: UGX 4,500/day · 45 days</div>
+   <button class="buy" onclick="purchase('Pig',80000,'🐖',4500,45)">Select Ranch</button>
   </div>
 
   <div class="product">
@@ -518,7 +290,8 @@ button{cursor:pointer}
    <h3>Goat</h3>
    <p>Goat-rearing package</p>
    <div class="price">UGX 50,000</div>
-   <button class="buy" onclick="purchase('Goat',50000,'🐐')">Purchase</button>
+   <div class="earning">Demo: UGX 2,500/day · 65 days</div>
+   <button class="buy" onclick="purchase('Goat',50000,'🐐',2500,65)">Select Ranch</button>
   </div>
 
   <div class="product">
@@ -526,7 +299,8 @@ button{cursor:pointer}
    <h3>Sheep</h3>
    <p>Sheep-rearing package</p>
    <div class="price">UGX 65,000</div>
-   <button class="buy" onclick="purchase('Sheep',65000,'🐑')">Purchase</button>
+   <div class="earning">Demo: UGX 3,500/day · 129 days</div>
+   <button class="buy" onclick="purchase('Sheep',65000,'🐑',3500,129)">Select Ranch</button>
   </div>
 
   <div class="product">
@@ -534,218 +308,245 @@ button{cursor:pointer}
    <h3>Hen</h3>
    <p>Poultry livestock package</p>
    <div class="price">UGX 25,000</div>
-   <button class="buy" onclick="purchase('Hen',25000,'🐓')">Purchase</button>
+   <div class="earning">Demo: UGX 1,800/day · 20 days</div>
+   <button class="buy" onclick="purchase('Hen',25000,'🐓',1800,20)">Select Ranch</button>
+  </div>
+
+  <div class="product">
+   <div class="animal">🐈</div>
+   <h3>Cat</h3>
+   <p>Ranch companion animal</p>
+   <div class="price">Not available</div>
+   <div class="earning">Coming soon</div>
+   <button class="buy" onclick="toast('Cat package coming soon!')">Coming Soon</button>
   </div>
 
  </div>
-
- <p class="news">
-  Welcome to the RANCH PRO livestock shop.
-  Explore the available animals and their packages.
- </p>
-
 </section>
-
-<!-- MY RANCH -->
 
 <section class="panel">
-
  <div class="section-head">
   <h2>🌱 My Ranch</h2>
-  <button onclick="showPage('My Animals','Your purchased demo animals appear below.')">
-   My animals ›
-  </button>
+  <button onclick="showPage('My Animals','Your selected demo livestock appears here.')">My animals ›</button>
  </div>
-
  <div id="myAnimals" class="empty">
-  Your livestock will appear here after purchase.
+  Your livestock will appear here after a demo purchase.
  </div>
-
 </section>
-
-<!-- NEWS -->
 
 <section class="panel">
  <h2>📢 Ranch News</h2>
-
  <p class="news">
-  Welcome to RANCH PRO. Check your account activity
-  and ranch updates here. Your Growth, Your Ranch!
+  Welcome to RANCH PRO! Explore your ranch, view livestock packages
+  and manage your demo account. Your Growth, Your Ranch!
  </p>
 </section>
 
-<div class="footer">
- RANCH PRO • OWN YOUR RANCH • GROW WITH CARE
-</div>
-
+<div class="footer">RANCH PRO • OWN YOUR RANCH • GROW WITH CARE</div>
 </main>
-
-<!-- POPUP -->
 
 <div class="modal-bg" id="modalBg">
  <div class="modal">
-
   <h2 id="modalTitle">RANCH PRO</h2>
   <p id="modalText"></p>
-
   <div id="modalFields"></div>
-
-  <div style="display:flex;gap:10px;margin-top:15px">
+  <div class="modal-actions">
    <button class="cancel" onclick="closeModal()">Close</button>
    <button class="confirm" id="confirmBtn" onclick="confirmAction()">Continue</button>
   </div>
-
  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-
+let user = null;
 let points = 0;
 let animals = [];
 let pendingAction = null;
+let demoBalance = 0;
 
-function money(amount){
- return 'UGX ' + Number(amount).toLocaleString('en-US');
+const $ = id => document.getElementById(id);
+
+function money(n){
+ return 'UGX ' + Number(n).toLocaleString('en-US');
 }
 
 function toast(message){
- const el = document.getElementById('toast');
- el.textContent = message;
- el.style.display = 'block';
-
+ const el=$('toast');
+ el.textContent=message;
+ el.style.display='block';
  clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>el.style.display='none',3000);
+}
 
- window.toastTimer = setTimeout(()=>{
-  el.style.display = 'none';
- },3000);
+function updateDashboard(){
+ $('farmerName').textContent=user ? user.name : 'Guest Farmer';
+ $('welcomeName').textContent=user ? user.name : 'Guest Farmer';
+ $('accountId').textContent=user ? user.id : 'RP-63998';
+ $('points').textContent=points;
+ $('balance').textContent=money(demoBalance);
+ $('authButtons').style.display=user?'none':'flex';
+ renderAnimals();
+}
+
+function openAuth(type){
+ pendingAction={type:type};
+ $('modalTitle').textContent=type==='login'?'Farmer Login':'Create Ranch Account';
+ $('modalText').textContent='Demo account only. Do not use a real password here.';
+ $('modalFields').innerHTML=`
+ ${type==='register'?'<input id="authName" placeholder="Your username">':''}
+ <input id="authEmail" type="text" placeholder="Username or email">
+ <input id="authPassword" type="password" placeholder="Demo password">
+ `;
+ $('confirmBtn').style.display='block';
+ $('confirmBtn').textContent=type==='login'?'Login':'Create Account';
+ $('modalBg').classList.add('show');
 }
 
 function showPage(title,message){
-
- pendingAction = null;
-
- document.getElementById('modalTitle').textContent = title;
- document.getElementById('modalText').textContent = message;
- document.getElementById('modalFields').innerHTML = '';
-
- document.getElementById('confirmBtn').style.display = 'none';
- document.getElementById('modalBg').classList.add('show');
-
-}
-
-function closeModal(){
- document.getElementById('modalBg').classList.remove('show');
- pendingAction = null;
+ pendingAction=null;
+ $('modalTitle').textContent=title;
+ $('modalText').textContent=message;
+ $('modalFields').innerHTML='';
+ $('confirmBtn').style.display='none';
+ $('modalBg').classList.add('show');
 }
 
 function openRequest(type){
-
- pendingAction = {type:type};
-
- document.getElementById('modalTitle').textContent = type;
-
- document.getElementById('modalText').textContent =
- 'Enter your requested amount in UGX. This is a demonstration only; no payment or transfer will occur.';
-
- document.getElementById('modalFields').innerHTML = `
- <input type="number" id="requestAmount"
- min="1000" placeholder="Enter amount in UGX">
+ if(!user){
+  toast('Please login or register first.');
+  openAuth('login');
+  return;
+ }
+ pendingAction={type:type};
+ $('modalTitle').textContent=type;
+ $('modalText').textContent=
+ 'Demo only. This will not send money or create a real payment.';
+ $('modalFields').innerHTML=`
+ <input id="requestAmount" type="number" min="1000" placeholder="Amount in UGX">
+ <input id="requestPhone" type="tel" placeholder="Mobile money number">
  `;
-
- document.getElementById('confirmBtn').style.display = 'block';
- document.getElementById('confirmBtn').textContent = 'Submit request';
-
- document.getElementById('modalBg').classList.add('show');
-
+ $('confirmBtn').style.display='block';
+ $('confirmBtn').textContent='Submit demo request';
+ $('modalBg').classList.add('show');
 }
 
-function purchase(name,price,emoji){
-
- pendingAction = {
-  type:'purchase',
-  name:name,
-  price:price,
-  emoji:emoji
- };
-
- document.getElementById('modalTitle').textContent = 'Confirm Purchase';
-
- document.getElementById('modalText').textContent =
- 'Do you want to add '+name+' to your demo ranch at '+money(price)+'? No money will be charged.';
-
- document.getElementById('modalFields').innerHTML = '';
-
- document.getElementById('confirmBtn').style.display = 'block';
- document.getElementById('confirmBtn').textContent = 'Confirm demo purchase';
-
- document.getElementById('modalBg').classList.add('show');
-
+function purchase(name,price,emoji,daily,days){
+ if(!user){
+  toast('Please login first to select livestock.');
+  openAuth('login');
+  return;
+ }
+ pendingAction={type:'purchase',name,price,emoji,daily,days};
+ $('modalTitle').textContent='Confirm Ranch Selection';
+ $('modalText').textContent=
+ `${name} package: ${money(price)}. Demo daily figure: ${money(daily)} for ${days} days. No real money will be charged.`;
+ $('modalFields').innerHTML='';
+ $('confirmBtn').style.display='block';
+ $('confirmBtn').textContent='Confirm demo selection';
+ $('modalBg').classList.add('show');
 }
 
 function confirmAction(){
-
  if(!pendingAction)return;
+ const action=pendingAction;
 
- if(pendingAction.type === 'purchase'){
+ if(action.type==='register'||action.type==='login'){
+  const name=action.type==='register'?$('authName').value.trim():$('authEmail').value.trim();
+  const password=$('authPassword').value.trim();
 
-  animals.push({
-   name:pendingAction.name,
-   emoji:pendingAction.emoji
-  });
-
-  renderAnimals();
-
-  toast(pendingAction.name+' added to your demo ranch!');
-
+  if(!name||!password){
+   toast('Please fill in all required fields.');
+   return;
+  }
+  if(action.type==='register'&&!$('authEmail').value.trim()){
+   toast('Enter your email or username.');
+   return;
+  }
+  user={
+   name:action.type==='register'?name:name.split('@')[0],
+   id:'RP-'+Math.floor(10000+Math.random()*89999)
+  };
+  points=0;
+  demoBalance=0;
+  animals=[];
+  updateDashboard();
   closeModal();
-
+  toast('Welcome to RANCH PRO, '+user.name+'!');
   return;
  }
 
- const amount = Number(
-  document.getElementById('requestAmount').value
- );
-
- if(amount < 1000){
-  toast('Enter at least UGX 1,000.');
+ if(action.type==='purchase'){
+  if(demoBalance<action.price){
+   toast('Demo balance is insufficient. Recharge is not connected.');
+   return;
+  }
+  demoBalance-=action.price;
+  animals.push({
+   name:action.name,emoji:action.emoji,
+   daily:action.daily,days:action.days
+  });
+  points+=10;
+  updateDashboard();
+  closeModal();
+  toast(action.name+' added to your demo ranch!');
   return;
  }
 
- toast('Demo only: request not sent. Payment backend required.');
+ if(action.type==='Recharge'||action.type==='Withdraw'){
+  const amount=Number($('requestAmount').value);
+  const phone=$('requestPhone').value.trim();
 
- closeModal();
-
+  if(!Number.isFinite(amount)||amount<1000){
+   toast('Enter at least UGX 1,000.');
+   return;
+  }
+  if(!phone){
+   toast('Enter your mobile money number.');
+   return;
+  }
+  toast('Demo only: request not sent. Payment service is not connected.');
+  closeModal();
+ }
 }
 
 function renderAnimals(){
-
- const area = document.getElementById('myAnimals');
-
- if(animals.length === 0){
-  area.className = 'empty';
-  area.textContent = 'Your livestock will appear here after purchase.';
+ const area=$('myAnimals');
+ if(!animals.length){
+  area.className='empty';
+  area.textContent='Your livestock will appear here after a demo purchase.';
   return;
  }
-
- area.className = '';
-
- area.innerHTML = animals.map(animal=>`
+ area.className='';
+ area.innerHTML=animals.map(a=>`
   <div class="animal-row">
-   <strong>${animal.emoji} ${animal.name}</strong>
-   <span>Demo owned</span>
+   <strong>${a.emoji} ${a.name}</strong>
+   <span>${money(a.daily)}/day · ${a.days} days</span>
   </div>
  `).join('');
-
 }
 
-document.getElementById('modalBg').addEventListener('click',function(event){
- if(event.target === this)closeModal();
+function logout(){
+ user=null;
+ animals=[];
+ points=0;
+ demoBalance=0;
+ updateDashboard();
+ toast('You have exited the demo account.');
+}
+
+function closeModal(){
+ $('modalBg').classList.remove('show');
+ pendingAction=null;
+}
+
+$('modalBg').addEventListener('click',function(e){
+ if(e.target===this)closeModal();
 });
 
+updateDashboard();
 </script>
-
 </body>
 </html>
 
