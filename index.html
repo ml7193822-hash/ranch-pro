@@ -508,49 +508,35 @@ button:active{transform:scale(.97)}
   display: block;
  }
 
-/* RANCH PRO FULL-SCREEN AUTHENTICATION */
 
+/* RANCH PRO AUTHENTICATION — GREEN GAME STYLE */
+
+.auth-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  overflow-y: auto;
+  background: transparent;
+}
 
 .auth-card {
   width: 100%;
   max-width: 420px;
-  background: rgba(18, 65, 29, 0.91);
-  border: 1px solid #a5d66c;
+  background: linear-gradient(145deg, #397b2e, #174b27, #263d24);
+  border: 2px solid #83bd45;
   border-radius: 22px;
   padding: 28px 22px;
-  box-shadow: 0 12px 35px rgba(0,0,0,.4);
+  box-shadow: 0 12px 35px #0008;
   color: white;
-  backdrop-filter: blur(8px);
-}
-
-.auth-card h2,
-.auth-card label {
-  color: white;
-}
-
-.auth-subtitle,
-.auth-switch {
-  color: #e2f4d5;
-}
-
-.auth-card input {
-  background: rgba(255,255,255,.95);
-  color: #183b20;
-}
-
-
-.auth-card {
-  width: 100%;
-  max-width: 420px;
-  background: #fff;
-  border-radius: 22px;
-  padding: 28px 22px;
-  box-shadow: 0 12px 35px rgba(0,0,0,.25);
 }
 
 .auth-heading {
   text-align: center;
-  color: #285c25;
+  color: #ffe28a;
   font-size: 27px;
   font-weight: 900;
   margin-bottom: 8px;
@@ -558,52 +544,59 @@ button:active{transform:scale(.97)}
 
 .auth-subtitle {
   text-align: center;
-  color: #777;
+  color: #e5f3d4;
   margin-bottom: 25px;
   font-size: 14px;
+}
+
+.auth-card h2,
+.auth-card label {
+  color: #ffe28a;
 }
 
 .auth-card label {
   display: block;
   font-weight: 700;
-  color: #333;
   margin: 14px 0 7px;
 }
 
 .auth-card input {
   width: 100%;
   padding: 14px;
-  border: 1px solid #ddd;
+  border: 2px solid #83bd45;
   border-radius: 11px;
   font-size: 15px;
   box-sizing: border-box;
+  background: #fff9d9;
+  color: #283b22;
 }
 
 .auth-main-btn {
   width: 100%;
-  border: none;
+  border: 2px solid #ffe28a;
   border-radius: 11px;
   padding: 15px;
   margin-top: 22px;
-  background: #397d32;
+  background: linear-gradient(90deg, #397b2e, #83bd45);
   color: white;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .auth-switch {
   text-align: center;
   margin-top: 20px;
-  color: #555;
+  color: #e5f3d4;
 }
 
 .auth-switch button {
   border: none;
   background: none;
-  color: #397d32;
-  font-weight: 800;
+  color: #ffe28a;
+  font-weight: 900;
   font-size: 15px;
 }
+
 
 
 </style>
