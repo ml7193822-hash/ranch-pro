@@ -7,6 +7,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#83bd45">
 <title>RANCH PRO | Digital Ranch</title>
+ 
+
+/* RANCH PRO PROFESSIONAL BOTTOM NAVIGATION */
+body {
+  padding-bottom: 95px;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9;
+  background: #fffbe9;
+  border-top: 2px solid #d9e8bd;
+  box-shadow: 0 -5px 18px #263d2425;
+  padding: 9px 5px calc(9px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav-inner {
+  max-width: 780px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+
+.nav-item {
+  border: 0;
+  background: transparent;
+  color: #77816a;
+  border-radius: 12px;
+  padding: 7px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.nav-item span {
+  font-size: 23px;
+}
+
+.nav-item.active {
+  background: #e5f3d4;
+  color: #397b2e;
+}
+
+.nav-item.active span {
+  transform: translateY(-2px);
+}
+
+@media(min-width: 700px) {
+  .bottom-nav-inner {
+    max-width: 600px;
+  }
+}
 
 <style>
 :root{
@@ -344,6 +404,33 @@ button:active{transform:scale(.97)}
 
 <div class="footer">RANCH PRO • OWN YOUR RANCH • GROW WITH CARE</div>
 </main>
+ 
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+
+    <button class="nav-item active" onclick="goTab('home',this)">
+      <span>🏠</span>Home
+    </button>
+
+    <button class="nav-item" onclick="goTab('ranch',this)">
+      <span>🐄</span>Ranch
+    </button>
+
+    <button class="nav-item" onclick="goTab('team',this)">
+      <span>👥</span>Team
+    </button>
+
+    <button class="nav-item" onclick="goTab('income',this)">
+      <span>💰</span>Income
+    </button>
+
+    <button class="nav-item" onclick="goTab('profile',this)">
+      <span>👤</span>Profile
+    </button>
+
+  </div>
+</nav>
+
 
 <div class="modal-bg" id="modalBg">
  <div class="modal">
@@ -544,6 +631,49 @@ function closeModal(){
 $('modalBg').addEventListener('click',function(e){
  if(e.target===this)closeModal();
 });
+ 
+function goTab(page, button) {
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.remove('active');
+  });
+
+  button.classList.add('active');
+
+  if(page === 'home') {
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  if(page === 'ranch') {
+    $('shop').scrollIntoView({behavior:'smooth'});
+  }
+
+  if(page === 'team') {
+    showPage(
+      '👥 My Ranch Team',
+      'Your referral team and team members will appear here when the referral system is connected.'
+    );
+  }
+
+  if(page === 'income') {
+    showPage(
+      '💰 My Income',
+      'Your ranch income, daily earnings and transaction history will appear here when connected to the database.'
+    );
+  }
+
+  if(page === 'profile') {
+    showPage(
+      '👤 My Profile',
+      user
+        ? 'Farmer: ' + user.name +
+          '\nAccount ID: ' + user.id +
+          '\nBalance: ' + money(demoBalance)
+        : 'Please login or register to view your farmer profile.'
+    );
+  }
+}
+
 
 updateDashboard();
 </script>
