@@ -421,6 +421,87 @@ button:active{transform:scale(.97)}
   margin-top:10px;
 }
 
+/* RANCH PRO — PROFESSIONAL DASHBOARD PAGES */
+
+.dashboard-page {
+  display: none;
+  animation: ranchFade .3s ease;
+}
+
+.dashboard-page.active {
+  display: block;
+}
+
+.page-banner {
+  background: linear-gradient(135deg,#174b27,#397b2e,#76b83e);
+  color: #fff8d7;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 6px 16px #263d2440;
+}
+
+.page-banner h2 {
+  margin: 0 0 8px;
+  font-size: 23px;
+}
+
+.page-banner p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.page-card {
+  background: #fffbe9;
+  border: 2px solid white;
+  border-radius: 18px;
+  padding: 17px;
+  margin-bottom: 13px;
+  box-shadow: 0 5px 15px #263d2430;
+}
+
+.page-card h3 {
+  margin: 0 0 12px;
+  color: #397b2e;
+}
+
+.page-value {
+  font-size: 23px;
+  font-weight: 1000;
+  color: #bd7929;
+}
+
+.page-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 3px;
+  border-bottom: 1px solid #e4dfc3;
+  font-size: 13px;
+  gap: 8px;
+}
+
+.page-row:last-child {
+  border-bottom: 0;
+}
+
+.page-button {
+  width: 100%;
+  padding: 13px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(90deg,#397b2e,#76b83e);
+  color: white;
+  font-weight: 1000;
+  margin-top: 10px;
+}
+
+@keyframes ranchFade {
+  from {opacity:0;transform:translateY(8px)}
+  to {opacity:1;transform:translateY(0)}
+}
+
 
 </style>
 </head>
@@ -582,6 +663,77 @@ button:active{transform:scale(.97)}
 <div class="footer">RANCH PRO • OWN YOUR RANCH • GROW WITH CARE</div>
 </main>
  
+<!-- RANCH PRO DASHBOARD PAGES -->
+
+<section id="teamPage" class="dashboard-page">
+  <div class="page-banner">
+    <h2>👥 My Ranch Team</h2>
+    <p>Grow your ranch by inviting other farmers.</p>
+  </div>
+
+  <div class="page-card">
+    <h3>🌱 Team Overview</h3>
+    <div class="page-row"><span>Total Team Members</span><b id="pageTeamSize">0</b></div>
+    <div class="page-row"><span>Team Income</span><b id="pageTeamIncome">UGX 0</b></div>
+    <div class="page-row"><span>Referral Points</span><b id="pageTeamPoints">0</b></div>
+  </div>
+
+  <div class="page-card">
+    <h3>🔗 Your Referral Link</h3>
+    <input id="referralLink" readonly placeholder="Register to get your link">
+    <button class="page-button" onclick="copyReferral()">Copy Referral Link</button>
+  </div>
+
+  <div class="page-card">
+    <h3>📋 Team Members</h3>
+    <div id="teamMembers">No team members yet.</div>
+  </div>
+</section>
+
+<section id="incomePage" class="dashboard-page">
+  <div class="page-banner">
+    <h2>💰 My Ranch Income</h2>
+    <p>Monitor your ranch earnings and transactions.</p>
+  </div>
+
+  <div class="page-card">
+    <h3>💎 Income Summary</h3>
+    <div class="page-row"><span>Today's Income</span><b id="pageTodayIncome">UGX 0</b></div>
+    <div class="page-row"><span>Total Ranch Income</span><b id="pageRanchIncome">UGX 0</b></div>
+    <div class="page-row"><span>Team Income</span><b id="pageIncomeTeam">UGX 0</b></div>
+    <div class="page-row"><span>Available Balance</span><b id="pageAvailableBalance">UGX 0</b></div>
+  </div>
+
+  <div class="page-card">
+    <h3>📜 Transaction History</h3>
+    <div id="transactionHistory">No transactions yet.</div>
+  </div>
+</section>
+
+<section id="profilePage" class="dashboard-page">
+  <div class="page-banner">
+    <h2>👤 Farmer Profile</h2>
+    <p>Manage your RANCH PRO account.</p>
+  </div>
+
+  <div class="page-card">
+    <h3>🌿 Account Information</h3>
+    <div class="page-row"><span>Farmer Name</span><b id="profileName">Guest Farmer</b></div>
+    <div class="page-row"><span>Account ID</span><b id="profileAccount">RP-63998</b></div>
+    <div class="page-row"><span>Account Points</span><b id="profilePoints">0</b></div>
+    <div class="page-row"><span>Wallet Balance</span><b id="profileBalance">UGX 0</b></div>
+  </div>
+
+  <div class="page-card">
+    <h3>⚙️ Account Settings</h3>
+    <button class="page-button" onclick="showPage('Password Settings','Password changes require a connected authentication service.')">🔐 Change Password</button>
+    <button class="page-button" onclick="logout()">🚪 Logout</button>
+  </div>
+</section>
+
+<!-- END DASHBOARD PAGES -->
+
+ 
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
 
@@ -644,15 +796,34 @@ function toast(message){
  window.toastTimer=setTimeout(()=>el.style.display='none',3000);
 }
 
+
 function updateDashboard(){
- $('farmerName').textContent=user ? user.name : 'Guest Farmer';
- $('welcomeName').textContent=user ? user.name : 'Guest Farmer';
- $('accountId').textContent=user ? user.id : 'RP-63998';
- $('points').textContent=points;
- $('balance').textContent=money(demoBalance);
- $('authButtons').style.display=user?'none':'flex';
- renderAnimals();
+
+  $('farmerName').textContent = user ? user.name : 'Guest Farmer';
+  $('welcomeName').textContent = user ? user.name : 'Guest Farmer';
+  $('accountId').textContent = user ? user.id : 'RP-63998';
+  $('points').textContent = points;
+
+  $('balance').textContent = money(demoBalance);
+
+  $('authButtons').style.display = user ? 'none' : 'flex';
+
+  // Update livestock information
+  const totalAnimals = animals.length;
+  const totalValue = animals.reduce((sum,a) => sum + (a.price || 0),0);
+
+  $('ranchIncome').textContent = money(totalValue);
+  $('teamIncome').textContent = '0';
+  $('teamSize').textContent = '0';
+  $('todayIncome').textContent = '0';
+
+  renderAnimals();
+
+  if (typeof updateExtraPages === 'function') {
+    updateExtraPages();
+  }
 }
+
 
 function openAuth(type){
  pendingAction={type:type};
@@ -685,6 +856,7 @@ let depositTimer = null;
 let depositLocked = false;
 let selectedDepositAmount = 10000;
 let depositRequests = [];
+ let transactions = [];
 
 const depositAccounts = [
   { phone: '0783 865487', name: 'MUGABIGWE RUSIYA' },
@@ -896,25 +1068,43 @@ function confirmAction(){
   updateDashboard();
   closeModal();
   toast('Welcome to RANCH PRO, '+user.name+'!');
-  return;
- }
+  
+if(action.type==='purchase'){
 
- if(action.type==='purchase'){
-  if(demoBalance<action.price){
-   toast('Demo balance is insufficient. Recharge is not connected.');
-   return;
+  if(demoBalance < action.price){
+    toast('Insufficient demo balance. Recharge is not connected.');
+    return;
   }
-  demoBalance-=action.price;
+
+  demoBalance -= action.price;
+
   animals.push({
-   name:action.name,emoji:action.emoji,
-   daily:action.daily,days:action.days
+    name: action.name,
+    emoji: action.emoji,
+    daily: action.daily,
+    days: action.days,
+    price: action.price,
+    status: 'Active Demo'
   });
-  points+=10;
+
+  points += 10;
+
+  addTransaction(
+    'Livestock Selection',
+    action.price,
+    'Demo purchase',
+    action.name + ' package'
+  );
+
   updateDashboard();
+  updateExtraPages();
+
   closeModal();
-  toast(action.name+' added to your demo ranch!');
+
+  toast(action.name + ' added to your demo ranch!');
   return;
- }
+}
+
 
  
 if(action.type === 'Recharge') {
@@ -946,6 +1136,12 @@ if(action.type === 'Recharge') {
     transactionId: transactionId,
     status: 'Pending verification'
   });
+ addTransaction(
+  'Recharge',
+  amount,
+  'Pending verification',
+  'Mobile Money: ' + transactionId
+);
 
   closeModal();
   toast('Payment details entered. Awaiting verification.');
@@ -965,6 +1161,12 @@ if(action.type === 'Withdraw') {
     toast('Enter your mobile money number.');
     return;
   }
+ addTransaction(
+  'Withdrawal',
+  amount,
+  'Demo only',
+  'Mobile Money: ' + phone
+);
 
   toast('Withdrawal request is demo-only. Backend is not connected.');
   closeModal();
@@ -987,21 +1189,92 @@ if(action.type === 'Withdraw') {
  }
 }
 
-function renderAnimals(){
- const area=$('myAnimals');
- if(!animals.length){
-  area.className='empty';
-  area.textContent='Your livestock will appear here after a demo purchase.';
-  return;
- }
- area.className='';
- area.innerHTML=animals.map(a=>`
-  <div class="animal-row">
-   <strong>${a.emoji} ${a.name}</strong>
-   <span>${money(a.daily)}/day · ${a.days} days</span>
-  </div>
- `).join('');
+function addTransaction(type, amount, status, details = '') {
+  transactions.unshift({
+    type: type,
+    amount: Number(amount),
+    status: status,
+    details: details,
+    date: new Date().toLocaleString()
+  });
+
+  renderTransactions();
 }
+
+function renderTransactions() {
+  const area = $('transactionHistory');
+
+  if (!transactions.length) {
+    area.innerHTML = '📭 No transactions yet.';
+    return;
+  }
+
+  area.innerHTML = transactions.map(t => `
+    <div class="page-row">
+      <div>
+        <strong>${t.type}</strong>
+        <div style="font-size:10px;color:#77816a">
+          ${t.date}
+        </div>
+        <div style="font-size:11px">${t.details}</div>
+      </div>
+      <div style="text-align:right">
+        <b style="color:#bd7929">${money(t.amount)}</b>
+        <div style="font-size:10px;color:#397b2e">
+          ${t.status}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+
+function renderAnimals(){
+
+ const area = $('myAnimals');
+
+ if (!animals.length) {
+   area.className = 'empty';
+   area.innerHTML = `
+     <div style="text-align:center;padding:22px">
+       <div style="font-size:55px">🏡</div>
+       <h3>Your ranch is waiting!</h3>
+       <p>Select livestock from the shop to start building your ranch.</p>
+     </div>
+   `;
+   return;
+ }
+
+ area.className = '';
+
+ const totalAnimals = animals.length;
+
+ area.innerHTML = `
+   <div class="page-card">
+     <h3>🐄 Ranch Overview</h3>
+     <div class="page-value">${totalAnimals} Livestock Packages</div>
+     <p>Manage your selected ranch packages below.</p>
+   </div>
+
+   ${animals.map((a,index) => `
+     <div class="animal-row">
+       <div>
+         <strong>${a.emoji} ${a.name}</strong>
+         <div style="font-size:11px;color:#64734a;margin-top:5px">
+           Package ${index + 1} · ${a.days} days
+         </div>
+         <div style="font-size:11px;color:#397b2e;margin-top:4px">
+           Demo figure: ${money(a.daily)} / day
+         </div>
+       </div>
+       <span style="font-weight:1000;color:#bd7929">
+         ACTIVE DEMO
+       </span>
+     </div>
+   `).join('')}
+ `;
+}
+
 
 function logout(){
  user=null;
@@ -1021,6 +1294,7 @@ function closeModal(){
 }
 
  
+
 function goTab(page, button) {
 
   document.querySelectorAll('.nav-item').forEach(item => {
@@ -1029,39 +1303,99 @@ function goTab(page, button) {
 
   button.classList.add('active');
 
-  if(page === 'home') {
-    window.scrollTo({top:0, behavior:'smooth'});
+  // Hide all dashboard pages
+  document.querySelectorAll('.dashboard-page').forEach(section => {
+    section.classList.remove('active');
+  });
+
+  // Hide the main dashboard sections
+  const mainSections = [
+    document.querySelector('.welcome'),
+    document.querySelector('.container > .panel'),
+    document.querySelectorAll('.container > .panel')[1],
+    document.getElementById('shop'),
+    document.querySelectorAll('.container > .panel')[3],
+    document.querySelectorAll('.container > .panel')[4]
+  ];
+
+  mainSections.forEach(section => {
+    if (section) section.style.display = 'none';
+  });
+
+  if (page === 'home') {
+    mainSections.forEach(section => {
+      if (section) section.style.display = '';
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  if(page === 'ranch') {
-    $('shop').scrollIntoView({behavior:'smooth'});
+  if (page === 'ranch') {
+    document.querySelector('.welcome').style.display = '';
+    document.getElementById('shop').style.display = '';
+    document.querySelectorAll('.container > .panel')[3].style.display = '';
+    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
   }
 
-  if(page === 'team') {
-    showPage(
-      '👥 My Ranch Team',
-      'Your referral team and team members will appear here when the referral system is connected.'
-    );
+  if (page === 'team') {
+    document.getElementById('teamPage').classList.add('active');
+    updateExtraPages();
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  if(page === 'income') {
-    showPage(
-      '💰 My Income',
-      'Your ranch income, daily earnings and transaction history will appear here when connected to the database.'
-    );
+  if (page === 'income') {
+    document.getElementById('incomePage').classList.add('active');
+    updateExtraPages();
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  if(page === 'profile') {
-    showPage(
-      '👤 My Profile',
-      user
-        ? 'Farmer: ' + user.name +
-          '\nAccount ID: ' + user.id +
-          '\nBalance: ' + money(demoBalance)
-        : 'Please login or register to view your farmer profile.'
-    );
+  if (page === 'profile') {
+    document.getElementById('profilePage').classList.add('active');
+    updateExtraPages();
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 }
+
+function updateExtraPages() {
+  const name = user ? user.name : 'Guest Farmer';
+  const id = user ? user.id : 'RP-63998';
+
+  $('profileName').textContent = name;
+  $('profileAccount').textContent = id;
+  $('profilePoints').textContent = points;
+  $('profileBalance').textContent = money(demoBalance);
+
+  $('pageTodayIncome').textContent = 'UGX 0';
+  $('pageRanchIncome').textContent = 'UGX 0';
+  $('pageIncomeTeam').textContent = 'UGX 0';
+  $('pageAvailableBalance').textContent = money(demoBalance);
+
+  $('pageTeamSize').textContent = '0';
+  $('pageTeamIncome').textContent = 'UGX 0';
+  $('pageTeamPoints').textContent = points;
+
+  $('referralLink').value = user
+    ? window.location.origin + window.location.pathname + '?ref=' + user.id
+    : 'Please login first';
+}
+
+function copyReferral() {
+  if (!user) {
+    toast('Please login first.');
+    return;
+  }
+
+  const link = $('referralLink').value;
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(link)
+      .then(() => toast('Referral link copied!'))
+      .catch(() => toast('Unable to copy link.'));
+  } else {
+    $('referralLink').select();
+    toast('Select and copy your referral link.');
+  }
+}
+
 
 
 updateDashboard();
