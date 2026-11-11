@@ -246,6 +246,43 @@ button:active{transform:scale(.97)}
  .menu{grid-template-columns:repeat(2,1fr)}
  .products{grid-template-columns:1fr}
 }
+ 
+.action {
+  position: relative;
+  overflow: hidden;
+  border: 3px solid #ffe28a;
+  border-radius: 17px;
+  background: linear-gradient(
+    145deg,
+    #fff0a3 0%,
+    #ffc83e 35%,
+    #e99a13 70%,
+    #b96b08 100%
+  );
+  box-shadow:
+    0 5px 0 #89500b,
+    0 8px 15px #68400a55,
+    inset 0 2px 5px #fff8c9;
+  padding: 16px 5px;
+  color: #653600;
+  font-weight: 1000;
+  font-size: 17px;
+  text-shadow: 0 1px 1px #fff2b0;
+}
+
+.action span {
+  display: inline-grid;
+  place-items: center;
+  font-size: 34px;
+  margin-bottom: 5px;
+  filter: drop-shadow(0 3px 2px #80500066);
+}
+
+.action:active {
+  transform: translateY(3px) scale(.97);
+  box-shadow: 0 2px 0 #89500b;
+}
+
 </style>
 </head>
 
@@ -434,7 +471,7 @@ button:active{transform:scale(.97)}
 
 
 <div class="modal-bg" id="modalBg">
- <div class="modal">
+ <div class="modal" id="modal">
   <h2 id="modalTitle">RANCH PRO</h2>
   <p id="modalText"></p>
   <div id="modalFields"></div>
@@ -501,24 +538,63 @@ function showPage(title,message){
  $('modalBg').classList.add('show');
 }
 
-function openRequest(type){
- if(!user){
-  toast('Please login or register first.');
-  openAuth('login');
-  return;
- }
- pendingAction={type:type};
- $('modalTitle').textContent=type;
- $('modalText').textContent=
- 'Demo only. This will not send money or create a real payment.';
- $('modalFields').innerHTML=`
- <input id="requestAmount" type="number" min="1000" placeholder="Amount in UGX">
- <input id="requestPhone" type="tel" placeholder="Mobile money number">
- `;
- $('confirmBtn').style.display='block';
- $('confirmBtn').textContent='Submit demo request';
- $('modalBg').classList.add('show');
+
+function openRequest(type) {
+  if (!user) {
+    toast('Please login or register first.');
+    openAuth('login');
+    return;
+  }
+
+  pendingAction = {type:type};
+
+  const isRecharge = type === 'Recharge';
+
+  $('modalTitle').textContent = isRecharge
+    ? '💰 GOLD TREASURE RECHARGE'
+    : '💎 COLLECT YOUR TREASURE';
+
+  $('modal').classList.add('treasure-modal');
+
+  $('modalText').innerHTML = `
+    <div class="treasure-icon">
+      ${isRecharge ? '🏆💰' : '💎👑'}
+    </div>
+    <div class="treasure-heading">
+      ${isRecharge ? 'Add Gold to Your Ranch' : 'Withdraw Your Gold'}
+    </div>
+    <div class="treasure-info">
+      ${isRecharge
+        ? 'Enter the amount you want to add to your ranch wallet.'
+        : 'Enter the amount you want to request from your ranch wallet.'}
+      <br><br>
+      Payment processing is not connected yet.
+    </div>
+  `;
+
+  $('modalFields').innerHTML = `
+    <input
+      id="requestAmount"
+      type="number"
+      min="1000"
+      placeholder="💰 Enter amount in UGX"
+    >
+
+    <input
+      id="requestPhone"
+      type="tel"
+      placeholder="📱 Mobile Money Number"
+    >
+  `;
+
+  $('confirmBtn').style.display = 'block';
+  $('confirmBtn').textContent = isRecharge
+    ? '💰 Submit Recharge Request'
+    : '💎 Submit Withdrawal Request';
+
+  $('modalBg').classList.add('show');
 }
+
 
 function purchase(name,price,emoji,daily,days){
  if(!user){
