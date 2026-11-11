@@ -1080,152 +1080,152 @@ function purchase(name,price,emoji,daily,days){
  $('modalBg').classList.add('show');
 }
 
-function confirmAction(){
- if(!pendingAction)return;
- const action=pendingAction;
 
- if(action.type==='register'||action.type==='login'){
-  const name=action.type==='register'?$('authName').value.trim():$('authEmail').value.trim();
-  const password=$('authPassword').value.trim();
+function confirmAction() {
+  if (!pendingAction) return;
 
-  if(!name||!password){
-   toast('Please fill in all required fields.');
-   return;
-  }
-  if(action.type==='register'&&!$('authEmail').value.trim()){
-   toast('Enter your email or username.');
-   return;
-  }
-  user={
-   name:action.type==='register'?name:name.split('@')[0],
-   id:'RP-'+Math.floor(10000+Math.random()*89999)
-  };
-  points=0;
-  demoBalance=0;
-  animals=[];
-  updateDashboard();
-  closeModal();
-  toast('Welcome to RANCH PRO, '+user.name+'!');
-  
-if(action.type==='purchase'){
+  const action = pendingAction;
 
-  if(demoBalance < action.price){
-    toast('Insufficient demo balance. Recharge is not connected.');
+  // 1. LOGIN AND REGISTRATION
+  if (action.type === 'register' || action.type === 'login') {
+    const username = action.type === 'register'
+      ? $('authName').value.trim()
+      : $('authEmail').value.trim();
+
+    const email = $('authEmail').value.trim();
+    const password = $('authPassword').value.trim();
+
+    if (!username || !password) {
+      toast('Please fill in all required fields.');
+      return;
+    }
+
+    if (action.type === 'register' && !email.includes('@')) {
+      toast('Please enter a valid email address.');
+      return;
+    }
+
+    user = {
+      name: action.type === 'register'
+        ? username
+        : username.split('@')[0],
+      id: 'RP-' + Math.floor(10000 + Math.random() * 89999)
+    };
+
+    points = 0;
+    demoBalance = 0;
+    animals = [];
+
+    updateDashboard();
+    closeModal();
+    toast('Welcome to RANCH PRO, ' + user.name + '!');
     return;
   }
 
-  demoBalance -= action.price;
+  // 2. LIVESTOCK PURCHASE
+  if (action.type === 'purchase') {
+    if (demoBalance < action.price) {
+      toast('Insufficient demo balance. Recharge is not connected.');
+      return;
+    }
 
-  animals.push({
-    name: action.name,
-    emoji: action.emoji,
-    daily: action.daily,
-    days: action.days,
-    price: action.price,
-    status: 'Active Demo'
-  });
+    demoBalance -= action.price;
 
-  points += 10;
+    animals.push({
+      name: action.name,
+      emoji: action.emoji,
+      daily: action.daily,
+      days: action.days,
+      price: action.price,
+      status: 'Active Demo'
+    });
 
-  addTransaction(
-    'Livestock Selection',
-    action.price,
-    'Demo purchase',
-    action.name + ' package'
-  );
+    points += 10;
 
-  updateDashboard();
-  updateExtraPages();
+    addTransaction(
+      'Livestock Selection',
+      action.price,
+      'Demo purchase',
+      action.name + ' package'
+    );
 
-  closeModal();
+    updateDashboard();
+    closeModal();
+    toast(action.name + ' added to your demo ranch!');
+    return;
+  }
 
-  toast(action.name + ' added to your demo ranch!');
-  return;
+  // 3. RECHARGE REQUEST
+  if (action.type === 'Recharge') {
+    const amount = Number($('depositAmount').value);
+    const transactionId = $('depositTransactionId').value.trim();
+
+    if (!Number.isFinite(amount) || amount < 1000) {
+      toast('Enter at least UGX 1,000.');
+      return;
+    }
+
+    if (!depositLocked) {
+      toast('Please lock your payment number first.');
+      return;
+    }
+
+    if (!transactionId) {
+      toast('Enter your Mobile Money transaction ID.');
+      return;
+    }
+
+    const account = depositAccounts[depositIndex];
+
+    depositRequests.push({
+      farmer: user.name,
+      amount: amount,
+      phone: account.phone,
+      accountName: account.name,
+      transactionId: transactionId,
+      status: 'Pending verification'
+    });
+
+    addTransaction(
+      'Recharge',
+      amount,
+      'Pending verification',
+      'Mobile Money: ' + transactionId
+    );
+
+    closeModal();
+    toast('Recharge request submitted for verification.');
+    return;
+  }
+
+  // 4. WITHDRAWAL REQUEST
+  if (action.type === 'Withdraw') {
+    const amount = Number($('requestAmount').value);
+    const phone = $('requestPhone').value.trim();
+
+    if (!Number.isFinite(amount) || amount < 1000) {
+      toast('Enter at least UGX 1,000.');
+      return;
+    }
+
+    if (!phone) {
+      toast('Enter your Mobile Money number.');
+      return;
+    }
+
+    addTransaction(
+      'Withdrawal',
+      amount,
+      'Demo only',
+      'Mobile Money: ' + phone
+    );
+
+    closeModal();
+    toast('Demo withdrawal request recorded.');
+    return;
+  }
 }
 
-
- 
-if(action.type === 'Recharge') {
-  const amount = Number($('depositAmount').value);
-  const transactionId = $('depositTransactionId').value.trim();
-
-  if(!Number.isFinite(amount) || amount < 1000) {
-    toast('Enter at least UGX 1,000.');
-    return;
-  }
-
-  if(!depositLocked) {
-    toast('Please lock your payment number first.');
-    return;
-  }
-
-  if(!transactionId) {
-    toast('Enter your Mobile Money transaction ID.');
-    return;
-  }
-
-  const account = depositAccounts[depositIndex];
-
-  depositRequests.push({
-    farmer: user.name,
-    amount: amount,
-    phone: account.phone,
-    accountName: account.name,
-    transactionId: transactionId,
-    status: 'Pending verification'
-  });
- addTransaction(
-  'Recharge',
-  amount,
-  'Pending verification',
-  'Mobile Money: ' + transactionId
-);
-
-  closeModal();
-  toast('Payment details entered. Awaiting verification.');
-  return;
-}
-
-if(action.type === 'Withdraw') {
-  const amount = Number($('requestAmount').value);
-  const phone = $('requestPhone').value.trim();
-
-  if(!Number.isFinite(amount) || amount < 1000) {
-    toast('Enter at least UGX 1,000.');
-    return;
-  }
-
-  if(!phone) {
-    toast('Enter your mobile money number.');
-    return;
-  }
- addTransaction(
-  'Withdrawal',
-  amount,
-  'Demo only',
-  'Mobile Money: ' + phone
-);
-
-  toast('Withdrawal request is demo-only. Backend is not connected.');
-  closeModal();
-  return;
-}
-
-  const amount=Number($('requestAmount').value);
-  const phone=$('requestPhone').value.trim();
-
-  if(!Number.isFinite(amount)||amount<1000){
-   toast('Enter at least UGX 1,000.');
-   return;
-  }
-  if(!phone){
-   toast('Enter your mobile money number.');
-   return;
-  }
-  toast('Demo only: request not sent. Payment service is not connected.');
-  closeModal();
- }
-}
 
 function addTransaction(type, amount, status, details = '') {
   transactions.unshift({
@@ -1333,6 +1333,7 @@ function closeModal(){
 
  
 
+
 function goTab(page, button) {
 
   document.querySelectorAll('.nav-item').forEach(item => {
@@ -1341,57 +1342,53 @@ function goTab(page, button) {
 
   button.classList.add('active');
 
-  // Hide all dashboard pages
+  const sections = [
+    'welcomeSection',
+    'walletSection',
+    'servicesSection',
+    'shop',
+    'myRanchSection',
+    'newsSection'
+  ];
+
+  sections.forEach(id => {
+    $(id).style.display = 'none';
+  });
+
   document.querySelectorAll('.dashboard-page').forEach(section => {
     section.classList.remove('active');
   });
 
-  // Hide the main dashboard sections
-  const mainSections = [
-    document.querySelector('.welcome'),
-    document.querySelector('.container > .panel'),
-    document.querySelectorAll('.container > .panel')[1],
-    document.getElementById('shop'),
-    document.querySelectorAll('.container > .panel')[3],
-    document.querySelectorAll('.container > .panel')[4]
-  ];
-
-  mainSections.forEach(section => {
-    if (section) section.style.display = 'none';
-  });
-
   if (page === 'home') {
-    mainSections.forEach(section => {
-      if (section) section.style.display = '';
+    sections.forEach(id => {
+      $(id).style.display = '';
     });
-    window.scrollTo({top:0,behavior:'smooth'});
   }
 
   if (page === 'ranch') {
-    document.querySelector('.welcome').style.display = '';
-    document.getElementById('shop').style.display = '';
-    document.querySelectorAll('.container > .panel')[3].style.display = '';
-    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+    $('welcomeSection').style.display = '';
+    $('shop').style.display = '';
+    $('myRanchSection').style.display = '';
   }
 
   if (page === 'team') {
-    document.getElementById('teamPage').classList.add('active');
+    $('teamPage').classList.add('active');
     updateExtraPages();
-    window.scrollTo({top:0,behavior:'smooth'});
   }
 
   if (page === 'income') {
-    document.getElementById('incomePage').classList.add('active');
+    $('incomePage').classList.add('active');
     updateExtraPages();
-    window.scrollTo({top:0,behavior:'smooth'});
   }
 
   if (page === 'profile') {
-    document.getElementById('profilePage').classList.add('active');
+    $('profilePage').classList.add('active');
     updateExtraPages();
-    window.scrollTo({top:0,behavior:'smooth'});
   }
+
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
+
 
 function updateExtraPages() {
   const name = user ? user.name : 'Guest Farmer';
