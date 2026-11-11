@@ -282,6 +282,145 @@ button:active{transform:scale(.97)}
   transform: translateY(3px) scale(.97);
   box-shadow: 0 2px 0 #89500b;
 }
+ 
+/* RANCH PRO — PREMIUM GAME DEPOSIT */
+.treasure-modal {
+  background: linear-gradient(160deg,#174b27,#092d19);
+  color: #fff8d7;
+  border: 3px solid #e8b43e;
+  border-radius: 24px;
+  box-shadow: 0 0 25px #e9b63b88,0 15px 40px #0009;
+}
+
+.deposit-title {
+  text-align:center;
+  color:#ffe28a;
+  font-size:22px;
+  font-weight:1000;
+}
+
+.deposit-chest {
+  text-align:center;
+  font-size:76px;
+  margin:8px;
+  filter:drop-shadow(0 7px 5px #0008);
+}
+
+.deposit-wallet {
+  text-align:center;
+  padding:12px;
+  border-radius:14px;
+  color:#573700;
+  font-weight:1000;
+  background:linear-gradient(90deg,#bd811c,#ffe17b,#bd811c);
+  border:2px solid #ffe9a1;
+}
+
+.deposit-label {
+  color:#ffe28a;
+  font-weight:900;
+  margin:15px 0 8px;
+}
+
+.deposit-amount-grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.deposit-amount-grid button {
+  padding:12px 5px;
+  border:2px solid #f5d77b;
+  border-radius:12px;
+  background:linear-gradient(#fff1b7,#e7ad35);
+  color:#65400a;
+  font-weight:1000;
+}
+
+.deposit-amount-grid button.selected {
+  outline:3px solid white;
+  background:linear-gradient(#ffe78a,#f2a900);
+}
+
+.deposit-game-input {
+  width:100%;
+  box-sizing:border-box;
+  padding:13px;
+  margin:7px 0;
+  border:2px solid #e8c45c;
+  border-radius:11px;
+  background:#fffdf2;
+  color:#263d24;
+}
+
+.deposit-account {
+  background:linear-gradient(145deg,#fff4c7,#e9bd58);
+  color:#533500;
+  border:2px solid #ffe18a;
+  border-radius:16px;
+  padding:13px;
+  margin:10px 0;
+  text-align:center;
+}
+
+.deposit-number {
+  font-size:25px;
+  font-weight:1000;
+  letter-spacing:1px;
+  margin:8px 0;
+}
+
+.deposit-timer {
+  display:inline-block;
+  background:#174b27;
+  color:#ffe28a;
+  padding:6px 13px;
+  border-radius:30px;
+  font-weight:1000;
+}
+
+.deposit-lock {
+  width:100%;
+  padding:12px;
+  border:0;
+  border-radius:11px;
+  background:linear-gradient(90deg,#a96b08,#ffdf70,#a96b08);
+  color:#4b3000;
+  font-weight:1000;
+  margin-top:8px;
+}
+
+.deposit-airtel {
+  background:linear-gradient(135deg,#ffe9e5,#f4b5aa);
+  border:2px solid #e66a55;
+  color:#8a2519;
+  padding:12px;
+  border-radius:14px;
+  text-align:center;
+  margin-top:10px;
+  font-weight:1000;
+}
+
+.deposit-submit {
+  width:100%;
+  padding:15px;
+  border:2px solid #ffe28a;
+  border-radius:13px;
+  background:linear-gradient(90deg,#a96b08,#ffdf70,#a96b08);
+  color:#4b3000;
+  font-weight:1000;
+  font-size:15px;
+  margin-top:12px;
+}
+
+.deposit-small {
+  color:#fff0bd;
+  font-size:11px;
+  line-height:1.5;
+  text-align:center;
+  margin-top:10px;
+}
+
 
 </style>
 </head>
@@ -539,6 +678,73 @@ function showPage(title,message){
 }
 
 
+
+let depositIndex = 0;
+let depositSeconds = 10;
+let depositTimer = null;
+let depositLocked = false;
+let selectedDepositAmount = 10000;
+let depositRequests = [];
+
+const depositAccounts = [
+  { phone: '0783 865487', name: 'MUGABIGWE RUSIYA' },
+  { phone: '0791 592637', name: 'FRANK SABITI' }
+];
+
+function selectDepositAmount(amount) {
+  selectedDepositAmount = amount;
+  $('depositAmount').value = amount;
+
+  document.querySelectorAll('.deposit-amount-grid button')
+    .forEach(button => {
+      button.classList.toggle(
+        'selected',
+        Number(button.dataset.amount) === amount
+      );
+    });
+}
+
+function renderDepositAccount() {
+  const account = depositAccounts[depositIndex];
+
+  $('depositPhoneDisplay').textContent = account.phone;
+  $('depositNameDisplay').textContent = account.name;
+  $('depositCountdown').textContent =
+    depositLocked ? 'LOCKED' : depositSeconds + 's';
+}
+
+function startDepositRotation() {
+  clearInterval(depositTimer);
+  depositSeconds = 10;
+  renderDepositAccount();
+
+  depositTimer = setInterval(() => {
+    if (depositLocked) return;
+
+    depositSeconds--;
+
+    if (depositSeconds <= 0) {
+      depositIndex = (depositIndex + 1) % depositAccounts.length;
+      depositSeconds = 10;
+    }
+
+    renderDepositAccount();
+  }, 1000);
+}
+
+function lockDepositNumber() {
+  if (depositLocked) return;
+
+  depositLocked = true;
+  clearInterval(depositTimer);
+
+  $('depositLockButton').textContent = '✓ PAYMENT NUMBER LOCKED';
+  $('depositLockButton').disabled = true;
+
+  renderDepositAccount();
+  toast('Payment number locked for this request.');
+}
+
 function openRequest(type) {
   if (!user) {
     toast('Please login or register first.');
@@ -547,53 +753,105 @@ function openRequest(type) {
   }
 
   pendingAction = {type:type};
-
-  const isRecharge = type === 'Recharge';
-
-  $('modalTitle').textContent = isRecharge
-    ? '💰 GOLD TREASURE RECHARGE'
-    : '💎 COLLECT YOUR TREASURE';
-
   $('modal').classList.add('treasure-modal');
 
-  $('modalText').innerHTML = `
-    <div class="treasure-icon">
-      ${isRecharge ? '🏆💰' : '💎👑'}
-    </div>
-    <div class="treasure-heading">
-      ${isRecharge ? 'Add Gold to Your Ranch' : 'Withdraw Your Gold'}
-    </div>
-    <div class="treasure-info">
-      ${isRecharge
-        ? 'Enter the amount you want to add to your ranch wallet.'
-        : 'Enter the amount you want to request from your ranch wallet.'}
-      <br><br>
-      Payment processing is not connected yet.
-    </div>
-  `;
+  if (type === 'Recharge') {
+    depositIndex = 0;
+    depositSeconds = 10;
+    depositLocked = false;
+    selectedDepositAmount = 10000;
 
-  $('modalFields').innerHTML = `
-    <input
-      id="requestAmount"
-      type="number"
-      min="1000"
-      placeholder="💰 Enter amount in UGX"
-    >
+    $('modalTitle').textContent = '🏆 GOLD TREASURE RECHARGE';
 
-    <input
-      id="requestPhone"
-      type="tel"
-      placeholder="📱 Mobile Money Number"
-    >
-  `;
+    $('modalText').innerHTML = `
+      <div class="deposit-chest">💰🏆💰</div>
+      <div class="deposit-title">RECHARGE YOUR RANCH</div>
 
-  $('confirmBtn').style.display = 'block';
-  $('confirmBtn').textContent = isRecharge
-    ? '💰 Submit Recharge Request'
-    : '💎 Submit Withdrawal Request';
+      <div class="deposit-wallet">
+        🌟 YOUR RANCH WALLET<br>
+        UGX ${Number(demoBalance).toLocaleString('en-US')}
+      </div>
+
+      <div class="deposit-label">SELECT DEPOSIT AMOUNT</div>
+
+      <div class="deposit-amount-grid">
+        <button data-amount="10000" onclick="selectDepositAmount(10000)">UGX 10,000</button>
+        <button data-amount="20000" onclick="selectDepositAmount(20000)">UGX 20,000</button>
+        <button data-amount="50000" onclick="selectDepositAmount(50000)">UGX 50,000</button>
+        <button data-amount="100000" onclick="selectDepositAmount(100000)">UGX 100,000</button>
+      </div>
+
+      <div class="deposit-label">📱 MTN MOBILE MONEY</div>
+
+      <div class="deposit-account">
+        <div>SEND PAYMENT TO</div>
+        <div class="deposit-number" id="depositPhoneDisplay"></div>
+        <strong id="depositNameDisplay"></strong>
+        <p>Number changes in:</p>
+        <span class="deposit-timer" id="depositCountdown">10s</span>
+
+        <button class="deposit-lock" id="depositLockButton"
+          onclick="lockDepositNumber()">
+          🔒 LOCK THIS PAYMENT NUMBER
+        </button>
+      </div>
+
+      <div class="deposit-airtel">
+        🔴 AIRTEL MONEY<br>
+        COMING SOON
+      </div>
+
+      <div class="deposit-small">
+        Choose your amount, lock the payment number, and send the exact amount.
+        Only pay to an account verified and authorized by RANCH PRO.
+      </div>
+    `;
+
+    $('modalFields').innerHTML = `
+      <input class="deposit-game-input"
+        id="depositAmount"
+        type="number"
+        min="1000"
+        value="10000"
+        placeholder="Deposit amount in UGX">
+
+      <input class="deposit-game-input"
+        id="depositTransactionId"
+        type="text"
+        placeholder="Enter Mobile Money transaction ID">
+    `;
+
+    $('confirmBtn').style.display = 'block';
+    $('confirmBtn').className = 'deposit-submit';
+    $('confirmBtn').textContent = '💰 I HAVE PAID — SUBMIT';
+
+    selectDepositAmount(10000);
+    startDepositRotation();
+
+  } else {
+    $('modalTitle').textContent = '💎 COLLECT YOUR TREASURE';
+
+    $('modalText').innerHTML = `
+      <div class="deposit-chest">💎👑</div>
+      <div class="deposit-title">WITHDRAW FROM YOUR RANCH</div>
+      <p>Enter the amount and mobile money number for your withdrawal request.</p>
+    `;
+
+    $('modalFields').innerHTML = `
+      <input id="requestAmount" type="number"
+        min="1000" placeholder="Withdrawal amount in UGX">
+      <input id="requestPhone" type="tel"
+        placeholder="Mobile Money number">
+    `;
+
+    $('confirmBtn').style.display = 'block';
+    $('confirmBtn').className = 'confirm';
+    $('confirmBtn').textContent = '💎 Submit Withdrawal Request';
+  }
 
   $('modalBg').classList.add('show');
 }
+
 
 
 function purchase(name,price,emoji,daily,days){
@@ -658,7 +916,61 @@ function confirmAction(){
   return;
  }
 
- if(action.type==='Recharge'||action.type==='Withdraw'){
+ 
+if(action.type === 'Recharge') {
+  const amount = Number($('depositAmount').value);
+  const transactionId = $('depositTransactionId').value.trim();
+
+  if(!Number.isFinite(amount) || amount < 1000) {
+    toast('Enter at least UGX 1,000.');
+    return;
+  }
+
+  if(!depositLocked) {
+    toast('Please lock your payment number first.');
+    return;
+  }
+
+  if(!transactionId) {
+    toast('Enter your Mobile Money transaction ID.');
+    return;
+  }
+
+  const account = depositAccounts[depositIndex];
+
+  depositRequests.push({
+    farmer: user.name,
+    amount: amount,
+    phone: account.phone,
+    accountName: account.name,
+    transactionId: transactionId,
+    status: 'Pending verification'
+  });
+
+  closeModal();
+  toast('Payment details entered. Awaiting verification.');
+  return;
+}
+
+if(action.type === 'Withdraw') {
+  const amount = Number($('requestAmount').value);
+  const phone = $('requestPhone').value.trim();
+
+  if(!Number.isFinite(amount) || amount < 1000) {
+    toast('Enter at least UGX 1,000.');
+    return;
+  }
+
+  if(!phone) {
+    toast('Enter your mobile money number.');
+    return;
+  }
+
+  toast('Withdrawal request is demo-only. Backend is not connected.');
+  closeModal();
+  return;
+}
+
   const amount=Number($('requestAmount').value);
   const phone=$('requestPhone').value.trim();
 
@@ -700,14 +1012,14 @@ function logout(){
  toast('You have exited the demo account.');
 }
 
+
 function closeModal(){
- $('modalBg').classList.remove('show');
- pendingAction=null;
+  clearInterval(depositTimer);
+  $('modalBg').classList.remove('show');
+  $('modal').classList.remove('treasure-modal');
+  pendingAction = null;
 }
 
-$('modalBg').addEventListener('click',function(e){
- if(e.target===this)closeModal();
-});
  
 function goTab(page, button) {
 
