@@ -508,6 +508,87 @@ button:active{transform:scale(.97)}
   display: block;
  }
 
+/* RANCH PRO FULL-SCREEN AUTHENTICATION */
+
+.auth-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  min-height: 100vh;
+  overflow-y: auto;
+  background: linear-gradient(160deg, #163d20, #83bd45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 22px;
+  padding: 28px 22px;
+  box-shadow: 0 12px 35px rgba(0,0,0,.25);
+}
+
+.auth-heading {
+  text-align: center;
+  color: #285c25;
+  font-size: 27px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: #777;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.auth-card label {
+  display: block;
+  font-weight: 700;
+  color: #333;
+  margin: 14px 0 7px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 11px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.auth-main-btn {
+  width: 100%;
+  border: none;
+  border-radius: 11px;
+  padding: 15px;
+  margin-top: 22px;
+  background: #397d32;
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  color: #555;
+}
+
+.auth-switch button {
+  border: none;
+  background: none;
+  color: #397d32;
+  font-weight: 800;
+  font-size: 15px;
+}
+
 
 </style>
 </head>
@@ -524,8 +605,70 @@ button:active{transform:scale(.97)}
  <div class="cow-scene">🐄</div>
  <div class="chicken-scene">🐓🐥</div>
 </div>
+ 
+<!-- RANCH PRO AUTHENTICATION -->
 
-<main class="container">
+<section id="authScreen" class="auth-screen">
+
+  <div class="auth-card">
+
+    <div class="auth-heading">🌿 RANCH PRO</div>
+    <p class="auth-subtitle">Your Growth, Your Ranch!</p>
+
+    <div id="registerForm">
+
+      <h2>Create Account</h2>
+      <p>Register your ranch account</p>
+
+      <label>Username</label>
+      <input id="regUsername" type="text" placeholder="Enter username">
+
+      <label>Email Address</label>
+      <input id="regEmail" type="email" placeholder="Enter email">
+
+      <label>Password</label>
+      <input id="regPassword" type="password" placeholder="Create password">
+
+      <button class="auth-main-btn" onclick="submitRegister()">
+        REGISTER NOW
+      </button>
+
+      <div class="auth-switch">
+        Already have an account?
+        <button onclick="showLogin()">Login</button>
+      </div>
+
+    </div>
+
+    <div id="loginForm" style="display:none">
+
+      <h2>Welcome Back!</h2>
+      <p>Login to your ranch account</p>
+
+      <label>Username or Email</label>
+      <input id="loginUsername" type="text" placeholder="Enter username or email">
+
+      <label>Password</label>
+      <input id="loginPassword" type="password" placeholder="Enter password">
+
+      <button class="auth-main-btn" onclick="submitLogin()">
+        LOGIN NOW
+      </button>
+
+      <div class="auth-switch">
+        New to Ranch Pro?
+        <button onclick="showRegister()">Create Account</button>
+      </div>
+
+    </div>
+
+    <p id="authMessage" style="text-align:center;color:#c0392b"></p>
+
+  </div>
+</section>
+
+
+<main class="container" id="mainDashboard" style="display:none;">
 
 <header class="header">
  <div class="brand-logo">
@@ -780,7 +923,7 @@ button:active{transform:scale(.97)}
 <!-- END DASHBOARD PAGES -->
 
  
-<nav class="bottom-nav">
+<nav class="bottom-nav" id="mainBottomNav" style="display:none;">
   <div class="bottom-nav-inner">
 
     <button class="nav-item active" onclick="goTab('home',this)">
@@ -1454,6 +1597,92 @@ function copyReferral() {
 
 
 updateDashboard();
+ 
+// RANCH PRO REGISTRATION AND LOGIN
+
+window.ranchProDemoAccount = null;
+
+function showRegister() {
+  document.getElementById("registerForm").style.display = "block";
+  document.getElementById("loginForm").style.display = "none";
+  document.getElementById("authMessage").textContent = "";
+}
+
+function showLogin() {
+  document.getElementById("registerForm").style.display = "none";
+  document.getElementById("loginForm").style.display = "block";
+  document.getElementById("authMessage").textContent = "";
+}
+
+function openAuth(type) {
+  document.getElementById("authScreen").style.display = "flex";
+
+  if (type === "login") {
+    showLogin();
+  } else {
+    showRegister();
+  }
+}
+
+function submitRegister() {
+  const username = document.getElementById("regUsername").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPassword").value;
+
+  if (!username || !email || !password) {
+    document.getElementById("authMessage").textContent =
+      "Please fill in all fields.";
+    return;
+  }
+
+  if (password.length < 6) {
+    document.getElementById("authMessage").textContent =
+      "Password must have at least 6 characters.";
+    return;
+  }
+
+  window.ranchProDemoAccount = {
+    username: username,
+    email: email,
+    password: password
+  };
+
+  document.getElementById("authMessage").textContent =
+    "Registration successful! Please log in.";
+
+  showLogin();
+}
+
+function submitLogin() {
+  const login = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const account = window.ranchProDemoAccount;
+
+  if (!account || 
+      (login.toLowerCase() !== account.username.toLowerCase() &&
+       login.toLowerCase() !== account.email.toLowerCase()) ||
+      password !== account.password) {
+    document.getElementById("authMessage").textContent =
+      "Incorrect details. Please register first or check your login.";
+    return;
+  }
+
+  user = {
+  name: account.username,
+  id: "RP-" + Math.floor(10000 + Math.random() * 90000)
+};
+
+  document.getElementById("authScreen").style.display = "none";
+ document.getElementById("mainDashboard").style.display = "block";
+document.getElementById("mainBottomNav").style.display = "flex";
+
+  if (typeof updateDashboard === "function") {
+    updateDashboard();
+  }
+
+  alert("Welcome to RANCH PRO, " + account.username + "!");
+}
+
 </script>
 </body>
 </html>
