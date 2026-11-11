@@ -501,6 +501,12 @@ button:active{transform:scale(.97)}
   from {opacity:0;transform:translateY(8px)}
   to {opacity:1;transform:translateY(0)}
 }
+ .brand-logo img {
+  width: 145px;
+  height: 65px;
+  object-fit: contain;
+  display: block;
+ }
 
 
 </style>
@@ -522,7 +528,9 @@ button:active{transform:scale(.97)}
 <main class="container">
 
 <header class="header">
- <div class="logo">🌿 RANCH <span>PRO</span></div>
+ <div class="brand-logo">
+  <img src="ranch-pro-logo.png" alt="RANCH PRO Logo">
+ </div>
  <div class="profile">
   <div class="avatar">RANCH<br>PRO</div>
   <div>
@@ -680,7 +688,7 @@ button:active{transform:scale(.97)}
 
 </section>
 
-<section class="panel">
+<section class="panel" id="myRanchSection">
  <div class="section-head">
   <h2>🌱 My Ranch</h2>
   <button onclick="showPage('My Animals','Your selected demo livestock appears here.')">My animals ›</button>
