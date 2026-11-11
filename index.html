@@ -537,11 +537,11 @@ button:active{transform:scale(.97)}
  </div>
 </header>
 
-<div class="welcome">
+<div class="welcome" id="welcomeSection">
  🌾 Welcome, <span id="welcomeName">Guest Farmer</span>!
 </div>
 
-<section class="panel">
+<section class="panel" id="walletSection">
  <div class="balance-title">My Balance: <span id="balance">UGX 0</span></div>
 
  <div class="stats">
@@ -557,7 +557,7 @@ button:active{transform:scale(.97)}
  </div>
 </section>
 
-<section class="panel">
+<section class="panel" id="servicesSection">
  <div class="section-head"><h2>🏡 Ranch Services</h2></div>
  <div class="menu">
   <button onclick="showPage('Company','Welcome to RANCH PRO. Your digital ranch dashboard.')"><span class="emoji">🏢</span>Company</button>
@@ -690,7 +690,7 @@ button:active{transform:scale(.97)}
  </div>
 </section>
 
-<section class="panel">
+<section class="panel" id="newsSection">
  <h2>📢 Ranch News</h2>
  <p class="news">
   Welcome to RANCH PRO! Explore your ranch, view livestock packages
@@ -1334,14 +1334,17 @@ function closeModal(){
  
 
 
+
 function goTab(page, button) {
 
+  // Update active navigation button
   document.querySelectorAll('.nav-item').forEach(item => {
     item.classList.remove('active');
   });
 
   button.classList.add('active');
 
+  // Hide all dashboard sections
   const sections = [
     'welcomeSection',
     'walletSection',
@@ -1352,42 +1355,51 @@ function goTab(page, button) {
   ];
 
   sections.forEach(id => {
-    $(id).style.display = 'none';
+    const section = document.getElementById(id);
+    if (section) section.style.display = 'none';
   });
 
+  // Hide extra dashboard pages
   document.querySelectorAll('.dashboard-page').forEach(section => {
     section.classList.remove('active');
   });
 
+  // HOME
   if (page === 'home') {
     sections.forEach(id => {
-      $(id).style.display = '';
+      const section = document.getElementById(id);
+      if (section) section.style.display = '';
     });
   }
 
+  // RANCH
   if (page === 'ranch') {
-    $('welcomeSection').style.display = '';
-    $('shop').style.display = '';
-    $('myRanchSection').style.display = '';
+    ['welcomeSection', 'shop', 'myRanchSection'].forEach(id => {
+      document.getElementById(id).style.display = '';
+    });
   }
 
+  // TEAM
   if (page === 'team') {
-    $('teamPage').classList.add('active');
+    document.getElementById('teamPage').classList.add('active');
     updateExtraPages();
   }
 
+  // INCOME
   if (page === 'income') {
-    $('incomePage').classList.add('active');
+    document.getElementById('incomePage').classList.add('active');
     updateExtraPages();
   }
 
+  // PROFILE
   if (page === 'profile') {
-    $('profilePage').classList.add('active');
+    document.getElementById('profilePage').classList.add('active');
     updateExtraPages();
   }
 
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
+
 
 
 function updateExtraPages() {
