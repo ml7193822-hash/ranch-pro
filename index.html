@@ -815,9 +815,7 @@ button:active{transform:scale(.97)}
 <section class="panel" id="myRanchSection">
   <div class="section-head">
     <h2>🌱 My Ranch</h2>
-    <button onclick="showPage('My Animals','Your selected demo livestock appears here.')">
-      My animals ›
-    </button>
+    <button onclick="openMyAnimals()">My animals ›</button>
   </div>
 
   <div id="myAnimals" class="empty">
@@ -1077,6 +1075,20 @@ async function loadLivestockPackages() {
     console.error("My Ranch error:", error);
     area.textContent = "Unable to load your ranch. Please try again.";
   }
+ }
+ async function openMyAnimals() {
+  const area = document.getElementById("myAnimals");
+
+  await loadLivestockPackages();
+  await loadMyRanch();
+
+  const count = area.querySelectorAll(".product").length;
+
+  showPage(
+    "🐄 My Animals",
+    "You currently have " + count +
+    " selected demo animals in your ranch."
+  );
  }
 
 let points = 0;
