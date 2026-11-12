@@ -757,7 +757,11 @@ button:active{transform:scale(.97)}
  </div>
 
   
-<div class="products">
+
+<div class="products" id="livestockProducts">
+  <p>🌿 Loading livestock packages...</p>
+</div>
+
 
   <div class="product">
     <div class="animal">🐄</div>
@@ -1005,6 +1009,70 @@ const supabaseClient = window.supabase.createClient(
 );
 
 let user = null;
+ 
+let livestockPackages = [];
+
+const animalEmojis = {
+  "Dairy Cow": "🐄",
+  "Pig": "🐖",
+  "Goat": "🐐",
+  "Sheep": "🐑",
+  "Hen": "🐓"
+};
+
+async function loadLivestockPackages() {
+  const area = document.getElementById("livestockProducts");
+
+  area.innerHTML = "<p>🌿 Loading livestock...</p>";
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("livestock_packages")
+      .select("id, animal_name, package_name, price, daily_profit, duration_days")
+      .order("id", { ascending: true });
+
+    if (error) throw error;
+
+    livestockPackages = data || [];
+
+    if (!livestockPackages.length) {
+      area.innerHTML = "<p>No livestock packages available.</p>";
+      return;
+    }
+
+    area.innerHTML = livestockPackages.map(pkg => {
+      const emoji = animalEmojis[pkg.animal_name] || "🐄";
+
+      return `
+        <div class="product">
+          <div class="animal">${emoji}</div>
+          <h3>${pkg.animal_name}</h3>
+          <p>${pkg.package_name}</p>
+
+          <div class="price">
+            ${money(pkg.price)}
+          </div>
+
+          <div class="earning">
+            Demo: ${money(pkg.daily_profit)}/day ·
+            ${pkg.duration_days} days
+          </div>
+
+          <button class="buy"
+            onclick="purchaseFromDatabase('${pkg.id}')">
+            Select Ranch
+          </button>
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Livestock loading error:", error);
+    area.innerHTML =
+      "<p>Unable to load livestock. Please refresh and try again.</p>";
+  }
+}
+
 let points = 0;
 let animals = [];
 let pendingAction = null;
@@ -1252,24 +1320,57 @@ function openRequest(type) {
   $('modalBg').classList.add('show');
 }
 
+function purchaseFromDatabase(packageId) {
+  const pkg = livestockPackages.find(
+    item => String(item.id) === String(packageId)
+  );
 
+  if (!pkg) {
+    toast("Livestock package not found.");
+    return;
+  }
 
-function purchase(name,price,emoji,daily,days){
- if(!user){
-  toast('Please login first to select livestock.');
-  openAuth('login');
-  return;
- }
- pendingAction={type:'purchase',name,price,emoji,daily,days};
- $('modalTitle').textContent='Confirm Ranch Selection';
- $('modalText').textContent=
- `${name} package: ${money(price)}. Demo daily figure: ${money(daily)} for ${days} days. No real money will be charged.`;
- $('modalFields').innerHTML='';
- $('confirmBtn').style.display='block';
- $('confirmBtn').textContent='Confirm demo selection';
- $('modalBg').classList.add('show');
+  const emoji = animalEmojis[pkg.animal_name] || "🐄";
+
+  purchase(
+    pkg.animal_name,
+    Number(pkg.price),
+    emoji,
+    Number(pkg.daily_profit),
+    Number(pkg.duration_days),
+    pkg.id
+  );
 }
 
+
+
+function purchase(name, price, emoji, daily, days, packageId) {
+  if (!user) {
+    toast("Please login first.");
+    openAuth("login");
+    return;
+  }
+
+  pendingAction = {
+    type: "purchase",
+    name,
+    price,
+    emoji,
+    daily,
+    days,
+    packageId
+  };
+
+  $("modalTitle").textContent = "Confirm Ranch Selection";
+
+  $("modalText").textContent =
+    `${name} package: ${money(price)}. Demo figure: ${money(daily)}/day for ${days} days. No real money will be charged.`;
+
+  $("modalFields").innerHTML = "";
+  $("confirmBtn").style.display = "block";
+  $("confirmBtn").textContent = "Confirm demo selection";
+  $("modalBg").classList.add("show");
+}
 
 function confirmAction() {
   if (!pendingAction) return;
@@ -1771,6 +1872,7 @@ async function submitLogin() {
     document.getElementById("mainBottomNav").style.display = "flex";
 
     updateDashboard();
+   await loadLivestockPackages();
 
     message.textContent = "";
     alert("Welcome to RANCH PRO, " + user.name + "!");
