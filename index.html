@@ -609,7 +609,72 @@ button:active{transform:scale(.97)}
   font-weight: 900;
   font-size: 15px;
 }
+.welcome-game-modal {
+  background: linear-gradient(160deg, #174b27, #397b2e) !important;
+  border: 3px solid #e7a52b;
+  border-radius: 24px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(231,165,43,.35);
+}
 
+.welcome-game-content {
+  padding: 15px 8px;
+}
+
+.welcome-game-logo {
+  color: #ffe28a;
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.welcome-game-subtitle {
+  color: #d8efb2;
+  font-size: 11px;
+  letter-spacing: 4px;
+  margin-top: 5px;
+}
+
+.welcome-game-icon {
+  font-size: 55px;
+  margin: 22px 0 8px;
+}
+
+.welcome-game-content h2 {
+  color: #ffe28a;
+  font-size: 25px;
+  margin: 10px 0;
+}
+
+.welcome-game-content h3 {
+  color: white;
+  font-size: 21px;
+}
+
+.welcome-game-content p {
+  color: #edf5e5;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.welcome-game-motto {
+  color: #ffe28a;
+  font-weight: 900;
+  margin: 20px 0;
+  letter-spacing: 1px;
+}
+
+.welcome-continue {
+  width: 100%;
+  padding: 15px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #e7a52b, #ffe28a);
+  color: #174b27;
+  font-weight: 900;
+  font-size: 15px;
+ }
 
 
 </style>
@@ -956,6 +1021,50 @@ button:active{transform:scale(.97)}
 <div class="toast" id="toast"></div>
 
 <script>
+ function showRanchWelcome() {
+  const modalBg = document.getElementById("modalBg");
+  const modal = document.getElementById("modal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+  const modalFields = document.getElementById("modalFields");
+  const confirmBtn = document.getElementById("confirmBtn");
+
+  modal.classList.remove("treasure-modal");
+  modal.classList.add("welcome-game-modal");
+
+  modalTitle.style.display = "none";
+  modalText.style.display = "none";
+  confirmBtn.style.display = "none";
+
+  modalFields.innerHTML = `
+    <div class="welcome-game-content">
+      <div class="welcome-game-logo">🌿 RANCH PRO</div>
+      <div class="welcome-game-subtitle">YOUR DIGITAL RANCH</div>
+
+      <div class="welcome-game-icon">🐄</div>
+
+      <h2>WELCOME BACK!</h2>
+
+      <h3>${user?.name || "Rancher"} 🌿</h3>
+
+      <p>
+        Your ranch journey continues. Manage your livestock,
+        track your investments and grow your ranch.
+      </p>
+
+      <div class="welcome-game-motto">
+        YOUR GROWTH, YOUR RANCH.
+      </div>
+
+      <button class="welcome-continue" onclick="closeModal()">
+        LET'S GET STARTED ›
+      </button>
+    </div>
+  `;
+
+  modalBg.style.display = "flex";
+  modalBg.classList.add("show");
+ }
 // RANCH PRO SUPABASE CONNECTION
 const SUPABASE_URL = "https://vbsvgcjmuqwrwuthwffe.supabase.co";
 
@@ -1857,7 +1966,15 @@ function logout(){
 
 
 function closeModal() {
-  document.getElementById("modalBg").style.display = "none";
+  const modalBg = document.getElementById("modalBg");
+  const modal = document.getElementById("modal");
+
+  modalBg.style.display = "none";
+  modal.classList.remove("welcome-game-modal");
+  modal.classList.remove("treasure-modal");
+
+  document.getElementById("modalTitle").style.display = "block";
+  document.getElementById("modalText").style.display = "block";
 
   pendingAction = null;
 
@@ -1865,7 +1982,6 @@ function closeModal() {
   confirmBtn.style.display = "block";
   confirmBtn.disabled = false;
 }
-
  
 
 
@@ -2120,7 +2236,8 @@ async function submitLogin() {
    await loadMyRanch();
 
     message.textContent = "";
-    alert("Welcome to RANCH PRO, " + user.name + "!");
+    showRanchWelcome();
+    
 
   } catch (error) {
     message.textContent = error.message || "Login failed.";
