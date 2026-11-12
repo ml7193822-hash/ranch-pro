@@ -1029,6 +1029,7 @@ async function loadLivestockPackages() {
   }
 }
  
+
 async function loadMyRanch() {
   const area = document.getElementById("myAnimals");
 
@@ -1047,36 +1048,108 @@ async function loadMyRanch() {
       throw new Error("Please log in again.");
     }
 
-    const { data, error } = await supabaseClient
-      .from("user_packages")
-      .select("id, package_id, amount_paid, purchase_reference, status, created_at")
-      .eq("user_id", authData.user.id)
-      .order("created_at", { ascending: false });
+    const userId = authData.user.id;
 
-    if (error) throw error;
+    // 1. Load livestock ownership
+    const { data: packages, error: packageError } =
+      await supabaseClient
+        .from("user_packages")
+        .select("id, package_id, amount_paid, purchase_reference, status, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
 
-    if (!data || data.length === 0) {
+    if (packageError) throw packageError;
+
+    if (!packages || packages.length === 0) {
       area.textContent =
         "🏡 Your ranch is waiting! Purchase livestock to start building your ranch.";
       return;
     }
 
-    area.innerHTML = data.map(item => {
+    // 2. Load matching investment records
+    const { data: investments, error: investmentError } =
+      await supabaseClient
+        .from("investments")
+        .select("package_id, amount_paid, daily_profit, duration_days, total_profit_paid, status, start_date, end_date, purchase_reference")
+        .eq("user_id", userId);
+
+    if (investmentError) throw investmentError;
+
+    // 3. Match ownership with investment records
+    const investmentMap = new Map(
+      (investments || []).map(inv => [
+        inv.purchase_reference,
+        inv
+      ])
+    );
+
+    area.innerHTML = packages.map(item => {
       const pkg = livestockPackages.find(
         p => String(p.id) === String(item.package_id)
       );
 
       if (!pkg) return "";
 
-      const emoji = animalEmojis[pkg.animal_name] || "🐄";
+      const investment =
+        investmentMap.get(item.purchase_reference);
+
+      const emoji =
+        animalEmojis[pkg.animal_name] || "🐄";
+
+      const dateFormat = value =>
+        value
+          ? new Date(value).toLocaleDateString()
+          : "Pending";
 
       return `
         <div class="product">
           <div class="animal">${emoji}</div>
+
           <h3>${emoji} ${pkg.animal_name}</h3>
+
           <p>${pkg.package_name}</p>
-          <p>Amount paid: ${money(item.amount_paid)}</p>
-          <p>Status: ${item.status}</p>
+
+          <p>
+            Amount invested:
+            ${money(investment?.amount_paid ?? item.amount_paid)}
+          </p>
+
+          <p>
+            Daily profit:
+            ${investment
+              ? money(investment.daily_profit)
+              : "Pending"}
+          </p>
+
+          <p>
+            Duration:
+            ${investment
+              ? investment.duration_days + " days"
+              : "Pending"}
+          </p>
+
+          <p>
+            Total profit paid:
+            ${investment
+              ? money(investment.total_profit_paid)
+              : money(0)}
+          </p>
+
+          <p>
+            Investment status:
+            ${investment?.status || "Pending"}
+          </p>
+
+          <p>
+            Start date:
+            ${dateFormat(investment?.start_date)}
+          </p>
+
+          <p>
+            End date:
+            ${dateFormat(investment?.end_date)}
+          </p>
+
           <p>Reference: ${item.purchase_reference}</p>
         </div>
       `;
@@ -1084,10 +1157,12 @@ async function loadMyRanch() {
 
   } catch (error) {
     console.error("My Ranch error:", error);
+
     area.textContent =
       "Unable to load your ranch. Please try again.";
   }
 }
+
 
  
 async function openMyAnimals() {
