@@ -1028,7 +1028,8 @@ async function loadLivestockPackages() {
       "<p>Unable to load livestock. Please refresh and try again.</p>";
   }
 }
- async function loadMyRanch() {
+ 
+async function loadMyRanch() {
   const area = document.getElementById("myAnimals");
 
   if (!user) {
@@ -1039,16 +1040,24 @@ async function loadLivestockPackages() {
   area.textContent = "🌱 Loading your ranch...";
 
   try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+      throw new Error("Please log in again.");
+    }
+
     const { data, error } = await supabaseClient
-      .from("ranch_selections")
-      .select("id, package_id, created_at")
+      .from("user_packages")
+      .select("id, package_id, amount_paid, purchase_reference, status, created_at")
+      .eq("user_id", authData.user.id)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
 
     if (!data || data.length === 0) {
       area.textContent =
-        "🏡 Your ranch is waiting! Select livestock to start building your ranch.";
+        "🏡 Your ranch is waiting! Purchase livestock to start building your ranch.";
       return;
     }
 
@@ -1064,18 +1073,22 @@ async function loadLivestockPackages() {
       return `
         <div class="product">
           <div class="animal">${emoji}</div>
-          <h3>${pkg.animal_name}</h3>
+          <h3>${emoji} ${pkg.animal_name}</h3>
           <p>${pkg.package_name}</p>
-          <p>Demo selection</p>
+          <p>Amount paid: ${money(item.amount_paid)}</p>
+          <p>Status: ${item.status}</p>
+          <p>Reference: ${item.purchase_reference}</p>
         </div>
       `;
     }).join("");
 
   } catch (error) {
     console.error("My Ranch error:", error);
-    area.textContent = "Unable to load your ranch. Please try again.";
+    area.textContent =
+      "Unable to load your ranch. Please try again.";
   }
- }
+}
+
  
 async function openMyAnimals() {
   await loadLivestockPackages();
