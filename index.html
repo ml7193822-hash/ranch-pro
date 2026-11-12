@@ -1033,17 +1033,17 @@ async function loadLivestockPackages() {
  async function loadMyRanch() {
   const area = document.getElementById("myAnimals");
 
-  area.textContent = "🌱 Loading your ranch...";
-
   if (!user) {
     area.textContent = "Please log in to view your ranch.";
     return;
   }
 
+  area.textContent = "🌱 Loading your ranch...";
+
   try {
     const { data, error } = await supabaseClient
-      .from("investments")
-      .select("id, package_id, amount_paid, daily_profit, duration_days, start_date, status")
+      .from("ranch_selections")
+      .select("id, package_id, created_at")
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -1059,17 +1059,16 @@ async function loadLivestockPackages() {
         p => String(p.id) === String(item.package_id)
       );
 
-      const name = pkg ? pkg.animal_name : "Livestock";
-      const emoji = animalEmojis[name] || "🐄";
+      if (!pkg) return "";
+
+      const emoji = animalEmojis[pkg.animal_name] || "🐄";
 
       return `
         <div class="product">
           <div class="animal">${emoji}</div>
-          <h3>${name}</h3>
-          <p>Amount: ${money(item.amount_paid)}</p>
-          <p>Demo daily figure: ${money(item.daily_profit)}</p>
-          <p>Duration: ${item.duration_days} days</p>
-          <p>Status: ${item.status}</p>
+          <h3>${pkg.animal_name}</h3>
+          <p>${pkg.package_name}</p>
+          <p>Demo selection</p>
         </div>
       `;
     }).join("");
