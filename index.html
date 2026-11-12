@@ -1722,6 +1722,7 @@ async function submitRegister() {
     message.textContent = error.message;
   }
 }
+
 async function submitLogin() {
   const login = document.getElementById("loginUsername").value.trim();
   const password = document.getElementById("loginPassword").value;
@@ -1732,25 +1733,54 @@ async function submitLogin() {
     return;
   }
 
-  if (!login.includes("@")) {
-    message.textContent =
-      "Username login setup is next. For now, use your email address.";
-    return;
-  }
-
   message.textContent = "Logging in...";
 
   try {
-    const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
+    let data;
+    let error;
+
+    if (login.includes("@")) {
+      const result = await supabaseClient.auth.signInWithPassword({
         email: login.toLowerCase(),
         password: password
       });
 
+      data = result.data;
+      error = result.error;
+
+    } else {
+      const result = await supabaseClient.functions.invoke(
+        "login-with-username",
+        {
+          body: {
+            username: login.toLowerCase(),
+            password: password
+          }
+        }
+      );
+
+      data = result.data;
+      error = result.error;
+
+      if (!error && data && data.session) {
+        const sessionResult = await supabaseClient.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token
+        });
+
+        error = sessionResult.error;
+        data = sessionResult.data;
+      }
+    }
+
     if (error) throw error;
 
+    if (!data || !data.user) {
+      throw new Error("Login failed. Please try again.");
+    }
+
     user = {
-      name: data.user.user_metadata.username || login,
+      name: data.user.user_metadata?.username || login,
       id: "RP-" + data.user.id.slice(0, 8).toUpperCase()
     };
 
@@ -1758,17 +1788,16 @@ async function submitLogin() {
     document.getElementById("mainDashboard").style.display = "block";
     document.getElementById("mainBottomNav").style.display = "flex";
 
-    if (typeof updateDashboard === "function") {
-      updateDashboard();
-    }
+    updateDashboard();
 
     message.textContent = "";
     alert("Welcome to RANCH PRO, " + user.name + "!");
 
   } catch (error) {
-    message.textContent = error.message;
+    message.textContent = error.message || "Login failed.";
   }
 }
+
 
 </script>
 </body>
