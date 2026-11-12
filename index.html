@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#83bd45">
 <title>RANCH PRO | Digital Ranch</title>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
  
 <style>
  
@@ -1009,6 +1010,15 @@ button:active{transform:scale(.97)}
 </div>
 
 <div class="toast" id="toast"></div>
+ // RANCH PRO SUPABASE CONNECTION
+const SUPABASE_URL = "https://vbsvgcjmuqwrwuthwffe.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_sPeVB9rKEINKnOMjnLSUmg_B0TeIl18";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 <script>
 let user = null;
@@ -1670,63 +1680,93 @@ function openAuth(type) {
   }
 }
 
-function submitRegister() {
-  const username = document.getElementById("regUsername").value.trim();
-  const email = document.getElementById("regEmail").value.trim();
+async function submitRegister() {
+  const username = document.getElementById("regUsername").value.trim().toLowerCase();
+  const email = document.getElementById("regEmail").value.trim().toLowerCase();
   const password = document.getElementById("regPassword").value;
+  const message = document.getElementById("authMessage");
 
   if (!username || !email || !password) {
-    document.getElementById("authMessage").textContent =
-      "Please fill in all fields.";
+    message.textContent = "Please fill in all fields.";
     return;
   }
 
   if (password.length < 6) {
-    document.getElementById("authMessage").textContent =
-      "Password must have at least 6 characters.";
+    message.textContent = "Password must have at least 6 characters.";
     return;
   }
 
-  window.ranchProDemoAccount = {
-    username: username,
-    email: email,
-    password: password
-  };
+  message.textContent = "Creating your account...";
 
-  document.getElementById("authMessage").textContent =
-    "Registration successful! Please log in.";
+  try {
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          username: username
+        }
+      }
+    });
 
-  showLogin();
+    if (error) throw error;
+
+    message.textContent = data.session
+      ? "Account created successfully! Please log in."
+      : "Account created! Check your email to confirm, then log in.";
+
+    showLogin();
+
+  } catch (error) {
+    message.textContent = error.message;
+  }
 }
-
-function submitLogin() {
+async function submitLogin() {
   const login = document.getElementById("loginUsername").value.trim();
   const password = document.getElementById("loginPassword").value;
-  const account = window.ranchProDemoAccount;
+  const message = document.getElementById("authMessage");
 
-  if (!account || 
-      (login.toLowerCase() !== account.username.toLowerCase() &&
-       login.toLowerCase() !== account.email.toLowerCase()) ||
-      password !== account.password) {
-    document.getElementById("authMessage").textContent =
-      "Incorrect details. Please register first or check your login.";
+  if (!login || !password) {
+    message.textContent = "Enter your login details.";
     return;
   }
 
-  user = {
-  name: account.username,
-  id: "RP-" + Math.floor(10000 + Math.random() * 90000)
-};
-
-  document.getElementById("authScreen").style.display = "none";
- document.getElementById("mainDashboard").style.display = "block";
-document.getElementById("mainBottomNav").style.display = "flex";
-
-  if (typeof updateDashboard === "function") {
-    updateDashboard();
+  if (!login.includes("@")) {
+    message.textContent =
+      "Username login setup is next. For now, use your email address.";
+    return;
   }
 
-  alert("Welcome to RANCH PRO, " + account.username + "!");
+  message.textContent = "Logging in...";
+
+  try {
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: login.toLowerCase(),
+        password: password
+      });
+
+    if (error) throw error;
+
+    user = {
+      name: data.user.user_metadata.username || login,
+      id: "RP-" + data.user.id.slice(0, 8).toUpperCase()
+    };
+
+    document.getElementById("authScreen").style.display = "none";
+    document.getElementById("mainDashboard").style.display = "block";
+    document.getElementById("mainBottomNav").style.display = "flex";
+
+    if (typeof updateDashboard === "function") {
+      updateDashboard();
+    }
+
+    message.textContent = "";
+    alert("Welcome to RANCH PRO, " + user.name + "!");
+
+  } catch (error) {
+    message.textContent = error.message;
+  }
 }
 
 </script>
