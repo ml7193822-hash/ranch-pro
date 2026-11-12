@@ -1378,7 +1378,7 @@ function purchase(name, price, emoji, daily, days, packageId) {
   $("modalBg").classList.add("show");
 }
 
-function confirmAction() {
+async function confirmAction() {
   if (!pendingAction) return;
 
   const action = pendingAction;
@@ -1420,37 +1420,43 @@ function confirmAction() {
   }
 
   // 2. LIVESTOCK PURCHASE
-  if (action.type === 'purchase') {
-    if (demoBalance < action.price) {
-      toast('Insufficient demo balance. Recharge is not connected.');
+if (action.type === 'purchase') {
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+      toast('Please log in again.');
       return;
     }
 
-    demoBalance -= action.price;
+    if (!action.packageId) {
+      toast('Livestock package not found.');
+      return;
+    }
 
-    animals.push({
-      name: action.name,
-      emoji: action.emoji,
-      daily: action.daily,
-      days: action.days,
-      price: action.price,
-      status: 'Active Demo'
-    });
+    const { error } = await supabaseClient
+      .from('ranch_selections')
+      .insert({
+        user_id: authData.user.id,
+        package_id: action.packageId
+      });
 
-    points += 10;
+    if (error) throw error;
 
-    addTransaction(
-      'Livestock Selection',
-      action.price,
-      'Demo purchase',
-      action.name + ' package'
-    );
+    await loadMyRanch();
 
-    updateDashboard();
     closeModal();
+
     toast(action.name + ' added to your demo ranch!');
-    return;
+
+  } catch (error) {
+    console.error('Ranch selection error:', error);
+    toast('Unable to save selection. Please try again.');
   }
+
+  return;
+}
 
   // 3. RECHARGE REQUEST
   if (action.type === 'Recharge') {
