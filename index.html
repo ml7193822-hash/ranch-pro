@@ -1076,20 +1076,58 @@ async function loadLivestockPackages() {
     area.textContent = "Unable to load your ranch. Please try again.";
   }
  }
- async function openMyAnimals() {
-  const area = document.getElementById("myAnimals");
-
+ 
+async function openMyAnimals() {
   await loadLivestockPackages();
-  await loadMyRanch();
 
-  const count = area.querySelectorAll(".product").length;
+  const { data, error } = await supabaseClient
+    .from("ranch_selections")
+    .select("id, package_id, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    toast("Unable to load your animals.");
+    console.error(error);
+    return;
+  }
+
+  const animals = data || [];
 
   showPage(
     "🐄 My Animals",
-    "You currently have " + count +
-    " selected demo animals in your ranch."
+    "Your selected demo animals are listed below."
   );
- }
+
+  const fields = document.getElementById("modalFields");
+
+  if (animals.length === 0) {
+    fields.innerHTML = "<p>Your ranch is empty. Select an animal first.</p>";
+    return;
+  }
+
+  fields.innerHTML = animals.map(item => {
+    const pkg = livestockPackages.find(
+      p => String(p.id) === String(item.package_id)
+    );
+
+    if (!pkg) return "";
+
+    const emoji = animalEmojis[pkg.animal_name] || "🐄";
+    const date = new Date(item.created_at).toLocaleDateString();
+
+    return `
+      <div class="product">
+        <div class="animal">${emoji}</div>
+        <h3>${pkg.animal_name}</h3>
+        <p>${pkg.package_name}</p>
+        <p>Package price: ${money(pkg.price)}</p>
+        <p>Date selected: ${date}</p>
+        <p>🟢 Demo selection</p>
+      </div>
+    `;
+  }).join("");
+}
+
 
 let points = 0;
 let animals = [];
