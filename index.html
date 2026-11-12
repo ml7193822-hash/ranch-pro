@@ -735,7 +735,9 @@ button:active{transform:scale(.97)}
  <div class="menu">
   <button onclick="showPage('Company','Welcome to RANCH PRO. Your digital ranch dashboard.')"><span class="emoji">🏢</span>Company</button>
   <button onclick="showPage('My Bill','Your transaction records will appear here.')"><span class="emoji">📩</span>My Bill</button>
-  <button onclick="showPage('My Wallet','View your demo wallet balance and activity.')"><span class="emoji">🧰</span>My Wallet</button>
+  <button onclick="openMyWallet()">
+  <span class="emoji">🧰</span>My Wallet
+  </button>
   <button onclick="showPage('CDK Exchange','CDK exchange is not yet connected.')"><span class="emoji">🏘️</span>CDK Exchange</button>
   <button onclick="showPage('Points System','Your account points are displayed on your dashboard.')"><span class="emoji">💝</span>Points System</button>
   <button onclick="showPage('Profit','See your livestock package information below.')"><span class="emoji">🪙</span>Profit</button>
@@ -1288,6 +1290,83 @@ function showPage(title,message){
  $('modalBg').classList.add('show');
 }
 
+
+async function openMyWallet() {
+  const modalBg = document.getElementById("modalBg");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+  const modalFields = document.getElementById("modalFields");
+  const confirmBtn = document.getElementById("confirmBtn");
+
+  pendingAction = null;
+
+  modalTitle.textContent = "MY WALLET";
+  modalText.textContent = "Your Ranch Pro wallet balance and transaction history.";
+  modalFields.innerHTML = "<p>Loading wallet...</p>";
+  confirmBtn.style.display = "none";
+  modalBg.style.display = "flex";
+
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+      throw new Error("Please log in again.");
+    }
+
+    const userId = authData.user.id;
+
+    const [profileResult, transactionResult] = await Promise.all([
+      supabaseClient
+        .from("profiles")
+        .select("balance")
+        .eq("id", userId)
+        .single(),
+
+      supabaseClient
+        .from("wallet_transactions")
+        .select("transaction_type, direction, amount, status, description, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(10)
+    ]);
+
+    if (profileResult.error) throw profileResult.error;
+    if (transactionResult.error) throw transactionResult.error;
+
+    const balance = Number(profileResult.data.balance || 0);
+
+    const transactions = transactionResult.data || [];
+
+    modalFields.innerHTML = `
+      <div class="page-card">
+        <p>AVAILABLE BALANCE</p>
+        <h2>${money(balance)}</h2>
+      </div>
+
+      <h3>Recent Transactions</h3>
+
+      ${
+        transactions.length
+          ? transactions.map(tx => `
+              <div class="page-row">
+                <div>
+                  <strong>${tx.description || tx.transaction_type || "Transaction"}</strong>
+                  <p>${tx.status || "Pending"}</p>
+                  <small>${new Date(tx.created_at).toLocaleString()}</small>
+                </div>
+                <strong>${tx.direction === "credit" ? "+" : "-"}${money(tx.amount)}</strong>
+              </div>
+            `).join("")
+          : "<p>No wallet transactions yet.</p>"
+      }
+    `;
+
+  } catch (error) {
+    modalFields.innerHTML =
+      `<p>Unable to load wallet: ${error.message}</p>`;
+  }
+}
 
 
 let depositIndex = 0;
