@@ -813,13 +813,16 @@ button:active{transform:scale(.97)}
 </section>
 
 <section class="panel" id="myRanchSection">
- <div class="section-head">
-  <h2>🌱 My Ranch</h2>
-  <button onclick="showPage('My Animals','Your selected demo livestock appears here.')">My animals ›</button>
- </div>
- <div id="myAnimals" class="empty">
-  Your livestock will appear here after a demo purchase.
- </div>
+  <div class="section-head">
+    <h2>🌱 My Ranch</h2>
+    <button onclick="showPage('My Animals','Your selected demo livestock appears here.')">
+      My animals ›
+    </button>
+  </div>
+
+  <div id="myAnimals" class="empty">
+    🌱 Loading your ranch...
+  </div>
 </section>
 
 <section class="panel" id="newsSection">
@@ -1027,6 +1030,55 @@ async function loadLivestockPackages() {
       "<p>Unable to load livestock. Please refresh and try again.</p>";
   }
 }
+ async function loadMyRanch() {
+  const area = document.getElementById("myAnimals");
+
+  area.textContent = "🌱 Loading your ranch...";
+
+  if (!user) {
+    area.textContent = "Please log in to view your ranch.";
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("investments")
+      .select("id, package_id, amount_paid, daily_profit, duration_days, start_date, status")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      area.textContent =
+        "🏡 Your ranch is waiting! Select livestock to start building your ranch.";
+      return;
+    }
+
+    area.innerHTML = data.map(item => {
+      const pkg = livestockPackages.find(
+        p => String(p.id) === String(item.package_id)
+      );
+
+      const name = pkg ? pkg.animal_name : "Livestock";
+      const emoji = animalEmojis[name] || "🐄";
+
+      return `
+        <div class="product">
+          <div class="animal">${emoji}</div>
+          <h3>${name}</h3>
+          <p>Amount: ${money(item.amount_paid)}</p>
+          <p>Demo daily figure: ${money(item.daily_profit)}</p>
+          <p>Duration: ${item.duration_days} days</p>
+          <p>Status: ${item.status}</p>
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("My Ranch error:", error);
+    area.textContent = "Unable to load your ranch. Please try again.";
+  }
+ }
 
 let points = 0;
 let animals = [];
@@ -1828,6 +1880,7 @@ async function submitLogin() {
 
     updateDashboard();
    await loadLivestockPackages();
+   await loadMyRanch();
 
     message.textContent = "";
     alert("Welcome to RANCH PRO, " + user.name + "!");
