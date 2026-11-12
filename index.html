@@ -1855,11 +1855,15 @@ function logout(){
 }
 
 
-function closeModal(){
-  clearInterval(depositTimer);
-  $('modalBg').classList.remove('show');
-  $('modal').classList.remove('treasure-modal');
+
+function closeModal() {
+  document.getElementById("modalBg").style.display = "none";
+
   pendingAction = null;
+
+  const confirmBtn = document.getElementById("confirmBtn");
+  confirmBtn.style.display = "block";
+  confirmBtn.disabled = false;
 }
 
  
