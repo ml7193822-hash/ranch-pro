@@ -2146,32 +2146,59 @@ closeModal();
     return;
   }
 
-  // 4. WITHDRAWAL REQUEST
-  if (action.type === 'Withdraw') {
-    const amount = Number($('requestAmount').value);
-    const phone = $('requestPhone').value.trim();
+  // 4. REAL WITHDRAWAL REQUEST
+if (action.type === 'Withdraw') {
 
-    if (!Number.isFinite(amount) || amount < 1000) {
-      toast('Enter at least UGX 1,000.');
-      return;
-    }
+  const amount = Number($('requestAmount').value);
+  const destination = $('requestPhone').value.trim();
+  const method = $('withdrawMethod').value;
 
-    if (!phone) {
-      toast('Enter your Mobile Money number.');
-      return;
-    }
-
-    addTransaction(
-      'Withdrawal',
-      amount,
-      'Demo only',
-      'Mobile Money: ' + phone
-    );
-
-    closeModal();
-    toast('Demo withdrawal request recorded.');
+  if (!Number.isFinite(amount) || amount < 1000) {
+    toast('Enter at least UGX 1,000.');
     return;
   }
+
+  if (!destination) {
+    toast('Enter your withdrawal destination.');
+    return;
+  }
+
+  let details = destination;
+
+  if (method === 'USDT') {
+    const network = $('usdtWithdrawNetwork').value;
+    details = network + ': ' + destination;
+  }
+
+  const button = $('confirmBtn');
+  button.disabled = true;
+  button.textContent = 'Submitting...';
+
+  try {
+    const { data, error } = await supabaseClient.rpc(
+      'submit_withdrawal_request',
+      {
+        p_amount: amount,
+        p_payment_method: method,
+        p_payment_details: details
+      }
+    );
+
+    if (error) throw error;
+
+    closeModal();
+
+    toast('Withdrawal request submitted successfully!');
+
+  } catch (error) {
+    console.error('Withdrawal error:', error);
+    toast(error.message || 'Withdrawal submission failed.');
+  } finally {
+    button.disabled = false;
+    button.textContent = '💎 SUBMIT WITHDRAWAL REQUEST';
+  }
+
+  return;
 }
 
 
