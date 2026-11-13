@@ -1092,7 +1092,18 @@ button:active{transform:scale(.97)}
   </div>
 </div>
 
+<!-- ADMIN DEPOSIT MANAGEMENT -->
+<div class="panel" style="margin-top:15px;">
+  <h3>💳 Deposit Management</h3>
 
+  <button onclick="loadAdminDeposits()">
+    🔄 Refresh Deposits
+  </button>
+
+  <div id="adminDepositsList">
+    <p>Tap Refresh Deposits to view requests.</p>
+  </div>
+</div>
   <div class="grid">
     <div class="panel">
       <h3>👥 Total Users</h3>
@@ -2476,6 +2487,96 @@ async function loadAdminInvestments() {
     </div>
   `).join("");
 }
+ 
+// LOAD ADMIN DEPOSIT REQUESTS
+async function loadAdminDeposits() {
+  const list = document.getElementById("adminDepositsList");
+
+  list.innerHTML = "<p>Loading deposit requests...</p>";
+
+  const { data, error } = await supabaseClient.rpc(
+    "admin_list_deposit_requests"
+  );
+
+  if (error) {
+    console.error("Deposit loading error:", error);
+    list.innerHTML =
+      "<p>Deposit error: " + escapeHTML(error.message) + "</p>";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = "<p>No deposit requests found.</p>";
+    return;
+  }
+
+  list.innerHTML = data.map(item => `
+    <div class="panel" style="margin-top:12px;">
+      <h3>👤 ${escapeHTML(item.depositor_username)}</h3>
+
+      <p><strong>Amount:</strong>
+        UGX ${Number(item.amount).toLocaleString()}
+      </p>
+
+      <p><strong>Payment Method:</strong>
+        ${escapeHTML(item.payment_method)}
+      </p>
+
+      <p><strong>Reference:</strong>
+        ${escapeHTML(item.payment_reference)}
+      </p>
+
+      <p><strong>Status:</strong>
+        ${escapeHTML(item.request_status)}
+      </p>
+
+      <p><strong>Date:</strong>
+        ${item.requested_at
+          ? new Date(item.requested_at).toLocaleString()
+          : "Unknown"}
+      </p>
+
+      ${item.request_status === "pending" ? `
+        <button onclick="reviewDeposit(${Number(item.request_id)}, 'approve')">
+          ✅ Approve
+        </button>
+
+        <button onclick="reviewDeposit(${Number(item.request_id)}, 'reject')">
+          ❌ Reject
+        </button>
+      ` : ""}
+    </div>
+  `).join("");
+}
+
+
+// APPROVE OR REJECT DEPOSITS
+async function reviewDeposit(requestId, action) {
+  const actionName = action === "approve" ? "approve" : "reject";
+
+  if (!confirm("Are you sure you want to " + actionName + " this deposit?")) {
+    return;
+  }
+
+  const functionName = action === "approve"
+    ? "admin_approve_deposit"
+    : "admin_reject_deposit";
+
+  const { data, error } = await supabaseClient.rpc(functionName, {
+    p_request_id: requestId
+  });
+
+  if (error) {
+    console.error("Deposit review error:", error);
+    toast("Deposit action failed: " + error.message);
+    return;
+  }
+
+  toast(data || "Deposit updated successfully.");
+
+  await loadAdminDeposits();
+}
+
 
 
 async function updateExtraPages() {
