@@ -2103,48 +2103,59 @@ closeModal();
 }
 
 
-  // 3. RECHARGE REQUEST
-  if (action.type === 'Recharge') {
-    const amount = Number($('depositAmount').value);
-    const transactionId = $('depositTransactionId').value.trim();
+  // 3. REAL RECHARGE REQUEST
+if (action.type === 'Recharge') {
+  const amount = Number($('depositAmount').value);
+  const transactionId = $('depositTransactionId').value.trim();
+  const method = $('depositMethod').value;
 
-    if (!Number.isFinite(amount) || amount < 1000) {
-      toast('Enter at least UGX 1,000.');
-      return;
-    }
-
-    if (!depositLocked) {
-      toast('Please lock your payment number first.');
-      return;
-    }
-
-    if (!transactionId) {
-      toast('Enter your Mobile Money transaction ID.');
-      return;
-    }
-
-    const account = depositAccounts[depositIndex];
-
-    depositRequests.push({
-      farmer: user.name,
-      amount: amount,
-      phone: account.phone,
-      accountName: account.name,
-      transactionId: transactionId,
-      status: 'Pending verification'
-    });
-
-    addTransaction(
-      'Recharge',
-      amount,
-      'Pending verification',
-      'Mobile Money: ' + transactionId
-    );
-
-    closeModal();
-    toast('Recharge request submitted for verification.');
+  if (!Number.isFinite(amount) || amount < 1000) {
+    toast('Enter at least UGX 1,000.');
     return;
   }
+
+  if (!depositLocked) {
+    toast('Please lock your payment number first.');
+    return;
+  }
+
+  if (!transactionId) {
+    toast('Enter your payment transaction reference.');
+    return;
+  }
+
+  const button = $('confirmBtn');
+  button.disabled = true;
+  button.textContent = 'Submitting...';
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('deposit_requests')
+      .insert({
+        user_id: user.id,
+        amount: amount,
+        payment_method: method,
+        payment_reference: transactionId,
+        status: 'pending'
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    closeModal();
+    toast('Deposit request submitted for verification!');
+
+  } catch (error) {
+    console.error('Deposit submission error:', error);
+    toast(error.message || 'Deposit submission failed.');
+  } finally {
+    button.disabled = false;
+    button.textContent = '💰 SUBMIT DEPOSIT FOR VERIFICATION';
+  }
+
+  return;
+}
 
   // 4. REAL WITHDRAWAL REQUEST
 if (action.type === 'Withdraw') {
@@ -2960,9 +2971,10 @@ async function submitLogin() {
     }
 
     user = {
-      name: data.user.user_metadata?.username || login,
-      id: "RP-" + data.user.id.slice(0, 8).toUpperCase()
-    };
+  name: data.user.user_metadata?.username || login,
+  id: data.user.id,
+  displayId: "RP-" + data.user.id.slice(0, 8).toUpperCase()
+};
    // LOAD USER POINTS AND ADMIN ROLE
 const { data: profileData, error: pointsError } =
   await supabaseClient
