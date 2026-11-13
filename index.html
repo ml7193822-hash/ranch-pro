@@ -1402,38 +1402,33 @@ function toast(message){
  el.style.display='block';
  clearTimeout(window.toastTimer);
  window.toastTimer=setTimeout(()=>el.style.display='none',3000);
-}
 
-
-
-async function updateDashboard(){
-
+async function updateDashboard() {
   $('farmerName').textContent = user ? user.name : 'Guest Farmer';
   $('welcomeName').textContent = user ? user.name : 'Guest Farmer';
   $('accountId').textContent = user ? user.id : 'RP-63998';
   $('points').textContent = points;
 
-  // Load real wallet balance from Supabase
   if (user) {
     const { data: authData, error: authError } =
       await supabaseClient.auth.getUser();
 
-    if (!authError && authData.user) {
+    if (authError) {
+      console.error('Authentication error:', authError);
+    } else if (authData?.user) {
       const { data, error } = await supabaseClient
         .from('profiles')
         .select('balance, points')
         .eq('id', authData.user.id)
         .single();
 
-      if (!error && data) {
-  $('balance').textContent = money(Number(data.balance || 0));
-
-  // Update real points from Supabase
-  points = Number(data.points || 0);
-  $('points').textContent = points;
-      }
-      } else {
+      if (error) {
         console.error('Dashboard balance error:', error);
+      } else if (data) {
+        $('balance').textContent = money(Number(data.balance || 0));
+
+        points = Number(data.points || 0);
+        $('points').textContent = points;
       }
     }
   } else {
@@ -1442,7 +1437,6 @@ async function updateDashboard(){
 
   $('authButtons').style.display = user ? 'none' : 'flex';
 
-  // Update livestock information
   const totalAnimals = animals.length;
   const totalValue = animals.reduce(
     (sum, a) => sum + (a.price || 0), 0
