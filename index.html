@@ -1119,6 +1119,7 @@ const supabaseClient = window.supabase.createClient(
 );
 
 let user = null;
+ let isAdmin = false;
  
 let livestockPackages = [];
 
@@ -2487,7 +2488,7 @@ async function submitLogin() {
    // LOAD USER POINTS FROM SUPABASE
 const { data: profileData, error: pointsError } = await supabaseClient
   .from("profiles")
-  .select("points")
+  .select("points, role")
   .eq("id", data.user.id)
   .single();
 
@@ -2495,7 +2496,8 @@ if (pointsError) {
   console.error("Points loading error:", pointsError);
 } else {
   points = Number(profileData.points || 0);
-       }
+  isAdmin = profileData.role === "admin";
+}
 
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("mainDashboard").style.display = "block";
