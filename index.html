@@ -852,6 +852,12 @@ button:active{transform:scale(.97)}
   <button onclick="showPage('Password','Secure password management requires a connected authentication service.')"><span class="emoji">🔐</span>Password</button>
   <button onclick="showPage('Download','Use your browser menu to save or download this page.')"><span class="emoji">📥</span>Download</button>
   <button onclick="logout()"><span class="emoji">🚪</span>Exit</button>
+  <button id="adminMenuButton"
+  style="display:none;"
+  onclick="openAdminDashboard()">
+  <span class="emoji">🛡️</span>
+  Admin Dashboard
+  </button>
  </div>
 </section>
 
@@ -1046,6 +1052,39 @@ button:active{transform:scale(.97)}
 
   </div>
 </nav>
+ <!-- RANCH PRO ADMIN DASHBOARD -->
+<section id="adminDashboard" class="panel" style="display:none;">
+
+  <div class="section-head">
+    <h2>🛡️ Admin Dashboard</h2>
+    <button onclick="goTab('home',document.querySelector('.nav-item'))">
+      🏠 Home
+    </button>
+  </div>
+
+  <div class="news">
+    Welcome to RANCH PRO Administration.
+    Manage users, livestock packages and ranch activities.
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h3>👥 Total Users</h3>
+      <h2 id="adminTotalUsers">0</h2>
+    </div>
+
+    <div class="panel">
+      <h3>🐄 Livestock Packages</h3>
+      <h2 id="adminTotalPackages">0</h2>
+    </div>
+
+    <div class="panel">
+      <h3>💰 Investments</h3>
+      <h2 id="adminTotalInvestments">0</h2>
+    </div>
+  </div>
+
+</section>
 
 
 
@@ -2194,6 +2233,7 @@ function closeModal() {
 
 
 
+
 function goTab(page, button) {
 
   // Update active navigation button
@@ -2201,16 +2241,17 @@ function goTab(page, button) {
     item.classList.remove('active');
   });
 
-  button.classList.add('active');
+  if (button) button.classList.add('active');
 
-  // Hide all dashboard sections
+  // Hide dashboard sections
   const sections = [
     'welcomeSection',
     'walletSection',
     'servicesSection',
     'shop',
     'myRanchSection',
-    'newsSection'
+    'newsSection',
+    'adminDashboard'
   ];
 
   sections.forEach(id => {
@@ -2226,6 +2267,7 @@ function goTab(page, button) {
   // HOME
   if (page === 'home') {
     sections.forEach(id => {
+      if (id === 'adminDashboard') return;
       const section = document.getElementById(id);
       if (section) section.style.display = '';
     });
@@ -2234,31 +2276,81 @@ function goTab(page, button) {
   // RANCH
   if (page === 'ranch') {
     ['welcomeSection', 'shop', 'myRanchSection'].forEach(id => {
-      document.getElementById(id).style.display = '';
+      const section = document.getElementById(id);
+      if (section) section.style.display = '';
     });
   }
 
   // TEAM
   if (page === 'team') {
-    document.getElementById('teamPage').classList.add('active');
+    document.getElementById('teamPage')?.classList.add('active');
     updateExtraPages();
   }
 
   // INCOME
   if (page === 'income') {
-    document.getElementById('incomePage').classList.add('active');
+    document.getElementById('incomePage')?.classList.add('active');
     updateExtraPages();
   }
 
   // PROFILE
   if (page === 'profile') {
-    document.getElementById('profilePage').classList.add('active');
+    document.getElementById('profilePage')?.classList.add('active');
     updateExtraPages();
   }
 
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+
+async function openAdminDashboard() {
+
+  const { data: authData, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (authError || !authData.user) {
+    toast("Please log in again.");
+    return;
+  }
+
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("role")
+    .eq("id", authData.user.id)
+    .single();
+
+  if (error || profile?.role !== "admin") {
+    isAdmin = false;
+    toast("Admin access denied.");
+    return;
+  }
+
+  isAdmin = true;
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.remove('active');
+  });
+
+  document.querySelectorAll('.dashboard-page').forEach(section => {
+    section.classList.remove('active');
+  });
+
+  [
+    'welcomeSection',
+    'walletSection',
+    'servicesSection',
+    'shop',
+    'myRanchSection',
+    'newsSection'
+  ].forEach(id => {
+    const section = document.getElementById(id);
+    if (section) section.style.display = 'none';
+  });
+
+  document.getElementById('adminDashboard').style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 
 
@@ -2497,6 +2589,11 @@ if (pointsError) {
 } else {
   points = Number(profileData.points || 0);
   isAdmin = profileData.role === "admin";
+ const adminButton = document.getElementById("adminMenuButton");
+
+if (adminButton) {
+  adminButton.style.display = isAdmin ? "flex" : "none";
+}
 }
 
     document.getElementById("authScreen").style.display = "none";
