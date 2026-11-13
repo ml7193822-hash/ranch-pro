@@ -1591,7 +1591,8 @@ function openAuth(type){
  $('modalFields').innerHTML=`
  ${type==='register'?'<input id="authName" placeholder="Your username">':''}
  <input id="authEmail" type="email" placeholder="Your registered email" required>
- <input id="authPassword" type="password" placeholder="Demo password">
+ <input id="authPassword" type="password"
+placeholder="Enter your password" required>
  `;
  $('confirmBtn').style.display='block';
  $('confirmBtn').textContent=type==='login'?'Login':'Create Account';
@@ -2045,6 +2046,7 @@ function purchase(name, price, emoji, daily, days, packageId) {
 
   $("modalBg").classList.add("show");
 }
+ $('confirmBtn').onclick = confirmAction;
 
 async function confirmAction() {
  
