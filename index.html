@@ -2034,41 +2034,79 @@ async function confirmAction() {
 
   const action = pendingAction;
 
-  // 1. LOGIN AND REGISTRATION
+  
+  // 1. REAL SUPABASE LOGIN AND REGISTRATION
   if (action.type === 'register' || action.type === 'login') {
-    const username = action.type === 'register'
-      ? $('authName').value.trim()
-      : $('authEmail').value.trim();
+    const email = $('authEmail').value.trim().toLowerCase();
+    const password = $('authPassword').value;
 
-    const email = $('authEmail').value.trim();
-    const password = $('authPassword').value.trim();
-
-    if (!username || !password) {
-      toast('Please fill in all required fields.');
+    if (!email || !password) {
+      toast('Please enter your email and password.');
       return;
     }
 
-    if (action.type === 'register' && !email.includes('@')) {
-      toast('Please enter a valid email address.');
-      return;
+    try {
+      let authData;
+      let authError;
+
+      if (action.type === 'register') {
+        const username = $('authName').value.trim();
+
+        if (!username) {
+          toast('Please enter your username.');
+          return;
+        }
+
+        const result = await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { username: username }
+          }
+        });
+
+        authData = result.data;
+        authError = result.error;
+      } else {
+        const result = await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        authData = result.data;
+        authError = result.error;
+      }
+
+      if (authError) throw authError;
+
+      if (!authData.user) {
+        throw new Error('Account could not be loaded.');
+      }
+
+      if (!authData.session) {
+        toast('Registration successful. Check your email to confirm your account.');
+        closeModal();
+        return;
+      }
+
+      user = {
+        id: authData.user.id,
+        name: authData.user.user_metadata?.username || email.split('@')[0],
+        email: email
+      };
+
+      await updateDashboard();
+      closeModal();
+      showRanchWelcome();
+
+    } catch (error) {
+      console.error('Authentication error:', error);
+      toast(error.message || 'Login failed.');
     }
 
-    user = {
-      name: action.type === 'register'
-        ? username
-        : username.split('@')[0],
-      id: 'RP-' + Math.floor(10000 + Math.random() * 89999)
-    };
-
-    points = 0;
-    demoBalance = 0;
-    animals = [];
-
-    updateDashboard();
-    closeModal();
-    toast('Welcome to RANCH PRO, ' + user.name + '!');
     return;
   }
+
 
   
 // 2. LIVESTOCK PURCHASE
