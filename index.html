@@ -1421,12 +1421,17 @@ async function updateDashboard(){
     if (!authError && authData.user) {
       const { data, error } = await supabaseClient
         .from('profiles')
-        .select('balance')
+        .select('balance, points')
         .eq('id', authData.user.id)
         .single();
 
       if (!error && data) {
-        $('balance').textContent = money(Number(data.balance || 0));
+  $('balance').textContent = money(Number(data.balance || 0));
+
+  // Update real points from Supabase
+  points = Number(data.points || 0);
+  $('points').textContent = points;
+      }
       } else {
         console.error('Dashboard balance error:', error);
       }
@@ -2272,12 +2277,13 @@ async function updateExtraPages() {
     if (authData?.user) {
       const { data, error } = await supabaseClient
         .from("profiles")
-        .select("balance")
+        .select("balance, points")
         .eq("id", authData.user.id)
         .single();
 
       if (!error && data) {
         realBalance = Number(data.balance || 0);
+points = Number(data.points || 0);
       } else {
         console.error("Profile balance error:", error);
       }
@@ -2454,6 +2460,18 @@ async function submitLogin() {
       name: data.user.user_metadata?.username || login,
       id: "RP-" + data.user.id.slice(0, 8).toUpperCase()
     };
+   // LOAD USER POINTS FROM SUPABASE
+const { data: profileData, error: pointsError } = await supabaseClient
+  .from("profiles")
+  .select("points")
+  .eq("id", data.user.id)
+  .single();
+
+if (pointsError) {
+  console.error("Points loading error:", pointsError);
+} else {
+  points = Number(profileData.points || 0);
+       }
 
     document.getElementById("authScreen").style.display = "none";
     document.getElementById("mainDashboard").style.display = "block";
