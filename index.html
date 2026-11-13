@@ -1570,10 +1570,10 @@ async function updateDashboard() {
 function openAuth(type){
  pendingAction={type:type};
  $('modalTitle').textContent=type==='login'?'Farmer Login':'Create Ranch Account';
- $('modalText').textContent='Demo account only. Do not use a real password here.';
+ $('modalText').textContent='Login securely to your RANCH PRO account.';
  $('modalFields').innerHTML=`
  ${type==='register'?'<input id="authName" placeholder="Your username">':''}
- <input id="authEmail" type="text" placeholder="Username or email">
+ <input id="authEmail" type="email" placeholder="Your registered email" required>
  <input id="authPassword" type="password" placeholder="Demo password">
  `;
  $('confirmBtn').style.display='block';
