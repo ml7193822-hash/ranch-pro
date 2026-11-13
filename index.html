@@ -2350,6 +2350,9 @@ async function openAdminDashboard() {
   document.getElementById('adminDashboard').style.display = 'block';
  const { data: stats, error: statsError } =
   await supabaseClient.rpc('admin_dashboard_stats');
+ console.log("ADMIN STATS:", stats);
+console.log("ADMIN STATS ERROR:", statsError);
+ alert(JSON.stringify({stats, statsError}));
 
 if (statsError) {
   console.error("Admin stats error:", statsError);
