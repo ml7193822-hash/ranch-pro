@@ -1276,56 +1276,70 @@ async function loadMyRanch() {
 
 
  
+
 async function openMyAnimals() {
   await loadLivestockPackages();
 
-  const { data, error } = await supabaseClient
-    .from("ranch_selections")
-    .select("id, package_id, created_at")
-    .order("created_at", { ascending: false });
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
 
-  if (error) {
-    toast("Unable to load your animals.");
-    console.error(error);
-    return;
-  }
+    if (authError || !authData.user) {
+      toast("Please log in first.");
+      return;
+    }
 
-  const animals = data || [];
+    const { data, error } = await supabaseClient
+      .from("user_packages")
+      .select("id, package_id, amount_paid, status, purchase_reference")
+      .eq("user_id", authData.user.id)
+      .order("id", { ascending: false });
 
-  showPage(
-    "🐄 My Animals",
-    "Your selected demo animals are listed below."
-  );
+    if (error) throw error;
 
-  const fields = document.getElementById("modalFields");
+    const animals = data || [];
 
-  if (animals.length === 0) {
-    fields.innerHTML = "<p>Your ranch is empty. Select an animal first.</p>";
-    return;
-  }
-
-  fields.innerHTML = animals.map(item => {
-    const pkg = livestockPackages.find(
-      p => String(p.id) === String(item.package_id)
+    showPage(
+      "🐄 My Animals",
+      "Your purchased livestock is listed below."
     );
 
-    if (!pkg) return "";
+    const fields = document.getElementById("modalFields");
 
-    const emoji = animalEmojis[pkg.animal_name] || "🐄";
-    const date = new Date(item.created_at).toLocaleDateString();
+    if (animals.length === 0) {
+      fields.innerHTML =
+        "<p>You have no purchased livestock yet.</p>";
+      return;
+    }
 
-    return `
-      <div class="product">
-        <div class="animal">${emoji}</div>
-        <h3>${pkg.animal_name}</h3>
-        <p>${pkg.package_name}</p>
-        <p>Package price: ${money(pkg.price)}</p>
-        <p>Date selected: ${date}</p>
-        <p>🟢 Demo selection</p>
-      </div>
-    `;
-  }).join("");
+    fields.innerHTML = animals.map(item => {
+      const pkg = livestockPackages.find(
+        p => String(p.id) === String(item.package_id)
+      );
+
+      if (!pkg) return "";
+
+      const emoji = animalEmojis[pkg.animal_name] || "🐄";
+
+      return `
+        <div class="product">
+          <div class="animal">${emoji}</div>
+          <h3>${pkg.animal_name}</h3>
+          <p>${pkg.package_name}</p>
+          <p>Amount paid: ${money(item.amount_paid)}</p>
+          <p>Purchase status: ${item.status}</p>
+          <p>Reference: ${item.purchase_reference}</p>
+          <p>🟢 Real purchase</p>
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("My Animals error:", error);
+    toast("Unable to load purchased animals.");
+  }
 }
+
 
 
 let points = 0;
