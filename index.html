@@ -1583,6 +1583,8 @@ function lockDepositNumber() {
   toast('Payment number locked for this request.');
 }
 
+
+
 function openRequest(type) {
   if (!user) {
     toast('Please login or register first.');
@@ -1590,14 +1592,11 @@ function openRequest(type) {
     return;
   }
 
-  pendingAction = {type:type};
+  pendingAction = {type: type};
   $('modal').classList.add('treasure-modal');
 
   if (type === 'Recharge') {
-    depositIndex = 0;
-    depositSeconds = 10;
-    depositLocked = false;
-    selectedDepositAmount = 10000;
+    selectedDepositAmount = 25000;
 
     $('modalTitle').textContent = '🏆 GOLD TREASURE RECHARGE';
 
@@ -1612,62 +1611,64 @@ function openRequest(type) {
 
       <div class="deposit-label">SELECT DEPOSIT AMOUNT</div>
 
-      
-<div class="deposit-amount-grid">
-  <button data-amount="80000" onclick="selectDepositAmount(80000)">UGX 80,000</button>
-  <button data-amount="150000" onclick="selectDepositAmount(150000)">UGX 150,000</button>
-  <button data-amount="65000" onclick="selectDepositAmount(65000)">UGX 65,000</button>
-  <button data-amount="25000" onclick="selectDepositAmount(25000)">UGX 25,000</button>
-  <button data-amount="50000" onclick="selectDepositAmount(50000)">UGX 50,000</button>
-</div>
-
-
-      <div class="deposit-label">📱 MTN MOBILE MONEY</div>
-
-      <div class="deposit-account">
-        <div>SEND PAYMENT TO</div>
-        <div class="deposit-number" id="depositPhoneDisplay"></div>
-        <strong id="depositNameDisplay"></strong>
-        <p>Number changes in:</p>
-        <span class="deposit-timer" id="depositCountdown">10s</span>
-
-        <button class="deposit-lock" id="depositLockButton"
-          onclick="lockDepositNumber()">
-          🔒 LOCK THIS PAYMENT NUMBER
-        </button>
+      <div class="deposit-amount-grid">
+        <button data-amount="80000" onclick="selectDepositAmount(80000)">UGX 80,000</button>
+        <button data-amount="150000" onclick="selectDepositAmount(150000)">UGX 150,000</button>
+        <button data-amount="65000" onclick="selectDepositAmount(65000)">UGX 65,000</button>
+        <button data-amount="25000" onclick="selectDepositAmount(25000)">UGX 25,000</button>
+        <button data-amount="50000" onclick="selectDepositAmount(50000)">UGX 50,000</button>
       </div>
 
-      <div class="deposit-airtel">
-        🔴 AIRTEL MONEY<br>
-        COMING SOON
+      <div class="deposit-label">💳 SELECT PAYMENT METHOD</div>
+
+      <select id="depositMethod" class="deposit-game-input"
+        onchange="updatePaymentMethodFields()">
+        <option value="MTN">🟡 MTN Mobile Money</option>
+        <option value="AIRTEL">🔴 Airtel Money</option>
+        <option value="USDT">💎 USDT (Tether)</option>
+      </select>
+
+      <div id="usdtDepositNetworkBox" style="display:none">
+        <div class="deposit-label">SELECT USDT NETWORK</div>
+        <select id="usdtDepositNetwork" class="deposit-game-input">
+          <option value="TRC20">TRC20 — Tron</option>
+          <option value="BEP20">BEP20 — BNB Smart Chain</option>
+          <option value="ERC20">ERC20 — Ethereum</option>
+        </select>
+      </div>
+
+      <div class="deposit-account" id="paymentInstructions">
+        <strong>MTN MOBILE MONEY</strong>
+        <p>Verified payment instructions will appear here when configured.</p>
       </div>
 
       <div class="deposit-small">
-        Choose your amount, lock the payment number, and send the exact amount.
-        Only pay to an account verified and authorized by RANCH PRO.
+        Only send money to payment details officially verified by RANCH PRO.
+        Your wallet will be credited after payment verification.
       </div>
     `;
 
     $('modalFields').innerHTML = `
       <input class="deposit-game-input"
-        id="depositAmount"
-        type="number"
-        min="1000"
-        value="10000"
-        placeholder="Deposit amount in UGX">
+        id="depositAmount" type="number" min="1000"
+        value="25000" placeholder="Deposit amount in UGX">
 
       <input class="deposit-game-input"
-        id="depositTransactionId"
-        type="text"
-        placeholder="Enter Mobile Money transaction ID">
+        id="depositTransactionId" type="text"
+        placeholder="Transaction ID or USDT transaction hash">
+
+      <label class="deposit-label">📸 UPLOAD PAYMENT SCREENSHOT</label>
+      <input class="deposit-game-input"
+        id="depositScreenshot" type="file"
+        accept="image/jpeg,image/png,image/webp">
     `;
 
     $('confirmBtn').style.display = 'block';
     $('confirmBtn').className = 'deposit-submit';
-    $('confirmBtn').textContent = '💰 I HAVE PAID — SUBMIT';
+    $('confirmBtn').textContent = '💰 SUBMIT DEPOSIT FOR VERIFICATION';
 
-    selectDepositAmount(10000);
-    startDepositRotation();
+    selectDepositAmount(25000);
+    updatePaymentMethodFields();
 
   } else {
     $('modalTitle').textContent = '💎 COLLECT YOUR TREASURE';
@@ -1675,22 +1676,80 @@ function openRequest(type) {
     $('modalText').innerHTML = `
       <div class="deposit-chest">💎👑</div>
       <div class="deposit-title">WITHDRAW FROM YOUR RANCH</div>
-      <p>Enter the amount and mobile money number for your withdrawal request.</p>
+      <p>Select your withdrawal method and enter your destination details.</p>
+
+      <div class="deposit-label">SELECT WITHDRAWAL METHOD</div>
+      <select id="withdrawMethod" class="deposit-game-input"
+        onchange="updatePaymentMethodFields()">
+        <option value="MTN">🟡 MTN Mobile Money</option>
+        <option value="AIRTEL">🔴 Airtel Money</option>
+        <option value="USDT">💎 USDT (Tether)</option>
+      </select>
+
+      <div id="usdtWithdrawNetworkBox" style="display:none">
+        <div class="deposit-label">SELECT USDT NETWORK</div>
+        <select id="usdtWithdrawNetwork" class="deposit-game-input">
+          <option value="TRC20">TRC20 — Tron</option>
+          <option value="BEP20">BEP20 — BNB Smart Chain</option>
+          <option value="ERC20">ERC20 — Ethereum</option>
+        </select>
+      </div>
     `;
 
     $('modalFields').innerHTML = `
       <input id="requestAmount" type="number"
-        min="1000" placeholder="Withdrawal amount in UGX">
-      <input id="requestPhone" type="tel"
-        placeholder="Mobile Money number">
+        min="1000" class="deposit-game-input"
+        placeholder="Withdrawal amount">
+
+      <input id="requestPhone" type="text"
+        class="deposit-game-input"
+        placeholder="Mobile Money number or USDT wallet address">
     `;
 
     $('confirmBtn').style.display = 'block';
     $('confirmBtn').className = 'confirm';
-    $('confirmBtn').textContent = '💎 Submit Withdrawal Request';
+    $('confirmBtn').textContent = '💎 SUBMIT WITHDRAWAL REQUEST';
+
+    updatePaymentMethodFields();
   }
 
   $('modalBg').classList.add('show');
+}
+
+function updatePaymentMethodFields() {
+  const depositMethod = $('depositMethod');
+  const withdrawMethod = $('withdrawMethod');
+
+  if (depositMethod) {
+    const method = depositMethod.value;
+    const networkBox = $('usdtDepositNetworkBox');
+    const instructions = $('paymentInstructions');
+
+    networkBox.style.display = method === 'USDT' ? 'block' : 'none';
+
+    if (method === 'MTN') {
+      instructions.innerHTML =
+        '<strong>🟡 MTN MOBILE MONEY</strong><p>Verified MTN payment details will appear here once configured.</p>';
+    } else if (method === 'AIRTEL') {
+      instructions.innerHTML =
+        '<strong>🔴 AIRTEL MONEY</strong><p>Verified Airtel payment details will appear here once configured.</p>';
+    } else {
+      instructions.innerHTML =
+        '<strong>💎 USDT PAYMENT</strong><p>Your verified wallet address will appear here once configured. Confirm the selected network before sending.</p>';
+    }
+  }
+
+  if (withdrawMethod) {
+    const method = withdrawMethod.value;
+    const networkBox = $('usdtWithdrawNetworkBox');
+    const destination = $('requestPhone');
+
+    networkBox.style.display = method === 'USDT' ? 'block' : 'none';
+
+    destination.placeholder = method === 'USDT'
+      ? 'Enter your USDT wallet address'
+      : 'Enter your Mobile Money number';
+  }
 }
 
 function purchaseFromDatabase(packageId) {
