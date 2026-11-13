@@ -2348,6 +2348,23 @@ async function openAdminDashboard() {
   });
 
   document.getElementById('adminDashboard').style.display = 'block';
+ const { data: stats, error: statsError } =
+  await supabaseClient.rpc('admin_dashboard_stats');
+
+if (statsError) {
+  console.error("Admin stats error:", statsError);
+  toast("Could not load admin statistics.");
+  return;
+}
+
+document.getElementById('adminTotalUsers').textContent =
+  stats[0].total_users;
+
+document.getElementById('adminTotalPackages').textContent =
+  stats[0].total_packages;
+
+document.getElementById('adminTotalInvestments').textContent =
+  stats[0].total_investments;
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
