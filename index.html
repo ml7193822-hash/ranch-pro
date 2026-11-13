@@ -1061,6 +1061,19 @@ button:active{transform:scale(.97)}
       🏠 Home
     </button>
   </div>
+ 
+<div class="panel">
+  <h3>👥 Registered Users</h3>
+
+  <button onclick="loadAdminUsers()">
+    🔄 Refresh Users
+  </button>
+
+  <div id="adminUsersList">
+    <p>Tap Refresh Users to load registered accounts.</p>
+  </div>
+</div>
+
 
   <div class="news">
     Welcome to RANCH PRO Administration.
@@ -2372,6 +2385,48 @@ document.getElementById('adminTotalInvestments').textContent =
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+
+async function loadAdminUsers() {
+
+  const list = document.getElementById("adminUsersList");
+
+  list.innerHTML = "<p>Loading users...</p>";
+
+  const { data, error } = await supabaseClient.rpc("admin_list_users");
+
+  if (error) {
+    console.error("Admin users error:", error);
+    list.innerHTML = "<p>Could not load users. Check the console.</p>";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = "<p>No registered users found.</p>";
+    return;
+  }
+
+  list.innerHTML = data.map(person => `
+    <div class="panel" style="margin-top:10px;">
+      <h3>👤 ${escapeHTML(person.username || "No username")}</h3>
+      <p><strong>Account ID:</strong> ${escapeHTML(person.user_id)}</p>
+      <p><strong>Registered:</strong>
+        ${person.registered_at
+          ? new Date(person.registered_at).toLocaleDateString()
+          : "Unknown"}
+      </p>
+    </div>
+  `).join("");
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
 
 
 async function updateExtraPages() {
