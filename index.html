@@ -1737,7 +1737,7 @@ function lockDepositNumber() {
 
 
 
-function openRequest(type) {
+async function openRequest(type) {
   if (!user) {
     toast('Please login or register first.');
     openAuth('login');
@@ -1748,6 +1748,20 @@ function openRequest(type) {
   $('modal').classList.add('treasure-modal');
 
   if (type === 'Recharge') {
+       const { data: walletData, error: walletError } =
+      await supabaseClient
+        .from('profiles')
+        .select('balance')
+        .eq('id', user.id)
+        .single();
+
+    if (walletError) {
+      console.error('Wallet balance error:', walletError);
+      toast('Unable to load wallet balance.');
+      return;
+    }
+
+    window.ranchWalletBalance = Number(walletData.balance || 0);
     selectedDepositAmount = 25000;
 
     $('modalTitle').textContent = '🏆 GOLD TREASURE RECHARGE';
@@ -1757,9 +1771,9 @@ function openRequest(type) {
       <div class="deposit-title">RECHARGE YOUR RANCH</div>
 
       <div class="deposit-wallet">
-        🌟 YOUR RANCH WALLET<br>
-        UGX ${Number(demoBalance).toLocaleString('en-US')}
-      </div>
+  🌟 YOUR RANCH WALLET<br>
+  UGX ${Number(window.ranchWalletBalance || 0).toLocaleString('en-US')}
+</div>
 
       <div class="deposit-label">SELECT DEPOSIT AMOUNT</div>
 
@@ -2775,6 +2789,7 @@ points = Number(data.points || 0);
       }
     }
   }
+ window.ranchWalletBalance = realBalance;
 
   $('profileName').textContent = name;
   $('profileAccount').textContent = id;
