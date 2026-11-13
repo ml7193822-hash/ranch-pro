@@ -2451,7 +2451,8 @@ async function loadAdminInvestments() {
 
   if (error) {
     console.error("Investment loading error:", error);
-    list.innerHTML = "<p>Could not load investments.</p>";
+    list.innerHTML =
+  "<p>Investment error: " + escapeHTML(error.message) + "</p>";
     return;
   }
 
