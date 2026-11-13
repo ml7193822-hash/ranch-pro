@@ -2977,11 +2977,29 @@ async function submitRegister() {
 
     if (error) throw error;
 
-    message.textContent = data.session
-      ? "Account created successfully! Please log in."
-      : "Account created! Check your email to confirm, then log in.";
+    if (data.session && data.user) {
 
-    showLogin();
+  user = {
+    id: data.user.id,
+    name: data.user.user_metadata?.username || username,
+    displayId: "RP-" + data.user.id.slice(0, 8).toUpperCase()
+  };
+
+  document.getElementById("authScreen").style.display = "none";
+  document.getElementById("mainDashboard").style.display = "block";
+  document.getElementById("mainBottomNav").style.display = "flex";
+
+  await updateDashboard();
+  await loadLivestockPackages();
+  await loadMyRanch();
+
+  message.textContent = "";
+  showRanchWelcome();
+
+} else {
+  message.textContent = "Account created! Check your email to confirm, then log in.";
+  showLogin();
+  }
 
   } catch (error) {
     message.textContent = error.message;
@@ -3092,6 +3110,28 @@ const confirmButton = document.getElementById('confirmBtn');
 
 if (confirmButton) {
   confirmButton.addEventListener('click', confirmAction);
+ }
+ function showRanchWelcome() {
+  const message = document.getElementById("authMessage");
+
+  if (message) message.textContent = "";
+
+  const modal = document.getElementById("modalBg");
+
+  if (modal) {
+    document.getElementById("modalTitle").textContent = "🌿 WELCOME TO RANCH PRO";
+    document.getElementById("modalText").innerHTML = `
+      <div style="text-align:center;padding:15px;">
+        <h2>🐄 Your Growth, Your Ranch!</h2>
+        <p>Your ranch account is ready.</p>
+        <p>Start growing your digital ranch today!</p>
+      </div>
+    `;
+
+    document.getElementById("modalFields").innerHTML = "";
+    document.getElementById("confirmBtn").style.display = "none";
+    modal.classList.add("show");
+  }
  }
 window.submitRegister = submitRegister;
 window.submitLogin = submitLogin;
