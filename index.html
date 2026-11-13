@@ -1402,6 +1402,7 @@ function toast(message){
  el.style.display='block';
  clearTimeout(window.toastTimer);
  window.toastTimer=setTimeout(()=>el.style.display='none',3000);
+}
 
 async function updateDashboard() {
   $('farmerName').textContent = user ? user.name : 'Guest Farmer';
