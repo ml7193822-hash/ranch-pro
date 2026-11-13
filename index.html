@@ -1348,20 +1348,43 @@ function toast(message){
 }
 
 
-function updateDashboard(){
+
+async function updateDashboard(){
 
   $('farmerName').textContent = user ? user.name : 'Guest Farmer';
   $('welcomeName').textContent = user ? user.name : 'Guest Farmer';
   $('accountId').textContent = user ? user.id : 'RP-63998';
   $('points').textContent = points;
 
-  $('balance').textContent = money(demoBalance);
+  // Load real wallet balance from Supabase
+  if (user) {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (!authError && authData.user) {
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('balance')
+        .eq('id', authData.user.id)
+        .single();
+
+      if (!error && data) {
+        $('balance').textContent = money(Number(data.balance || 0));
+      } else {
+        console.error('Dashboard balance error:', error);
+      }
+    }
+  } else {
+    $('balance').textContent = money(0);
+  }
 
   $('authButtons').style.display = user ? 'none' : 'flex';
 
   // Update livestock information
   const totalAnimals = animals.length;
-  const totalValue = animals.reduce((sum,a) => sum + (a.price || 0),0);
+  const totalValue = animals.reduce(
+    (sum, a) => sum + (a.price || 0), 0
+  );
 
   $('ranchIncome').textContent = money(totalValue);
   $('teamIncome').textContent = '0';
@@ -1374,6 +1397,7 @@ function updateDashboard(){
     updateExtraPages();
   }
 }
+
 
 
 function openAuth(type){
@@ -2061,19 +2085,40 @@ function goTab(page, button) {
 
 
 
-function updateExtraPages() {
+
+async function updateExtraPages() {
   const name = user ? user.name : 'Guest Farmer';
   const id = user ? user.id : 'RP-63998';
+
+  let realBalance = 0;
+
+  if (user) {
+    const { data: authData } = await supabaseClient.auth.getUser();
+
+    if (authData?.user) {
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("balance")
+        .eq("id", authData.user.id)
+        .single();
+
+      if (!error && data) {
+        realBalance = Number(data.balance || 0);
+      } else {
+        console.error("Profile balance error:", error);
+      }
+    }
+  }
 
   $('profileName').textContent = name;
   $('profileAccount').textContent = id;
   $('profilePoints').textContent = points;
-  $('profileBalance').textContent = money(demoBalance);
+  $('profileBalance').textContent = money(realBalance);
 
   $('pageTodayIncome').textContent = 'UGX 0';
   $('pageRanchIncome').textContent = 'UGX 0';
   $('pageIncomeTeam').textContent = 'UGX 0';
-  $('pageAvailableBalance').textContent = money(demoBalance);
+  $('pageAvailableBalance').textContent = money(realBalance);
 
   $('pageTeamSize').textContent = '0';
   $('pageTeamIncome').textContent = 'UGX 0';
@@ -2083,6 +2128,7 @@ function updateExtraPages() {
     ? window.location.origin + window.location.pathname + '?ref=' + user.id
     : 'Please login first';
 }
+
 
 function copyReferral() {
   if (!user) {
