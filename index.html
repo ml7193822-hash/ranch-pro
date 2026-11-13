@@ -2570,6 +2570,11 @@ async function loadAdminWithdrawals() {
   const { data, error } = await supabase.rpc(
     'admin_list_withdrawal_requests'
   );
+ console.log('Withdrawal data:', data);
+console.log('Withdrawal error:', error);
+ if (error) {
+  alert('Withdrawal Error: ' + error.message);
+ }
 
   if (error) {
     list.innerHTML = '<p>❌ ' + error.message + '</p>';
