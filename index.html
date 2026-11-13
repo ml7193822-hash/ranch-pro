@@ -3111,28 +3111,7 @@ const confirmButton = document.getElementById('confirmBtn');
 if (confirmButton) {
   confirmButton.addEventListener('click', confirmAction);
  }
- function showRanchWelcome() {
-  const message = document.getElementById("authMessage");
-
-  if (message) message.textContent = "";
-
-  const modal = document.getElementById("modalBg");
-
-  if (modal) {
-    document.getElementById("modalTitle").textContent = "🌿 WELCOME TO RANCH PRO";
-    document.getElementById("modalText").innerHTML = `
-      <div style="text-align:center;padding:15px;">
-        <h2>🐄 Your Growth, Your Ranch!</h2>
-        <p>Your ranch account is ready.</p>
-        <p>Start growing your digital ranch today!</p>
-      </div>
-    `;
-
-    document.getElementById("modalFields").innerHTML = "";
-    document.getElementById("confirmBtn").style.display = "none";
-    modal.classList.add("show");
-  }
- }
+ 
 window.submitRegister = submitRegister;
  alert("Register function connected!");
 window.submitLogin = submitLogin;
