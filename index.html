@@ -1079,6 +1079,19 @@ button:active{transform:scale(.97)}
     Welcome to RANCH PRO Administration.
     Manage users, livestock packages and ranch activities.
   </div>
+ 
+<div class="panel" style="margin-top:15px;">
+  <h3>📊 Investment Management</h3>
+
+  <button onclick="loadAdminInvestments()">
+    🔄 Refresh Investments
+  </button>
+
+  <div id="adminInvestmentsList">
+    <p>Tap Refresh Investments to view records.</p>
+  </div>
+</div>
+
 
   <div class="grid">
     <div class="panel">
@@ -2426,6 +2439,41 @@ function escapeHTML(value) {
     '"': "&quot;",
     "'": "&#39;"
   }[char]));
+}
+
+async function loadAdminInvestments() {
+
+  const list = document.getElementById("adminInvestmentsList");
+
+  list.innerHTML = "<p>Loading investments...</p>";
+
+  const { data, error } = await supabaseClient.rpc("admin_list_investments");
+
+  if (error) {
+    console.error("Investment loading error:", error);
+    list.innerHTML = "<p>Could not load investments.</p>";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = "<p>No investments found.</p>";
+    return;
+  }
+
+  list.innerHTML = data.map(item => `
+    <div class="panel" style="margin-top:10px;">
+      <h3>🐄 ${escapeHTML(item.livestock_name)}</h3>
+      <p><strong>Investor:</strong> ${escapeHTML(item.investor_username)}</p>
+      <p><strong>Amount:</strong> UGX ${Number(item.amount_paid || 0).toLocaleString()}</p>
+      <p><strong>Daily Profit:</strong> UGX ${Number(item.daily_profit || 0).toLocaleString()}</p>
+      <p><strong>Status:</strong> ${escapeHTML(item.investment_status)}</p>
+      <p><strong>Date:</strong> ${
+        item.invested_at
+          ? new Date(item.invested_at).toLocaleDateString()
+          : "Unknown"
+      }</p>
+    </div>
+  `).join("");
 }
 
 
