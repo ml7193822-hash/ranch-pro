@@ -676,6 +676,43 @@ button:active{transform:scale(.97)}
   font-size: 15px;
  }
 
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.payment-option {
+  min-width: 0;
+  padding: 12px 6px;
+  border: 2px solid #d9e5d5;
+  border-radius: 12px;
+  background: #fff;
+  color: #24452b;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.payment-option.selected {
+  border-color: #83bd45;
+  background: #edf8e5;
+  color: #285c16;
+  box-shadow: 0 0 0 2px rgba(131,189,69,0.15);
+}
+
+.payment-option:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 380px) {
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 </style>
 </head>
@@ -1621,12 +1658,26 @@ function openRequest(type) {
 
       <div class="deposit-label">💳 SELECT PAYMENT METHOD</div>
 
-      <select id="depositMethod" class="deposit-game-input"
-        onchange="updatePaymentMethodFields()">
-        <option value="MTN">🟡 MTN Mobile Money</option>
-        <option value="AIRTEL">🔴 Airtel Money</option>
-        <option value="USDT">💎 USDT (Tether)</option>
-      </select>
+      <input type="hidden" id="depositMethod" value="MTN">
+
+<div class="payment-methods">
+
+  <button type="button" class="payment-option selected"
+    onclick="setPaymentMethod('deposit','MTN',this)">
+    🟡 MTN Mobile Money
+  </button>
+
+  <button type="button" class="payment-option"
+    onclick="setPaymentMethod('deposit','AIRTEL',this)">
+    🔴 Airtel Money
+  </button>
+
+  <button type="button" class="payment-option"
+    onclick="setPaymentMethod('deposit','USDT',this)">
+    💎 USDT (Tether)
+  </button>
+
+</div>
 
       <div id="usdtDepositNetworkBox" style="display:none">
         <div class="deposit-label">SELECT USDT NETWORK</div>
@@ -1679,12 +1730,27 @@ function openRequest(type) {
       <p>Select your withdrawal method and enter your destination details.</p>
 
       <div class="deposit-label">SELECT WITHDRAWAL METHOD</div>
-      <select id="withdrawMethod" class="deposit-game-input"
-        onchange="updatePaymentMethodFields()">
-        <option value="MTN">🟡 MTN Mobile Money</option>
-        <option value="AIRTEL">🔴 Airtel Money</option>
-        <option value="USDT">💎 USDT (Tether)</option>
-      </select>
+      <input type="hidden" id="withdrawMethod" value="MTN">
+
+<div class="payment-methods">
+
+  <button type="button" class="payment-option selected"
+    onclick="setPaymentMethod('withdraw','MTN',this)">
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/MTN_Logo.svg" alt="MTN">
+    MTN MoMo
+  </button>
+
+  <button type="button" class="payment-option"
+    onclick="setPaymentMethod('withdraw','AIRTEL',this)">
+    🔴 Airtel Money
+  </button>
+
+  <button type="button" class="payment-option"
+    onclick="setPaymentMethod('withdraw','USDT',this)">
+    💎 USDT
+  </button>
+
+</div>
 
       <div id="usdtWithdrawNetworkBox" style="display:none">
         <div class="deposit-label">SELECT USDT NETWORK</div>
@@ -1715,7 +1781,23 @@ function openRequest(type) {
 
   $('modalBg').classList.add('show');
 }
+function setPaymentMethod(type, method, button) {
+  const input = type === 'deposit'
+    ? $('depositMethod')
+    : $('withdrawMethod');
 
+  if (!input) return;
+
+  input.value = method;
+
+  button.parentElement
+    .querySelectorAll('.payment-option')
+    .forEach(btn => btn.classList.remove('selected'));
+
+  button.classList.add('selected');
+
+  updatePaymentMethodFields();
+}
 function updatePaymentMethodFields() {
   const depositMethod = $('depositMethod');
   const withdrawMethod = $('withdrawMethod');
