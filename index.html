@@ -719,6 +719,25 @@ button:active{transform:scale(.97)}
   object-fit: contain;
   margin: 0 auto 6px;
 }
+ 
+.shop-intro {
+  background: linear-gradient(135deg,#e8f5d8,#f7fbea);
+  border-radius: 15px;
+  padding: 17px;
+  margin: 14px 0;
+}
+
+.shop-intro h3 {
+  color: #315d20;
+  margin: 0 0 7px;
+}
+
+.shop-intro p {
+  color: #52634a;
+  margin: 0;
+  font-size: 13px;
+}
+
 
 </style>
 </head>
@@ -861,71 +880,71 @@ button:active{transform:scale(.97)}
  </div>
 </section>
 
+
 <section class="panel" id="shop">
- <div class="section-head">
-  <h2>🐄 Livestock Shop</h2>
-  <button onclick="document.getElementById('shop').scrollIntoView()">View all ›</button>
- </div>
-
- <div class="notice">
-  Livestock earnings below are demonstration figures, not guaranteed returns.
-  Real purchases and payouts require a verified business and backend.
- </div>
-
-  
-
-<div class="products" id="livestockProducts">
-  <p>🌿 Loading livestock packages...</p>
-</div>
-
-
-  <div class="product">
-    <div class="animal">🐈</div>
-    <h3>Cat</h3>
-    <p>Ranch companion animal</p>
-    <div class="price">Coming Soon</div>
-    <div class="earning">Not available yet</div>
-    <button class="buy" onclick="toast('Cat package coming soon!')">Coming Soon</button>
+  <div class="section-head">
+    <h2>🐄 Livestock Shop</h2>
+    <button onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">
+      View all ›
+    </button>
   </div>
 
-  <div class="product">
-    <div class="animal">🐢</div>
-    <h3>Tortoise</h3>
-    <p>Ranch wildlife category</p>
-    <div class="price">Coming Soon</div>
-    <div class="earning">Not available yet</div>
-    <button class="buy" onclick="toast('Tortoise coming soon!')">Coming Soon</button>
+  <div class="shop-intro">
+    <h3>🌾 Grow Your Ranch</h3>
+    <p>Explore available livestock packages and manage your ranch in one place.</p>
   </div>
 
-  <div class="product">
-    <div class="animal">🐍</div>
-    <h3>Snake</h3>
-    <p>Ranch wildlife category</p>
-    <div class="price">Coming Soon</div>
-    <div class="earning">Not available yet</div>
-    <button class="buy" onclick="toast('Snake coming soon!')">Coming Soon</button>
+  <div class="products" id="livestockProducts">
+    <p>🌿 Loading livestock packages...</p>
   </div>
 
-  <div class="product">
-    <div class="animal">🦤</div>
-    <h3>Ostrich</h3>
-    <p>Ostrich farming category</p>
-    <div class="price">Coming Soon</div>
-    <div class="earning">Not available yet</div>
-    <button class="buy" onclick="toast('Ostrich coming soon!')">Coming Soon</button>
+  <div class="section-head">
+    <h2>🐾 More Ranch Animals</h2>
   </div>
 
-  <div class="product">
-    <div class="animal">🦁</div>
-    <h3>Lion</h3>
-    <p>Wildlife category</p>
-    <div class="price">Coming Soon</div>
-    <div class="earning">Not available yet</div>
-    <button class="buy" onclick="toast('Lion coming soon!')">Coming Soon</button>
+  <div class="products">
+
+    <div class="product">
+      <div class="animal">🐈</div>
+      <h3>Cat</h3>
+      <p>Ranch companion animal</p>
+      <div class="price">Coming Soon</div>
+      <button class="buy" disabled>Coming Soon</button>
+    </div>
+
+    <div class="product">
+      <div class="animal">🐢</div>
+      <h3>Tortoise</h3>
+      <p>Ranch wildlife category</p>
+      <div class="price">Coming Soon</div>
+      <button class="buy" disabled>Coming Soon</button>
+    </div>
+
+    <div class="product">
+      <div class="animal">🐍</div>
+      <h3>Snake</h3>
+      <p>Ranch wildlife category</p>
+      <div class="price">Coming Soon</div>
+      <button class="buy" disabled>Coming Soon</button>
+    </div>
+
+    <div class="product">
+      <div class="animal">🦤</div>
+      <h3>Ostrich</h3>
+      <p>Ostrich farming category</p>
+      <div class="price">Coming Soon</div>
+      <button class="buy" disabled>Coming Soon</button>
+    </div>
+
+    <div class="product">
+      <div class="animal">🦁</div>
+      <h3>Lion</h3>
+      <p>Wildlife category</p>
+      <div class="price">Coming Soon</div>
+      <button class="buy" disabled>Coming Soon</button>
+    </div>
+
   </div>
-
-</div>
-
 </section>
 
 <section class="panel" id="myRanchSection">
@@ -1219,6 +1238,7 @@ const animalEmojis = {
   "Hen": "🐓"
 };
 
+
 async function loadLivestockPackages() {
   const area = document.getElementById("livestockProducts");
 
@@ -1253,8 +1273,7 @@ async function loadLivestockPackages() {
           </div>
 
           <div class="earning">
-            Demo: ${money(pkg.daily_profit)}/day ·
-            ${pkg.duration_days} days
+            Package duration: ${pkg.duration_days} days
           </div>
 
           <button class="buy"
@@ -1271,6 +1290,7 @@ async function loadLivestockPackages() {
       "<p>Unable to load livestock. Please refresh and try again.</p>";
   }
 }
+
  
 
 async function loadMyRanch() {
