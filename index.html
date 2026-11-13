@@ -1977,8 +1977,9 @@ if (action.type === 'purchase') {
     }
 
     await loadMyRanch();
+await updateDashboard();
 
-    closeModal();
+closeModal();
 
     toast(
       action.name + ' purchased successfully!'
@@ -2304,9 +2305,23 @@ points = Number(data.points || 0);
   $('pageTeamIncome').textContent = 'UGX 0';
   $('pageTeamPoints').textContent = points;
 
-  $('referralLink').value = user
-    ? window.location.origin + window.location.pathname + '?ref=' + user.id
-    : 'Please login first';
+  
+if (user) {
+  const { data: authData, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (!authError && authData?.user) {
+    $('referralLink').value =
+      window.location.origin +
+      window.location.pathname +
+      '?ref=' + authData.user.id;
+  } else {
+    $('referralLink').value = 'Unable to generate referral link';
+  }
+} else {
+  $('referralLink').value = 'Please login first';
+}
+
 }
 
 
@@ -2358,6 +2373,7 @@ function openAuth(type) {
   }
 }
 
+
 async function submitRegister() {
   const username = document.getElementById("regUsername").value.trim().toLowerCase();
   const email = document.getElementById("regEmail").value.trim().toLowerCase();
@@ -2377,13 +2393,25 @@ async function submitRegister() {
   message.textContent = "Creating your account...";
 
   try {
+    // Get the referrer's ID from the referral link
+    const referralId = new URLSearchParams(window.location.search).get("ref");
+
+    const metadata = {
+      username: username
+    };
+
+    // Only attach a valid Supabase UUID
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (referralId && uuidPattern.test(referralId)) {
+      metadata.referrer_id = referralId;
+    }
+
     const { data, error } = await supabaseClient.auth.signUp({
       email: email,
       password: password,
       options: {
-        data: {
-          username: username
-        }
+        data: metadata
       }
     });
 
@@ -2399,6 +2427,7 @@ async function submitRegister() {
     message.textContent = error.message;
   }
 }
+
 
 async function submitLogin() {
   const login = document.getElementById("loginUsername").value.trim();
