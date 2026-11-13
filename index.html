@@ -2561,15 +2561,15 @@ async function loadAdminDeposits() {
   `).join("");
 }
 
+
 async function loadAdminWithdrawals() {
   const list = document.getElementById('adminWithdrawalsList');
 
   list.innerHTML = '<p>Loading withdrawals...</p>';
 
-  const { data, error } = await supabase
-    .from('withdrawal_requests')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const { data, error } = await supabase.rpc(
+    'admin_list_withdrawal_requests'
+  );
 
   if (error) {
     list.innerHTML = '<p>❌ ' + error.message + '</p>';
@@ -2581,17 +2581,74 @@ async function loadAdminWithdrawals() {
     return;
   }
 
+  const safe = value => String(value ?? '-').replace(
+    /[&<>"']/g,
+    c => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[c]
+  );
+
   list.innerHTML = data.map(w => `
-    <div class="panel" style="margin:10px 0;padding:12px;">
-      <p><b>Request ID:</b> ${w.id}</p>
-      <p><b>User ID:</b> ${w.user_id}</p>
+    <div class="panel" style="margin:12px 0;padding:15px;">
+      <h4>Withdrawal #${w.request_id}</h4>
+
+      <p><b>Customer:</b> ${safe(w.customer_username)}</p>
       <p><b>Amount:</b> UGX ${Number(w.amount).toLocaleString()}</p>
-      <p><b>Method:</b> ${w.payment_method || '-'}</p>
-      <p><b>Details:</b> ${w.payment_details || '-'}</p>
-      <p><b>Status:</b> ${w.status}</p>
-      <p><b>Date:</b> ${new Date(w.created_at).toLocaleString()}</p>
+      <p><b>Payment Method:</b> ${safe(w.payment_method)}</p>
+      <p><b>Payment Details:</b> ${safe(w.payment_details)}</p>
+      <p><b>Status:</b> ${safe(w.request_status)}</p>
+      <p><b>Requested:</b> ${safe(new Date(w.requested_at).toLocaleString())}</p>
+
+      ${w.request_status === 'pending' ? `
+        <button onclick="approveWithdrawal(${w.request_id})">
+          ✅ Approve
+        </button>
+
+        <button onclick="rejectWithdrawal(${w.request_id})"
+          style="background:#dc2626;color:white;">
+          ❌ Reject
+        </button>
+      ` : ''}
     </div>
   `).join('');
+}
+
+async function approveWithdrawal(id) {
+  if (!confirm('Are you sure you want to approve this withdrawal?')) return;
+
+  const { data, error } = await supabase.rpc(
+    'admin_approve_withdrawal',
+    { p_request_id: id }
+  );
+
+  if (error) {
+    alert('Approval failed: ' + error.message);
+    return;
+  }
+
+  alert(data);
+  loadAdminWithdrawals();
+}
+
+async function rejectWithdrawal(id) {
+  if (!confirm('Are you sure you want to reject this withdrawal?')) return;
+
+  const { data, error } = await supabase.rpc(
+    'admin_reject_withdrawal',
+    { p_request_id: id }
+  );
+
+  if (error) {
+    alert('Rejection failed: ' + error.message);
+    return;
+  }
+
+  alert(data);
+  loadAdminWithdrawals();
 }
 
 
