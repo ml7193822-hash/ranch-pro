@@ -2378,7 +2378,7 @@ async function openAdminDashboard() {
   await supabaseClient.rpc('admin_dashboard_stats');
  console.log("ADMIN STATS:", stats);
 console.log("ADMIN STATS ERROR:", statsError);
- alert(JSON.stringify({stats, statsError}));
+ 
 
 if (statsError) {
   console.error("Admin stats error:", statsError);
@@ -2700,28 +2700,26 @@ async function submitLogin() {
       name: data.user.user_metadata?.username || login,
       id: "RP-" + data.user.id.slice(0, 8).toUpperCase()
     };
-   // LOAD USER POINTS FROM SUPABASE
-const { data: profileData, error: pointsError } = await supabaseClient
-  .from("profiles")
-  .select("points, role")
-  .eq("id", data.user.id)
-  .single();
+   // LOAD USER POINTS AND ADMIN ROLE
+const { data: profileData, error: pointsError } =
+  await supabaseClient
+    .from("profiles")
+    .select("points, role")
+    .eq("id", data.user.id)
+    .single();
 
 if (pointsError) {
-  console.error("Points loading error:", pointsError);
+  console.error("Profile loading error:", pointsError);
+  isAdmin = false;
 } else {
   points = Number(profileData.points || 0);
   isAdmin = profileData.role === "admin";
- const adminButton = document.getElementById("adminMenuButton");
-
-if (adminButton) {
-  adminButton.style.display = isAdmin ? "flex" : "none";
- }
- const adminButton = document.getElementById("adminMenuButton");
-
-if (adminButton) {
-  adminButton.style.display = isAdmin ? "flex" : "none";
 }
+
+const adminButton = document.getElementById("adminMenuButton");
+
+if (adminButton) {
+  adminButton.style.display = isAdmin ? "flex" : "none";
 }
 
     document.getElementById("authScreen").style.display = "none";
