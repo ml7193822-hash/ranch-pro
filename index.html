@@ -1965,23 +1965,31 @@ function logout(){
 
 
 
+
 function closeModal() {
   const modalBg = document.getElementById("modalBg");
   const modal = document.getElementById("modal");
 
-  modalBg.style.display = "none";
+  modalBg.classList.remove("show");
+  modalBg.style.display = "";
+
   modal.classList.remove("welcome-game-modal");
   modal.classList.remove("treasure-modal");
 
   document.getElementById("modalTitle").style.display = "block";
   document.getElementById("modalText").style.display = "block";
 
+  document.getElementById("modalFields").innerHTML = "";
+
   pendingAction = null;
 
   const confirmBtn = document.getElementById("confirmBtn");
   confirmBtn.style.display = "block";
   confirmBtn.disabled = false;
+  confirmBtn.className = "confirm";
+  confirmBtn.textContent = "Continue";
 }
+
  
 
 
