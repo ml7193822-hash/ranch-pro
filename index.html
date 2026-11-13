@@ -712,7 +712,13 @@ button:active{transform:scale(.97)}
     grid-template-columns: 1fr;
   }
 }
-
+.payment-option img {
+  display: block;
+  width: 48px;
+  height: 32px;
+  object-fit: contain;
+  margin: 0 auto 6px;
+}
 
 </style>
 </head>
@@ -1662,23 +1668,29 @@ function openRequest(type) {
 
 <div class="payment-methods">
 
-  <button type="button" class="payment-option selected"
-    onclick="setPaymentMethod('deposit','MTN',this)">
-    🟡 MTN Mobile Money
-  </button>
 
-  <button type="button" class="payment-option"
-    onclick="setPaymentMethod('deposit','AIRTEL',this)">
-    🔴 Airtel Money
-  </button>
 
-  <button type="button" class="payment-option"
-    onclick="setPaymentMethod('deposit','USDT',this)">
-    💎 USDT (Tether)
-  </button>
+<button type="button" class="payment-option selected"
+  onclick="setPaymentMethod('deposit','MTN',this)">
+  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/MTN_Logo.svg" alt="MTN">
+  MTN Mobile Money
+</button>
+
+<button type="button" class="payment-option"
+  onclick="setPaymentMethod('deposit','AIRTEL',this)">
+  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Airtel_logo.svg" alt="Airtel">
+  Airtel Money
+</button>
+
+<button type="button" class="payment-option"
+  onclick="setPaymentMethod('deposit','USDT',this)">
+  <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Tether_Logo.svg" alt="USDT">
+  USDT (Tether)
+</button>
 
 </div>
 
+  
       <div id="usdtDepositNetworkBox" style="display:none">
         <div class="deposit-label">SELECT USDT NETWORK</div>
         <select id="usdtDepositNetwork" class="deposit-game-input">
@@ -1732,6 +1744,7 @@ function openRequest(type) {
       <div class="deposit-label">SELECT WITHDRAWAL METHOD</div>
       <input type="hidden" id="withdrawMethod" value="MTN">
 
+
 <div class="payment-methods">
 
   <button type="button" class="payment-option selected"
@@ -1742,15 +1755,18 @@ function openRequest(type) {
 
   <button type="button" class="payment-option"
     onclick="setPaymentMethod('withdraw','AIRTEL',this)">
-    🔴 Airtel Money
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Airtel_logo.svg" alt="Airtel">
+    Airtel Money
   </button>
 
   <button type="button" class="payment-option"
     onclick="setPaymentMethod('withdraw','USDT',this)">
-    💎 USDT
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Tether_Logo.svg" alt="USDT">
+    USDT
   </button>
 
 </div>
+
 
       <div id="usdtWithdrawNetworkBox" style="display:none">
         <div class="deposit-label">SELECT USDT NETWORK</div>
