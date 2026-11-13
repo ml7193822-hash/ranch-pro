@@ -1120,6 +1120,18 @@ button:active{transform:scale(.97)}
       <h2 id="adminTotalInvestments">0</h2>
     </div>
   </div>
+ <!-- ADMIN WITHDRAWAL MANAGEMENT -->
+<div class="panel" style="margin-top:15px;">
+  <h3>💸 Withdrawal Management</h3>
+
+  <button onclick="loadAdminWithdrawals()">
+    🔄 Refresh Withdrawals
+  </button>
+
+  <div id="adminWithdrawalsList">
+    <p>Tap Refresh Withdrawals to view requests.</p>
+  </div>
+</div>
 
 </section>
 
@@ -2547,6 +2559,39 @@ async function loadAdminDeposits() {
       ` : ""}
     </div>
   `).join("");
+}
+
+async function loadAdminWithdrawals() {
+  const list = document.getElementById('adminWithdrawalsList');
+
+  list.innerHTML = '<p>Loading withdrawals...</p>';
+
+  const { data, error } = await supabase
+    .from('withdrawal_requests')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    list.innerHTML = '<p>❌ ' + error.message + '</p>';
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = '<p>No withdrawal requests found.</p>';
+    return;
+  }
+
+  list.innerHTML = data.map(w => `
+    <div class="panel" style="margin:10px 0;padding:12px;">
+      <p><b>Request ID:</b> ${w.id}</p>
+      <p><b>User ID:</b> ${w.user_id}</p>
+      <p><b>Amount:</b> UGX ${Number(w.amount).toLocaleString()}</p>
+      <p><b>Method:</b> ${w.payment_method || '-'}</p>
+      <p><b>Details:</b> ${w.payment_details || '-'}</p>
+      <p><b>Status:</b> ${w.status}</p>
+      <p><b>Date:</b> ${new Date(w.created_at).toLocaleString()}</p>
+    </div>
+  `).join('');
 }
 
 
