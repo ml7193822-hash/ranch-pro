@@ -2315,13 +2315,23 @@ if (action.type === 'purchase') {
       requestId: action.requestId
     });
 
-    const rpcPromise = supabaseClient.rpc(
-      'purchase_ranch_package',
-      {
-        p_package_id: action.packageId,
-        p_request_id: action.requestId
-      }
-    );
+    console.log("PACKAGE ID:", action.packageId);
+console.log("REQUEST ID:", action.requestId);
+console.log("USER:", user?.id);
+
+const rpcPromise = supabaseClient.rpc(
+  'purchase_ranch_package',
+  {
+    p_package_id: action.packageId,
+    p_request_id: action.requestId
+  }
+);
+
+rpcPromise.then(result => {
+  console.log("SUPABASE RESPONSE:", result);
+}).catch(error => {
+  console.error("SUPABASE FAILURE:", error);
+});
 
     const timeoutPromise = new Promise((_, reject) => {
       timeoutId = setTimeout(() => {
