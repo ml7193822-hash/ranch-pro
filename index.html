@@ -2189,10 +2189,7 @@ if (action.type === 'Recharge') {
     return;
   }
 
-  if (!depositLocked) {
-    toast('Please lock your payment number first.');
-    return;
-  }
+  
 
   if (!transactionId) {
     toast('Enter your payment transaction reference.');
