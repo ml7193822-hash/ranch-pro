@@ -2957,32 +2957,54 @@ async function rejectWithdrawal(id) {
 }
 
 
+
 // APPROVE OR REJECT DEPOSITS
 async function reviewDeposit(requestId, action) {
-  const actionName = action === "approve" ? "approve" : "reject";
+  try {
+    if (!requestId) {
+      toast("Deposit request ID is missing.");
+      return;
+    }
 
-  if (!confirm("Are you sure you want to " + actionName + " this deposit?")) {
-    return;
+    const actionName = action === "approve" ? "approve" : "reject";
+
+    if (!confirm("Are you sure you want to " + actionName + " this deposit?")) {
+      return;
+    }
+
+    const functionName = action === "approve"
+      ? "admin_approve_deposit"
+      : "admin_reject_deposit";
+
+    toast("Processing deposit...");
+
+    const { data, error } = await supabaseClient.rpc(functionName, {
+      p_request_id: requestId
+    });
+
+    console.log("Deposit review response:", data);
+    console.log("Deposit review error:", error);
+
+    if (error) {
+      console.error("Deposit review error:", error);
+      toast("Deposit action failed: " + error.message);
+      return;
+    }
+
+    toast(
+      typeof data === "string"
+        ? data
+        : "Deposit " + actionName + " request completed."
+    );
+
+    await loadAdminDeposits();
+
+  } catch (err) {
+    console.error("Review deposit error:", err);
+    toast("Something went wrong: " + err.message);
   }
-
-  const functionName = action === "approve"
-    ? "admin_approve_deposit"
-    : "admin_reject_deposit";
-
-  const { data, error } = await supabaseClient.rpc(functionName, {
-    p_request_id: requestId
-  });
-
-  if (error) {
-    console.error("Deposit review error:", error);
-    toast("Deposit action failed: " + error.message);
-    return;
-  }
-
-  toast(data || "Deposit updated successfully.");
-
-  await loadAdminDeposits();
 }
+
 
 
 
