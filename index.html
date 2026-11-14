@@ -2195,15 +2195,13 @@ function purchase(name, price, emoji, daily, days, packageId) {
 }
  $('confirmBtn').onclick = confirmAction;
 
+
 async function confirmAction() {
- 
- 
   if (!pendingAction) return;
 
   const action = pendingAction;
 
-  
-  // 1. REAL SUPABASE LOGIN AND REGISTRATION
+  // 1. LOGIN AND REGISTRATION
   if (action.type === 'register' || action.type === 'login') {
     const email = $('authEmail').value.trim().toLowerCase();
     const password = $('authPassword').value;
@@ -2214,8 +2212,7 @@ async function confirmAction() {
     }
 
     try {
-      let authData;
-      let authError;
+      let result;
 
       if (action.type === 'register') {
         const username = $('authName').value.trim();
@@ -2225,27 +2222,23 @@ async function confirmAction() {
           return;
         }
 
-        const result = await supabaseClient.auth.signUp({
+        result = await supabaseClient.auth.signUp({
           email,
           password,
           options: {
             data: { username: username }
           }
         });
-
-        authData = result.data;
-        authError = result.error;
       } else {
-        const result = await supabaseClient.auth.signInWithPassword({
+        result = await supabaseClient.auth.signInWithPassword({
           email,
           password
         });
-
-        authData = result.data;
-        authError = result.error;
       }
 
-      if (authError) throw authError;
+      if (result.error) throw result.error;
+
+      const authData = result.data;
 
       if (!authData.user) {
         throw new Error('Account could not be loaded.');
@@ -2275,186 +2268,155 @@ async function confirmAction() {
     return;
   }
 
+  // 2. LIVESTOCK PURCHASE
+  if (action.type === 'purchase') {
+    const button = $('confirmBtn');
 
-  
+    try {
+      if (!action.packageId) {
+        toast('Livestock package not found.');
+        return;
+      }
 
-// 2. LIVESTOCK PURCHASE
-if (action.type === 'purchase') {
-  const button = $('confirmBtn');
+      button.disabled = true;
+      button.textContent = 'Processing Purchase...';
 
-  try {
-    if (!action.packageId) {
-      toast('Livestock package not found.');
+      const { data, error } = await supabaseClient.rpc(
+        'purchase_ranch_package',
+        {
+          p_package_id: action.packageId,
+          p_request_id: crypto.randomUUID()
+        }
+      );
+
+      if (error) throw error;
+
+      const result = Array.isArray(data) ? data[0] : data;
+
+      if (!result) {
+        throw new Error('Purchase confirmation not received.');
+      }
+
+      await loadMyRanch();
+      await updateDashboard();
+
+      closeModal();
+      toast(action.name + ' purchased successfully!');
+
+    } catch (error) {
+      console.error('Livestock purchase error:', error);
+      toast(error.message || 'Purchase failed. Please try again.');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Confirm Purchase';
+    }
+
+    return;
+  }
+
+  // 3. RECHARGE
+  if (action.type === 'Recharge') {
+    const amount = Number($('depositAmount').value);
+    const transactionId = $('depositTransactionId').value.trim();
+    const method = $('depositMethod').value;
+
+    if (!Number.isFinite(amount) || amount < 1000) {
+      toast('Enter at least UGX 1,000.');
       return;
     }
 
-    button.disabled = true;
-    button.textContent = 'Processing Purchase...';
-
-    const { data, error } = await supabaseClient.rpc(
-  'purchase_ranch_package',
-  {
-    p_package_id: action.packageId,
-    p_request_id: crypto.randomUUID()
-  }
-);
-
-toast('Purchase request received from database.');
-      {
-        p_package_id: action.packageId,
-        p_request_id: crypto.randomUUID()
-      }
-    );
-
-    if (error) throw error;
-
-    const result = Array.isArray(data) ? data[0] : data;
-
-    if (!result || result.purchase_status !== 'success') {
-      throw new Error(
-        result?.purchase_status || 'Purchase confirmation not received.'
-      );
+    if (!transactionId) {
+      toast('Enter your payment transaction reference.');
+      return;
     }
 
-    await loadMyRanch();
-   toast('Ranch refreshed.');
-    await updateDashboard();
+    const button = $('confirmBtn');
+    button.disabled = true;
+    button.textContent = 'Submitting...';
 
-    closeModal();
+    try {
+      const { data, error } = await supabaseClient
+        .from('deposit_requests')
+        .insert({
+          user_id: user.id,
+          amount: amount,
+          payment_method: method,
+          payment_reference: transactionId,
+          status: 'pending'
+        })
+        .select()
+        .single();
 
-    toast(action.name + ' purchased successfully!');
+      if (error) throw error;
 
-  } catch (error) {
-    console.error('Livestock purchase error:', error);
-    toast(error.message || 'Purchase failed. Please try again.');
-  } finally {
-    button.disabled = false;
-    button.textContent = 'Confirm Purchase';
-  }
+      closeModal();
+      toast('Deposit request submitted for verification!');
 
-  return;
-}
-
-
-
-  // 3. REAL RECHARGE REQUEST
-if (action.type === 'Recharge') {
- 
-  const amount = Number($('depositAmount').value);
-  const transactionId = $('depositTransactionId').value.trim();
-  const method = $('depositMethod').value;
-
-  if (!Number.isFinite(amount) || amount < 1000) {
-    toast('Enter at least UGX 1,000.');
-    return;
-  }
-
-  
-
-  if (!transactionId) {
-    toast('Enter your payment transaction reference.');
-    return;
-  }
-
-  const button = $('confirmBtn');
-  button.disabled = true;
-  button.textContent = 'Submitting...';
-
-  try {
-
-  
-
-  const { data, error } = await supabaseClient
-    .from('deposit_requests')
-    .insert({
-      user_id: user.id,
-      amount: amount,
-      payment_method: method,
-      payment_reference: transactionId,
-      status: 'pending'
-    })
-    .select()
-    .single();
-
-  
-
-  if (error) throw error;
-
-  closeModal();
-  toast('Deposit request submitted for verification!');
-
-} catch (error) {
-
-  console.error('Deposit submission error:', error);
-  alert('DEPOSIT ERROR: ' + error.message);
-  toast(error.message || 'Deposit submission failed.');
-
-} finally {
-
-  button.disabled = false;
-  button.textContent = '💰 SUBMIT DEPOSIT FOR VERIFICATION';
-
-  }
-
-  return;
-}
-
-  // 4. REAL WITHDRAWAL REQUEST
-if (action.type === 'Withdraw') {
-
-  const amount = Number($('requestAmount').value);
-  const destination = $('requestPhone').value.trim();
-  const method = $('withdrawMethod').value;
-
-  if (!Number.isFinite(amount) || amount < 1000) {
-    toast('Enter at least UGX 1,000.');
-    return;
-  }
-
-  if (!destination) {
-    toast('Enter your withdrawal destination.');
-    return;
-  }
-
-  let details = destination;
-
-  if (method === 'USDT') {
-    const network = $('usdtWithdrawNetwork').value;
-    details = network + ': ' + destination;
-  }
-
-  const button = $('confirmBtn');
-  button.disabled = true;
-  button.textContent = 'Submitting...';
-
-  try {
-    const { data, error } = await supabaseClient.rpc(
-      'submit_withdrawal_request',
-      {
-        p_amount: amount,
-        p_payment_method: method,
-        p_payment_details: details
-      }
-    );
-
-    if (error) throw error;
-
-    closeModal();
-
-    toast('Withdrawal request submitted successfully!');
-
-  } catch (error) {
-    console.error('Withdrawal error:', error);
-    toast(error.message || 'Withdrawal submission failed.');
-  } finally {
-    button.disabled = false;
-    button.textContent = '💎 SUBMIT WITHDRAWAL REQUEST';
-  }
+    } catch (error) {
+      console.error('Deposit submission error:', error);
+      toast(error.message || 'Deposit submission failed.');
+    } finally {
+      button.disabled = false;
+      button.textContent = '💰 SUBMIT DEPOSIT FOR VERIFICATION';
+    }
 
     return;
-}
+  }
 
+  // 4. WITHDRAWAL
+  if (action.type === 'Withdraw') {
+    const amount = Number($('requestAmount').value);
+    const destination = $('requestPhone').value.trim();
+    const method = $('withdrawMethod').value;
+
+    if (!Number.isFinite(amount) || amount < 1000) {
+      toast('Enter at least UGX 1,000.');
+      return;
+    }
+
+    if (!destination) {
+      toast('Enter your withdrawal destination.');
+      return;
+    }
+
+    let details = destination;
+
+    if (method === 'USDT') {
+      const network = $('usdtWithdrawNetwork').value;
+      details = network + ': ' + destination;
+    }
+
+    const button = $('confirmBtn');
+    button.disabled = true;
+    button.textContent = 'Submitting...';
+
+    try {
+      const { data, error } = await supabaseClient.rpc(
+        'submit_withdrawal_request',
+        {
+          p_amount: amount,
+          p_payment_method: method,
+          p_payment_details: details
+        }
+      );
+
+      if (error) throw error;
+
+      closeModal();
+      toast('Withdrawal request submitted successfully!');
+
+    } catch (error) {
+      console.error('Withdrawal error:', error);
+      toast(error.message || 'Withdrawal submission failed.');
+    } finally {
+      button.disabled = false;
+      button.textContent = '💎 SUBMIT WITHDRAWAL REQUEST';
+    }
+
+    return;
+  }
 } // End of confirmAction()
+
 
 function addTransaction(type, amount, status, details = '') {
   transactions.unshift({
