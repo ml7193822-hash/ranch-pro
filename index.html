@@ -2355,6 +2355,7 @@ const { data, error } = await Promise.race([
 ]);
 
 console.log("Purchase RPC finished:", { data, error });
+   alert(JSON.stringify({ data, error }));
 
     clearTimeout(timeoutId);
 
