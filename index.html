@@ -2990,9 +2990,17 @@ async function reviewDeposit(requestId, action) {
     console.log("Deposit review error:", error);
 
     if (error) {
-      console.error("Deposit review error:", error);
-      toast("Deposit action failed: " + error.message);
-      return;
+  alert(
+    "APPROVAL ERROR:\n" +
+    error.message +
+    "\n\nDETAILS:\n" +
+    (error.details || "") +
+    "\n\nHINT:\n" +
+    (error.hint || "")
+  );
+
+  console.error("FULL APPROVAL ERROR:", error);
+  return;
     }
 
     toast(
