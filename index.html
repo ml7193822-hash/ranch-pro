@@ -2269,59 +2269,65 @@ async function confirmAction() {
   }
 
   
+
 // 2. LIVESTOCK PURCHASE
 if (action.type === 'purchase') {
   const button = $('confirmBtn');
+
+  if (button.disabled) return;
+
+  button.disabled = true;
+  button.textContent = 'Processing Purchase...';
 
   try {
     if (!action.packageId) {
       throw new Error('Livestock package not found.');
     }
 
-    button.disabled = true;
-    button.textContent = 'Processing Purchase...';
-
-    // Keep the same request ID if this request is retried
     if (!action.requestId) {
       action.requestId = crypto.randomUUID();
     }
 
-    const { data, error } = await supabaseClient.rpc(
-      'purchase_ranch_package',
-      {
+    console.log('Starting purchase RPC:', action.packageId);
+
+    const { data, error } = await Promise.race([
+      supabaseClient.rpc('purchase_ranch_package', {
         p_package_id: action.packageId,
         p_request_id: action.requestId
-      }
-    );
+      }),
+      new Promise((_, reject) => {
+        setTimeout(() => reject(
+          new Error('Request timed out. Check your investments before retrying.')
+        ), 20000);
+      })
+    ]);
 
     if (error) throw error;
 
     const result = Array.isArray(data) ? data[0] : data;
 
     if (!result) {
-      throw new Error('Purchase confirmation not received.');
+      throw new Error('No purchase confirmation received.');
     }
 
-    // Purchase confirmed: close modal immediately
+    pendingAction = null;
+    closeModal();
+
+    toast('Purchase successful!');
+
     button.disabled = false;
     button.textContent = 'Confirm Purchase';
 
-    closeModal();
-    toast(action.name + ' purchased successfully!');
-
-    // Refresh dashboard separately
     Promise.all([
       loadMyRanch(),
       updateDashboard()
     ]).catch(error => {
       console.error('Dashboard refresh error:', error);
-      toast('Purchase completed. Refresh your dashboard.');
     });
 
   } catch (error) {
-    console.error('Livestock purchase error:', error);
-
-    toast(error.message || 'Purchase failed. Please try again.');
+    console.error('Purchase error:', error);
+    toast(error.message || 'Purchase failed.');
 
     button.disabled = false;
     button.textContent = 'Confirm Purchase';
@@ -2329,6 +2335,7 @@ if (action.type === 'purchase') {
 
   return;
 }
+
 
 
   // 3. RECHARGE
