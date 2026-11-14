@@ -2171,6 +2171,11 @@ function purchase(name, price, emoji, daily, days, packageId) {
     return;
   }
 
+  if (!packageId || !Number.isFinite(Number(packageId))) {
+    toast("Invalid livestock package. Please refresh.");
+    return;
+  }
+
   pendingAction = {
     type: "purchase",
     name,
@@ -2178,22 +2183,25 @@ function purchase(name, price, emoji, daily, days, packageId) {
     emoji,
     daily,
     days,
-    packageId
+    packageId: Number(packageId),
+    requestId: crypto.randomUUID()
   };
 
-  $("modalTitle").textContent = "Confirm Livestock Purchase";
+  $("modalTitle").style.display = "block";
+  $("modalText").style.display = "block";
+  $("modalFields").innerHTML = "";
 
+  $("modalTitle").textContent = "Confirm Livestock Purchase";
   $("modalText").textContent =
     `${emoji} ${name} package: ${money(price)}.`;
 
-  $("modalFields").innerHTML = "";
-
-  $("confirmBtn").style.display = "block";
-  $("confirmBtn").textContent = "Confirm Purchase";
+  const button = $("confirmBtn");
+  button.style.display = "block";
+  button.disabled = false;
+  button.textContent = "Confirm Purchase";
 
   $("modalBg").classList.add("show");
 }
- $('confirmBtn').onclick = confirmAction;
 
 
 async function confirmAction() {
