@@ -2204,7 +2204,7 @@ if (action.type === 'Recharge') {
 
   try {
 
-  alert('Sending deposit request to Supabase...');
+  
 
   const { data, error } = await supabaseClient
     .from('deposit_requests')
@@ -2218,7 +2218,7 @@ if (action.type === 'Recharge') {
     .select()
     .single();
 
-  alert(JSON.stringify({data, error}));
+  
 
   if (error) throw error;
 
