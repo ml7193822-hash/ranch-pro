@@ -147,7 +147,11 @@ button:active{transform:scale(.97)}
 }
 .balance-title{font-size:23px;font-weight:1000;margin-bottom:15px}
 .balance-title span{color:#bd7929}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
 .stat{
  background:#fff8d9;border-radius:16px;padding:12px 4px;
  min-height:112px;display:flex;flex-direction:column;
@@ -866,6 +870,13 @@ button:active{transform:scale(.97)}
   <div class="stat"><div class="coin">C</div><b id="ranchIncome">0</b><span>Ranch<br>Income</span></div>
   <div class="stat"><div class="coin">C</div><b id="teamSize">0</b><span>Team Size</span></div>
   <div class="stat"><div class="coin">C</div><b id="todayIncome">0</b><span>Today<br>Income</span></div>
+  
+<div class="stat">
+  <div class="coin">💰</div>
+  <b id="totalProfit">UGX 0</b>
+  <span>Total<br>Profit</span>
+</div>
+
  </div>
 
  <div class="actions">
