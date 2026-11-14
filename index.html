@@ -2181,7 +2181,7 @@ closeModal();
 
   // 3. REAL RECHARGE REQUEST
 if (action.type === 'Recharge') {
- alert('Recharge section reached!');
+ 
   const amount = Number($('depositAmount').value);
   const transactionId = $('depositTransactionId').value.trim();
   const method = $('depositMethod').value;
@@ -2203,29 +2203,39 @@ if (action.type === 'Recharge') {
   button.textContent = 'Submitting...';
 
   try {
-    const { data, error } = await supabaseClient
-      .from('deposit_requests')
-      .insert({
-        user_id: user.id,
-        amount: amount,
-        payment_method: method,
-        payment_reference: transactionId,
-        status: 'pending'
-      })
-      .select()
-      .single();
 
-    if (error) throw error;
+  alert('Sending deposit request to Supabase...');
 
-    closeModal();
-    toast('Deposit request submitted for verification!');
+  const { data, error } = await supabaseClient
+    .from('deposit_requests')
+    .insert({
+      user_id: user.id,
+      amount: amount,
+      payment_method: method,
+      payment_reference: transactionId,
+      status: 'pending'
+    })
+    .select()
+    .single();
 
-  } catch (error) {
-    console.error('Deposit submission error:', error);
-    toast(error.message || 'Deposit submission failed.');
-  } finally {
-    button.disabled = false;
-    button.textContent = '💰 SUBMIT DEPOSIT FOR VERIFICATION';
+  alert(JSON.stringify({data, error}));
+
+  if (error) throw error;
+
+  closeModal();
+  toast('Deposit request submitted for verification!');
+
+} catch (error) {
+
+  console.error('Deposit submission error:', error);
+  alert('DEPOSIT ERROR: ' + error.message);
+  toast(error.message || 'Deposit submission failed.');
+
+} finally {
+
+  button.disabled = false;
+  button.textContent = '💰 SUBMIT DEPOSIT FOR VERIFICATION';
+
   }
 
   return;
