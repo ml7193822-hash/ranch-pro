@@ -2272,39 +2272,67 @@ async function confirmAction() {
 
 
 
+
 // 2. LIVESTOCK PURCHASE
 if (action.type === 'purchase') {
   const button = $('confirmBtn');
 
+  if (!button) {
+    console.error('Purchase button not found.');
+    toast('Purchase button not found.');
+    return;
+  }
+
   if (button.disabled) return;
+
+  if (!action.packageId) {
+    toast('Livestock package not found.');
+    return;
+  }
 
   button.disabled = true;
   button.textContent = 'Processing Purchase...';
 
-  try {
-    if (!action.packageId) {
-      throw new Error('Livestock package not found.');
-    }
+  let purchaseSuccessful = false;
+  let timeoutId;
 
+  try {
+    // Keep the same request ID when retrying
     if (!action.requestId) {
       action.requestId = crypto.randomUUID();
     }
 
-    console.log('Starting purchase RPC:', action.packageId);
+    console.log('Purchase started:', {
+      packageId: action.packageId,
+      requestId: action.requestId
+    });
 
-    const { data, error } = await Promise.race([
-      supabaseClient.rpc('purchase_ranch_package', {
+    const rpcPromise = supabaseClient.rpc(
+      'purchase_ranch_package',
+      {
         p_package_id: action.packageId,
         p_request_id: action.requestId
-      }),
-      new Promise((_, reject) => {
-        setTimeout(() => reject(
-          new Error('Request timed out. Check your investments before retrying.')
-        ), 20000);
-      })
+      }
+    );
+
+    const timeoutPromise = new Promise((_, reject) => {
+      timeoutId = setTimeout(() => {
+        reject(new Error(
+          'Purchase is taking too long. Check your investments before retrying.'
+        ));
+      }, 30000);
+    });
+
+    const { data, error } = await Promise.race([
+      rpcPromise,
+      timeoutPromise
     ]);
 
+    clearTimeout(timeoutId);
+
     if (error) throw error;
+
+    console.log('Purchase RPC response:', data);
 
     const result = Array.isArray(data) ? data[0] : data;
 
@@ -2312,14 +2340,19 @@ if (action.type === 'purchase') {
       throw new Error('No purchase confirmation received.');
     }
 
+    purchaseSuccessful = true;
+
     pendingAction = null;
-    closeModal();
+
+    try {
+      closeModal();
+    } catch (modalError) {
+      console.error('Modal closing error:', modalError);
+    }
 
     toast('Purchase successful!');
 
-    button.disabled = false;
-    button.textContent = 'Confirm Purchase';
-
+    // Refresh account information
     Promise.all([
       loadMyRanch(),
       updateDashboard()
@@ -2328,15 +2361,19 @@ if (action.type === 'purchase') {
     });
 
   } catch (error) {
-    console.error('Purchase error:', error);
+    clearTimeout(timeoutId);
+
+    console.error('PURCHASE ERROR:', error);
     toast(error.message || 'Purchase failed.');
 
+  } finally {
     button.disabled = false;
     button.textContent = 'Confirm Purchase';
   }
 
   return;
 }
+
 
 
 
