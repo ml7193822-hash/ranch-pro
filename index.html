@@ -982,6 +982,39 @@ button:active{transform:scale(.97)}
   and manage your demo account. Your Growth, Your Ranch!
  </p>
 </section>
+ 
+<section class="panel" id="companySection">
+  <h2>🏢 Company</h2>
+
+  <h3>Welcome to RANCH PRO</h3>
+
+  <p>
+    Bright Future Ranch Management Co., Ltd.,
+    referred to as RANCH PRO, is a livestock
+    management and investment company based
+    in the United States.
+  </p>
+
+  <h3>📍 Headquarters</h3>
+  <p>9 Powell St, Brookline, MA 02446, USA.</p>
+
+  <h3>🌿 Our Vision</h3>
+  <p>
+    Building opportunities through livestock
+    management, agricultural innovation and
+    ranch development.
+  </p>
+
+  <h3>🌍 Our Presence</h3>
+  <p>
+    A group of companies with an international
+    vision and presence across continents.
+  </p>
+
+  <h3>🏡 A HOUSE OF RANCH PRO</h3>
+  <p>Your Growth, Our Future.</p>
+</section>
+
 
 <div class="footer">RANCH PRO • OWN YOUR RANCH • GROW WITH CARE</div>
 </main>
@@ -1080,6 +1113,10 @@ button:active{transform:scale(.97)}
       <span class="nav-icon">💰</span>
       <small>Income</small>
     </button>
+   <button class="nav-item" onclick="goTab('company',this)">
+  <span class="nav-icon">🏢</span>
+  <small>Company</small>
+   </button>
 
     <button class="nav-item" onclick="goTab('profile',this)">
       <span class="nav-icon">👤</span>
@@ -2443,7 +2480,8 @@ function goTab(page, button) {
     'shop',
     'myRanchSection',
     'newsSection',
-    'adminDashboard'
+'companySection',
+'adminDashboard'
   ];
 
   sections.forEach(id => {
@@ -2490,6 +2528,11 @@ function goTab(page, button) {
     document.getElementById('profilePage')?.classList.add('active');
     updateExtraPages();
   }
+ // COMPANY
+if (page === 'company') {
+  const company = document.getElementById('companySection');
+  if (company) company.style.display = '';
+}
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
