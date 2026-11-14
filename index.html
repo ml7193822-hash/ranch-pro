@@ -2292,6 +2292,7 @@ if (action.type === 'purchase') {
     button.textContent = 'Processing Purchase...';
 
     const { data, error } = await supabaseClient.rpc(
+     toast('Purchase request received from database.');
       'purchase_ranch_package',
       {
         p_package_id: action.packageId,
@@ -2310,6 +2311,7 @@ if (action.type === 'purchase') {
     }
 
     await loadMyRanch();
+   toast('Ranch refreshed.');
     await updateDashboard();
 
     closeModal();
