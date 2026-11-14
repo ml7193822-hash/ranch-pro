@@ -2051,7 +2051,7 @@ function purchase(name, price, emoji, daily, days, packageId) {
  $('confirmBtn').onclick = confirmAction;
 
 async function confirmAction() {
- alert('RANCH PRO: Submit button is connected!');
+ 
  
   if (!pendingAction) return;
 
@@ -2181,6 +2181,7 @@ closeModal();
 
   // 3. REAL RECHARGE REQUEST
 if (action.type === 'Recharge') {
+ alert('Recharge section reached!');
   const amount = Number($('depositAmount').value);
   const transactionId = $('depositTransactionId').value.trim();
   const method = $('depositMethod').value;
