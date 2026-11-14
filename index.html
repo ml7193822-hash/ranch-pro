@@ -2303,6 +2303,7 @@ console.log("PENDING ACTION:", action);
 
   button.disabled = true;
   button.textContent = 'Processing Purchase...';
+ alert("STEP 1: Purchase started");
 
   let purchaseSuccessful = false;
   let timeoutId;
@@ -2345,6 +2346,8 @@ rpcPromise.then(result => {
     });
 
     console.log("Waiting for purchase RPC...");
+   alert("STEP 2: Sending request to Supabase");
+   alert("STEP 3: Supabase responded");
 
 const { data, error } = await Promise.race([
   rpcPromise,
