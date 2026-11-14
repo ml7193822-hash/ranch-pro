@@ -1569,7 +1569,7 @@ function toast(message){
  clearTimeout(window.toastTimer);
  window.toastTimer=setTimeout(()=>el.style.display='none',3000);
 }
-
+ 
 async function updateDashboard() {
   $('farmerName').textContent = user ? user.name : 'Guest Farmer';
   $('welcomeName').textContent = user ? user.name : 'Guest Farmer';
@@ -1583,10 +1583,12 @@ async function updateDashboard() {
     if (authError) {
       console.error('Authentication error:', authError);
     } else if (authData?.user) {
+      const userId = authData.user.id;
+
       const { data, error } = await supabaseClient
         .from('profiles')
         .select('balance, points')
-        .eq('id', authData.user.id)
+        .eq('id', userId)
         .single();
 
       if (error) {
@@ -1597,22 +1599,70 @@ async function updateDashboard() {
         points = Number(data.points || 0);
         $('points').textContent = points;
       }
+
+      // LOAD REAL INVESTMENT PROFITS
+      const { data: investments, error: profitError } =
+        await supabaseClient
+          .from('investments')
+          .select('total_profit_paid')
+          .eq('user_id', userId);
+
+      if (profitError) {
+        console.error('Profit loading error:', profitError);
+      } else {
+        const totalProfit = (investments || []).reduce(
+          (sum, item) => sum + Number(item.total_profit_paid || 0),
+          0
+        );
+
+        if ($('totalProfit')) {
+          $('totalProfit').textContent = money(totalProfit);
+        }
+      }
+
+      // LOAD PROFITS ACTUALLY CREDITED TODAY
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const { data: dailyPayments, error: dailyError } =
+        await supabaseClient
+          .from('wallet_transactions')
+          .select('amount')
+          .eq('user_id', userId)
+          .eq('transaction_type', 'profit')
+          .eq('direction', 'credit')
+          .eq('status', 'completed')
+          .gte('created_at', today.toISOString());
+
+      if (dailyError) {
+        console.error('Daily profit loading error:', dailyError);
+      } else {
+        const todayProfit = (dailyPayments || []).reduce(
+          (sum, item) => sum + Number(item.amount || 0),
+          0
+        );
+
+        $('todayIncome').textContent = money(todayProfit);
+      }
     }
   } else {
     $('balance').textContent = money(0);
+    $('todayIncome').textContent = money(0);
+
+    if ($('totalProfit')) {
+      $('totalProfit').textContent = money(0);
+    }
   }
 
   $('authButtons').style.display = user ? 'none' : 'flex';
 
-  const totalAnimals = animals.length;
   const totalValue = animals.reduce(
     (sum, a) => sum + (a.price || 0), 0
   );
 
   $('ranchIncome').textContent = money(totalValue);
-  $('teamIncome').textContent = '0';
+  $('teamIncome').textContent = money(0);
   $('teamSize').textContent = '0';
-  $('todayIncome').textContent = '0';
 
   renderAnimals();
 
@@ -1620,6 +1670,7 @@ async function updateDashboard() {
     updateExtraPages();
   }
 }
+
 
 
 
