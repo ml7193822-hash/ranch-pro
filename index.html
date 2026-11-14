@@ -1672,8 +1672,54 @@ async function updateDashboard() {
   );
 
   $('ranchIncome').textContent = money(totalValue);
+  // LOAD TEAM COMMISSION INCOME
+if (user) {
+  const { data: teamAuth, error: teamAuthError } =
+    await supabaseClient.auth.getUser();
+
+  if (!teamAuthError && teamAuth?.user) {
+    const { data: commissions, error } = await supabaseClient
+      .from('referral_commissions')
+      .select('commission_amount')
+      .eq('referrer_id', teamAuth.user.id)
+      .eq('status', 'completed');
+
+    if (error) {
+      console.error('Team income error:', error);
+      $('teamIncome').textContent = money(0);
+    } else {
+      const total = (commissions || []).reduce(
+        (sum, item) => sum + Number(item.commission_amount || 0),
+        0
+      );
+
+      $('teamIncome').textContent = money(total);
+    }
+  }
+} else {
   $('teamIncome').textContent = money(0);
+}
+  
+if (user) {
+  const { data: authData } =
+    await supabaseClient.auth.getUser();
+
+  if (authData?.user) {
+    const { count, error } = await supabaseClient
+      .from('referrals')
+      .select('id', { count: 'exact', head: true })
+      .eq('referrer_id', authData.user.id);
+
+    if (error) {
+      console.error('Team size error:', error);
+    } else {
+      $('teamSize').textContent = count || 0;
+    }
+  }
+} else {
   $('teamSize').textContent = '0';
+}
+
 
   renderAnimals();
 
@@ -3094,6 +3140,17 @@ async function submitRegister() {
     if (error) throw error;
 
     if (data.session && data.user) {
+     // Record referral after successful registration
+if (referralId && uuidPattern.test(referralId)) {
+  const { error: referralError } = await supabaseClient.rpc(
+    'record_ranch_referral',
+    { p_referrer_id: referralId }
+  );
+
+  if (referralError) {
+    console.error('Referral recording error:', referralError);
+  }
+}
 
   user = {
     id: data.user.id,
