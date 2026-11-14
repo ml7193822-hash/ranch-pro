@@ -2277,16 +2277,22 @@ async function confirmAction() {
 
 
   
+
 // 2. LIVESTOCK PURCHASE
 if (action.type === 'purchase') {
+  const button = $('confirmBtn');
+
   try {
     if (!action.packageId) {
       toast('Livestock package not found.');
       return;
     }
 
+    button.disabled = true;
+    button.textContent = 'Processing Purchase...';
+
     const { data, error } = await supabaseClient.rpc(
-      'buy_digital_package',
+      'purchase_ranch_package',
       {
         p_package_id: action.packageId,
         p_request_id: crypto.randomUUID()
@@ -2297,31 +2303,30 @@ if (action.type === 'purchase') {
 
     const result = Array.isArray(data) ? data[0] : data;
 
-    if (!result) {
-      throw new Error('Purchase confirmation not received.');
+    if (!result || result.purchase_status !== 'success') {
+      throw new Error(
+        result?.purchase_status || 'Purchase confirmation not received.'
+      );
     }
 
     await loadMyRanch();
-await updateDashboard();
+    await updateDashboard();
 
-closeModal();
+    closeModal();
 
-    toast(
-      action.name + ' purchased successfully!'
-    );
+    toast(action.name + ' purchased successfully!');
 
   } catch (error) {
-    console.error('Purchase error:', error);
-
-    if (error.message?.toLowerCase().includes('insufficient')) {
-      toast('Insufficient wallet balance.');
-    } else {
-      toast(error.message || 'Purchase failed. Please try again.');
-    }
+    console.error('Livestock purchase error:', error);
+    toast(error.message || 'Purchase failed. Please try again.');
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Confirm Purchase';
   }
 
   return;
 }
+
 
 
   // 3. REAL RECHARGE REQUEST
