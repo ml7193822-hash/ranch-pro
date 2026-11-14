@@ -2268,51 +2268,68 @@ async function confirmAction() {
     return;
   }
 
-  // 2. LIVESTOCK PURCHASE
-  if (action.type === 'purchase') {
-    const button = $('confirmBtn');
+  
+// 2. LIVESTOCK PURCHASE
+if (action.type === 'purchase') {
+  const button = $('confirmBtn');
 
-    try {
-      if (!action.packageId) {
-        toast('Livestock package not found.');
-        return;
-      }
-
-      button.disabled = true;
-      button.textContent = 'Processing Purchase...';
-
-      const { data, error } = await supabaseClient.rpc(
-        'purchase_ranch_package',
-        {
-          p_package_id: action.packageId,
-          p_request_id: crypto.randomUUID()
-        }
-      );
-
-      if (error) throw error;
-
-      const result = Array.isArray(data) ? data[0] : data;
-
-      if (!result) {
-        throw new Error('Purchase confirmation not received.');
-      }
-
-      await loadMyRanch();
-      await updateDashboard();
-
-      closeModal();
-      toast(action.name + ' purchased successfully!');
-
-    } catch (error) {
-      console.error('Livestock purchase error:', error);
-      toast(error.message || 'Purchase failed. Please try again.');
-    } finally {
-      button.disabled = false;
-      button.textContent = 'Confirm Purchase';
+  try {
+    if (!action.packageId) {
+      throw new Error('Livestock package not found.');
     }
 
-    return;
+    button.disabled = true;
+    button.textContent = 'Processing Purchase...';
+
+    // Keep the same request ID if this request is retried
+    if (!action.requestId) {
+      action.requestId = crypto.randomUUID();
+    }
+
+    const { data, error } = await supabaseClient.rpc(
+      'purchase_ranch_package',
+      {
+        p_package_id: action.packageId,
+        p_request_id: action.requestId
+      }
+    );
+
+    if (error) throw error;
+
+    const result = Array.isArray(data) ? data[0] : data;
+
+    if (!result) {
+      throw new Error('Purchase confirmation not received.');
+    }
+
+    // Purchase confirmed: close modal immediately
+    button.disabled = false;
+    button.textContent = 'Confirm Purchase';
+
+    closeModal();
+    toast(action.name + ' purchased successfully!');
+
+    // Refresh dashboard separately
+    Promise.all([
+      loadMyRanch(),
+      updateDashboard()
+    ]).catch(error => {
+      console.error('Dashboard refresh error:', error);
+      toast('Purchase completed. Refresh your dashboard.');
+    });
+
+  } catch (error) {
+    console.error('Livestock purchase error:', error);
+
+    toast(error.message || 'Purchase failed. Please try again.');
+
+    button.disabled = false;
+    button.textContent = 'Confirm Purchase';
   }
+
+  return;
+}
+
 
   // 3. RECHARGE
   if (action.type === 'Recharge') {
