@@ -3009,7 +3009,8 @@ async function reviewDeposit(requestId, action) {
         : "Deposit " + actionName + " request completed."
     );
 
-    await loadAdminDeposits();
+    // Temporarily skip refreshing deposits
+// await loadAdminDeposits();
 
   } catch (err) {
     console.error("Review deposit error:", err);
