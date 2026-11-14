@@ -3235,6 +3235,19 @@ async function submitLogin() {
     if (!data || !data.user) {
       throw new Error("Login failed. Please try again.");
     }
+   // COMPLETE REFERRAL TRACKING AFTER LOGIN
+const savedReferrerId = data.user.user_metadata?.referrer_id;
+
+if (savedReferrerId) {
+  const { error: referralError } = await supabaseClient.rpc(
+    'record_ranch_referral',
+    { p_referrer_id: savedReferrerId }
+  );
+
+  if (referralError) {
+    console.error('Referral recording error:', referralError);
+  }
+}
 
     user = {
   name: data.user.user_metadata?.username || login,
