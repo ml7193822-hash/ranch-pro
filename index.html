@@ -2331,10 +2331,14 @@ if (action.type === 'purchase') {
       }, 30000);
     });
 
-    const { data, error } = await Promise.race([
-      rpcPromise,
-      timeoutPromise
-    ]);
+    console.log("Waiting for purchase RPC...");
+
+const { data, error } = await Promise.race([
+  rpcPromise,
+  timeoutPromise
+]);
+
+console.log("Purchase RPC finished:", { data, error });
 
     clearTimeout(timeoutId);
 
