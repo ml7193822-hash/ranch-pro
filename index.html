@@ -2755,10 +2755,16 @@ if (action.type === 'purchase') {
 
     toast('Purchase successful!');
 
-    await Promise.all([
-      loadMyRanch(),
-      updateDashboard()
-    ]);
+// Refresh dashboard separately without blocking purchase completion
+setTimeout(() => {
+  loadMyRanch().catch(err =>
+    console.error('Ranch refresh error:', err)
+  );
+
+  updateDashboard().catch(err =>
+    console.error('Dashboard refresh error:', err)
+  );
+}, 100);
 
   } catch (error) {
 
