@@ -1542,6 +1542,7 @@ const animalEmojis = {
 };
 
 
+
 async function loadLivestockPackages() {
   const area = document.getElementById("livestockProducts");
 
@@ -1562,8 +1563,17 @@ async function loadLivestockPackages() {
       return;
     }
 
+    const dailyEarnings = {
+      "Dairy Cow": 8000,
+      "Pig": 4500,
+      "Goat": 2500,
+      "Sheep": 3500,
+      "Hen": 1800
+    };
+
     area.innerHTML = livestockPackages.map(pkg => {
       const emoji = animalEmojis[pkg.animal_name] || "🐄";
+      const earning = dailyEarnings[pkg.animal_name] ?? Number(pkg.daily_profit || 0);
 
       return `
         <div class="product">
@@ -1573,6 +1583,11 @@ async function loadLivestockPackages() {
 
           <div class="price">
             ${money(pkg.price)}
+          </div>
+
+          <div class="earning">
+            💰 Daily Earnings:
+            <strong>${money(earning)} / day</strong>
           </div>
 
           <div class="earning">
@@ -1593,6 +1608,7 @@ async function loadLivestockPackages() {
       "<p>Unable to load livestock. Please refresh and try again.</p>";
   }
 }
+
 
  
 
