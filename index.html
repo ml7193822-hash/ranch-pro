@@ -2732,6 +2732,9 @@ if (action.type === 'purchase') {
       rpcPromise,
       timeoutPromise
     ]);
+
+ alert("DATA: " + JSON.stringify(data));
+alert("ERROR: " + JSON.stringify(error));
    console.log("RPC COMPLETED");
    alert("SUPABASE RPC COMPLETED");
    
