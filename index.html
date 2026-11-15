@@ -2422,6 +2422,8 @@ function setPaymentMethod(type, method, button) {
 
   updatePaymentMethodFields();
 }
+
+
 function updatePaymentMethodFields() {
   const depositMethod = $('depositMethod');
   const withdrawMethod = $('withdrawMethod');
@@ -2431,32 +2433,73 @@ function updatePaymentMethodFields() {
     const networkBox = $('usdtDepositNetworkBox');
     const instructions = $('paymentInstructions');
 
-    networkBox.style.display = method === 'USDT' ? 'block' : 'none';
+    if (networkBox) {
+      networkBox.style.display = method === 'USDT' ? 'block' : 'none';
+    }
 
-    if (method === 'MTN') {
-      instructions.innerHTML =
-        '<strong>🟡 MTN MOBILE MONEY</strong><p>Verified MTN payment details will appear here once configured.</p>';
-    } else if (method === 'AIRTEL') {
-      instructions.innerHTML =
-        '<strong>🔴 AIRTEL MONEY</strong><p>Verified Airtel payment details will appear here once configured.</p>';
-    } else {
-      instructions.innerHTML =
-        '<strong>💎 USDT PAYMENT</strong><p>Your verified wallet address will appear here once configured. Confirm the selected network before sending.</p>';
+    if (instructions) {
+      if (method === 'MTN') {
+        instructions.innerHTML = `
+          <strong>🟡 MTN MOBILE MONEY</strong>
+          <div style="padding:12px;margin-top:10px;background:#fff8dc;border-radius:10px;">
+            <h2>0783 865487</h2>
+            <p><strong>Account Name:</strong> Dina Nasiguza</p>
+            <button type="button"
+              onclick="navigator.clipboard.writeText('0783865487').then(() => toast('MTN number copied!')).catch(() => toast('Please copy the number manually.'))">
+              📋 Copy MTN Number
+            </button>
+          </div>
+          <p>Send your selected deposit amount to this number.
+          Enter the transaction ID and upload your payment screenshot.</p>
+        `;
+      } else if (method === 'AIRTEL') {
+        instructions.innerHTML = `
+          <strong>🔴 AIRTEL MONEY</strong>
+          <div style="padding:12px;margin-top:10px;background:#fff0f0;border-radius:10px;">
+            <h2>0702000752</h2>
+            <p><strong>Account Name:</strong> Adah Oshabahebwa</p>
+            <button type="button"
+              onclick="navigator.clipboard.writeText('0702000752').then(() => toast('Airtel number copied!')).catch(() => toast('Please copy the number manually.'))">
+              📋 Copy Airtel Number
+            </button>
+          </div>
+          <p>Send your selected deposit amount to this number.
+          Enter the transaction ID and upload your payment screenshot.</p>
+        `;
+      } else {
+        instructions.innerHTML = `
+          <strong>💎 USDT PAYMENT</strong>
+          <p>Your verified wallet address will appear here once configured.
+          Confirm the selected network before sending.</p>
+        `;
+      }
     }
   }
+}
 
-  if (withdrawMethod) {
+    if (withdrawMethod) {
     const method = withdrawMethod.value;
     const networkBox = $('usdtWithdrawNetworkBox');
     const destination = $('requestPhone');
 
-    networkBox.style.display = method === 'USDT' ? 'block' : 'none';
+    if (networkBox) {
+      networkBox.style.display = method === 'USDT' ? 'block' : 'none';
+    }
 
-    destination.placeholder = method === 'USDT'
-      ? 'Enter your USDT wallet address'
-      : 'Enter your Mobile Money number';
+    if (destination) {
+      destination.placeholder = method === 'USDT'
+        ? 'Enter your USDT wallet address'
+        : 'Enter your Mobile Money number';
+    }
+
+    const amountInput = $('withdrawAmount');
+
+    if (amountInput) {
+      amountInput.min = '1200';
+      amountInput.placeholder = 'Minimum UGX 1,200';
+    }
   }
-}
+ }
 
 function purchaseFromDatabase(packageId) {
   const pkg = livestockPackages.find(
