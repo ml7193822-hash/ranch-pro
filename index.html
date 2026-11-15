@@ -2424,10 +2424,12 @@ function setPaymentMethod(type, method, button) {
 }
 
 
+
 function updatePaymentMethodFields() {
   const depositMethod = $('depositMethod');
   const withdrawMethod = $('withdrawMethod');
 
+  // DEPOSIT PAYMENT DETAILS
   if (depositMethod) {
     const method = depositMethod.value;
     const networkBox = $('usdtDepositNetworkBox');
@@ -2445,12 +2447,11 @@ function updatePaymentMethodFields() {
             <h2>0783 865487</h2>
             <p><strong>Account Name:</strong> Dina Nasiguza</p>
             <button type="button"
-              onclick="navigator.clipboard.writeText('0783865487').then(() => toast('MTN number copied!')).catch(() => toast('Please copy the number manually.'))">
+              onclick="navigator.clipboard.writeText('0783865487').then(() => toast('MTN number copied!')).catch(() => toast('Please copy manually.'))">
               📋 Copy MTN Number
             </button>
           </div>
-          <p>Send your selected deposit amount to this number.
-          Enter the transaction ID and upload your payment screenshot.</p>
+          <p>Send your selected deposit amount and enter your transaction ID.</p>
         `;
       } else if (method === 'AIRTEL') {
         instructions.innerHTML = `
@@ -2459,25 +2460,23 @@ function updatePaymentMethodFields() {
             <h2>0702000752</h2>
             <p><strong>Account Name:</strong> Adah Oshabahebwa</p>
             <button type="button"
-              onclick="navigator.clipboard.writeText('0702000752').then(() => toast('Airtel number copied!')).catch(() => toast('Please copy the number manually.'))">
+              onclick="navigator.clipboard.writeText('0702000752').then(() => toast('Airtel number copied!')).catch(() => toast('Please copy manually.'))">
               📋 Copy Airtel Number
             </button>
           </div>
-          <p>Send your selected deposit amount to this number.
-          Enter the transaction ID and upload your payment screenshot.</p>
+          <p>Send your selected deposit amount and enter your transaction ID.</p>
         `;
       } else {
         instructions.innerHTML = `
           <strong>💎 USDT PAYMENT</strong>
-          <p>Your verified wallet address will appear here once configured.
-          Confirm the selected network before sending.</p>
+          <p>Your verified wallet address will appear here once configured.</p>
         `;
       }
     }
   }
-}
 
-    if (withdrawMethod) {
+  // WITHDRAWAL PAYMENT METHOD
+  if (withdrawMethod) {
     const method = withdrawMethod.value;
     const networkBox = $('usdtWithdrawNetworkBox');
     const destination = $('requestPhone');
@@ -2499,7 +2498,8 @@ function updatePaymentMethodFields() {
       amountInput.placeholder = 'Minimum UGX 1,200';
     }
   }
- }
+}
+
 
 function purchaseFromDatabase(packageId) {
   const pkg = livestockPackages.find(
