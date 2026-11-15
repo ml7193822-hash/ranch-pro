@@ -2671,14 +2671,16 @@ async function confirmAction() {
 
 
 
+
+
 // 2. LIVESTOCK PURCHASE
 if (action.type === 'purchase') {
- 
-console.log("PENDING ACTION:", action);
+
+  console.log("PENDING ACTION:", action);
+
   const button = $('confirmBtn');
- 
+
   if (!button) {
-    console.error('Purchase button not found.');
     toast('Purchase button not found.');
     return;
   }
@@ -2692,68 +2694,50 @@ console.log("PENDING ACTION:", action);
 
   button.disabled = true;
   button.textContent = 'Processing Purchase...';
- 
 
-  let purchaseSuccessful = false;
   let timeoutId;
 
   try {
-    // Keep the same request ID when retrying
+    // Keep the same request ID for safe retries
     if (!action.requestId) {
       action.requestId = crypto.randomUUID();
     }
 
-    console.log('Purchase started:', {
+    console.log("PURCHASE STARTED:", {
       packageId: action.packageId,
-      requestId: action.requestId
+      requestId: action.requestId,
+      user: user?.id
     });
 
-    console.log("PACKAGE ID:", action.packageId);
-console.log("REQUEST ID:", action.requestId);
-console.log("USER:", user?.id);
-
-const rpcPromise = supabaseClient.rpc(
-  'purchase_ranch_package',
-  {
-    p_package_id: action.packageId,
-    p_request_id: action.requestId
-  }
-);
-
-rpcPromise.then(result => {
-  console.log("SUPABASE RESPONSE:", result);
-}).catch(error => {
-  console.error("SUPABASE FAILURE:", error);
-});
+    const rpcPromise = supabaseClient.rpc(
+      'purchase_ranch_package',
+      {
+        p_package_id: action.packageId,
+        p_request_id: action.requestId
+      }
+    );
 
     const timeoutPromise = new Promise((_, reject) => {
       timeoutId = setTimeout(() => {
         reject(new Error(
-          'Purchase is taking too long. Check your investments before retrying.'
+          'Purchase timed out. Check your investments before retrying.'
         ));
       }, 30000);
     });
 
-    console.log("Waiting for purchase RPC...");
-   console.log("RPC reached");
-   
-   
+    console.log("Waiting for Supabase...");
 
-const { data, error } = await rpcPromise;
-
-clearTimeout(timeoutId);
-
-console.log("PURCHASE RESULT:", data);
-console.log("PURCHASE ERROR:", error);
-
-console.log("Purchase RPC finished:", { data, error });
-   
+    const { data, error } = await Promise.race([
+      rpcPromise,
+      timeoutPromise
+    ]);
 
     clearTimeout(timeoutId);
 
-    if (error) throw error;
+    console.log("PURCHASE RESULT:", data);
+    console.log("PURCHASE ERROR:", error);
 
-    console.log('Purchase RPC response:', data);
+    if (error) throw error;
 
     const result = Array.isArray(data) ? data[0] : data;
 
@@ -2761,33 +2745,27 @@ console.log("Purchase RPC finished:", { data, error });
       throw new Error('No purchase confirmation received.');
     }
 
-    purchaseSuccessful = true;
-
     pendingAction = null;
 
-    try {
-      closeModal();
-    } catch (modalError) {
-      console.error('Modal closing error:', modalError);
-    }
+    closeModal();
 
     toast('Purchase successful!');
 
-    // Refresh account information
-    Promise.all([
+    await Promise.all([
       loadMyRanch(),
       updateDashboard()
-    ]).catch(error => {
-      console.error('Dashboard refresh error:', error);
-    });
+    ]);
 
   } catch (error) {
-    clearTimeout(timeoutId);
 
-    console.error('PURCHASE ERROR:', error);
+    console.error("PURCHASE ERROR:", error);
+
     toast(error.message || 'Purchase failed.');
 
   } finally {
+
+    clearTimeout(timeoutId);
+
     button.disabled = false;
     button.textContent = 'Confirm Purchase';
   }
