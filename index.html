@@ -1814,150 +1814,137 @@ async function updateDashboard() {
   $('accountId').textContent = user ? user.id : 'RP-63998';
   $('points').textContent = points;
 
-  if (user) {
-    const { data: authData, error: authError } =
-      await supabaseClient.auth.getUser();
+  const incomeEls = [
+    'ranchIncome',
+    'teamIncome',
+    'pageTeamIncome',
+    'teamSize',
+    'pageTeamSize',
+    'totalProfit',
+    'todayIncome'
+  ];
 
-    if (authError) {
-      console.error('Authentication error:', authError);
-    } else if (authData?.user) {
-      const userId = authData.user.id;
-
-      const { data, error } = await supabaseClient
-        .from('profiles')
-        .select('balance, points')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Dashboard balance error:', error);
-      } else if (data) {
-        $('balance').textContent = money(Number(data.balance || 0));
-
-        points = Number(data.points || 0);
-        $('points').textContent = points;
-      }
-
-      // LOAD REAL INVESTMENT PROFITS
-      const { data: investments, error: profitError } =
-        await supabaseClient
-          .from('investments')
-          .select('total_profit_paid')
-          .eq('user_id', userId);
-
-      if (profitError) {
-        console.error('Profit loading error:', profitError);
-      } else {
-        const totalProfit = (investments || []).reduce(
-          (sum, item) => sum + Number(item.total_profit_paid || 0),
-          0
-        );
-
-        if ($('totalProfit')) {
-          $('totalProfit').textContent = money(totalProfit);
-        }
-      }
-
-      // LOAD PROFITS ACTUALLY CREDITED TODAY
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const { data: dailyPayments, error: dailyError } =
-        await supabaseClient
-          .from('wallet_transactions')
-          .select('amount')
-          .eq('user_id', userId)
-          .eq('transaction_type', 'profit')
-          .eq('direction', 'credit')
-          .eq('status', 'completed')
-          .gte('created_at', today.toISOString());
-
-      if (dailyError) {
-        console.error('Daily profit loading error:', dailyError);
-      } else {
-        const todayProfit = (dailyPayments || []).reduce(
-          (sum, item) => sum + Number(item.amount || 0),
-          0
-        );
-
-        $('todayIncome').textContent = money(todayProfit);
-      }
-    }
-  } else {
+  if (!user) {
     $('balance').textContent = money(0);
-    $('todayIncome').textContent = money(0);
-
-    if ($('totalProfit')) {
-      $('totalProfit').textContent = money(0);
-    }
+    incomeEls.forEach(id => {
+      if ($(id)) {
+        $(id).textContent =
+          id.includes('Income') || id === 'ranchIncome' ||
+          id === 'totalProfit' || id === 'todayIncome'
+            ? money(0) : '0';
+      }
+    });
+    $('authButtons').style.display = 'flex';
+    return;
   }
 
-  $('authButtons').style.display = user ? 'none' : 'flex';
+  $('authButtons').style.display = 'none';
 
-  const totalValue = animals.reduce(
-    (sum, a) => sum + (a.price || 0), 0
-  );
-
-  $('ranchIncome').textContent = money(totalValue);
-  
-// LOAD TEAM COMMISSION INCOME
-if (user) {
-  const { data: teamAuth, error: teamAuthError } =
-    await supabaseClient.auth.getUser();
-
-  if (!teamAuthError && teamAuth?.user) {
-    const { data: commissions, error } = await supabaseClient
-      .from('referral_commissions')
-      .select('commission_amount')
-      .eq('referrer_id', teamAuth.user.id)
-      .eq('status', 'completed');
-
-    if (error) {
-      console.error('Team income error:', error);
-    } else {
-      const total = (commissions || []).reduce(
-        (sum, item) => sum + Number(item.commission_amount || 0),
-        0
-      );
-
-      $('teamIncome').textContent = money(total);
-      $('pageTeamIncome').textContent = money(total);
-    }
-  }
-} else {
-  $('teamIncome').textContent = money(0);
-  $('pageTeamIncome').textContent = money(0);
-}
-
-
- // LOAD TEAM SIZE
-const teamSizeEl = $('teamSize');
- console.log('Logged-in team account:', (await supabaseClient.auth.getUser()).data?.user?.id);
-const pageTeamSizeEl = $('pageTeamSize');
-
-if (teamSizeEl) teamSizeEl.textContent = '0';
-if (pageTeamSizeEl) pageTeamSizeEl.textContent = '0';
-
-if (user) {
   const { data: authData, error: authError } =
     await supabaseClient.auth.getUser();
 
-  if (authError) {
-    console.error('Team authentication error:', authError);
-  } else if (authData?.user) {
-    const { count, error } = await supabaseClient
-      .from('referrals')
-      .select('*', { count: 'exact', head: true })
-      .eq('referrer_id', authData.user.id);
+  if (authError || !authData?.user) {
+    console.error('Authentication error:', authError);
+    return;
+  }
 
-    if (error) {
-      console.error('Team size error:', error);
-    } else {
-      if (teamSizeEl) teamSizeEl.textContent = count ?? 0;
-      if (pageTeamSizeEl) pageTeamSizeEl.textContent = count ?? 0;
+  const userId = authData.user.id;
+
+  // ACCOUNT BALANCE AND POINTS
+  const { data: profile, error: profileError } =
+    await supabaseClient
+      .from('profiles')
+      .select('balance, points')
+      .eq('id', userId)
+      .single();
+
+  if (profileError) {
+    console.error('Profile error:', profileError);
+  } else {
+    $('balance').textContent = money(Number(profile.balance || 0));
+    points = Number(profile.points || 0);
+    $('points').textContent = points;
+  }
+
+  // TOTAL INVESTMENT PROFIT
+  const { data: investments, error: profitError } =
+    await supabaseClient
+      .from('investments')
+      .select('total_profit_paid')
+      .eq('user_id', userId);
+
+  if (profitError) {
+    console.error('Investment income error:', profitError);
+  } else {
+    const total = (investments || []).reduce(
+      (sum, item) => sum + Number(item.total_profit_paid || 0), 0
+    );
+
+    if ($('totalProfit')) {
+      $('totalProfit').textContent = money(total);
+    }
+    if ($('ranchIncome')) {
+      $('ranchIncome').textContent = money(total);
     }
   }
+
+  // TODAY'S ACTUAL PROFIT
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const { data: dailyPayments, error: dailyError } =
+    await supabaseClient
+      .from('wallet_transactions')
+      .select('amount')
+      .eq('user_id', userId)
+      .eq('transaction_type', 'profit')
+      .eq('direction', 'credit')
+      .eq('status', 'completed')
+      .gte('created_at', today.toISOString());
+
+  if (dailyError) {
+    console.error('Daily income error:', dailyError);
+  } else {
+    const todayProfit = (dailyPayments || []).reduce(
+      (sum, item) => sum + Number(item.amount || 0), 0
+    );
+    $('todayIncome').textContent = money(todayProfit);
+  }
+
+  // TEAM COMMISSION INCOME
+  const { data: commissions, error: commissionError } =
+    await supabaseClient
+      .from('referral_commissions')
+      .select('commission_amount')
+      .eq('referrer_id', userId)
+      .eq('status', 'completed');
+
+  if (commissionError) {
+    console.error('Team income error:', commissionError);
+  } else {
+    const total = (commissions || []).reduce(
+      (sum, item) => sum + Number(item.commission_amount || 0), 0
+    );
+
+    if ($('teamIncome')) $('teamIncome').textContent = money(total);
+    if ($('pageTeamIncome')) $('pageTeamIncome').textContent = money(total);
+  }
+
+  // TEAM SIZE
+  const { count, error: teamError } =
+    await supabaseClient
+      .from('referrals')
+      .select('*', { count: 'exact', head: true })
+      .eq('referrer_id', userId);
+
+  if (teamError) {
+    console.error('Team size error:', teamError);
+  } else {
+    if ($('teamSize')) $('teamSize').textContent = count ?? 0;
+    if ($('pageTeamSize')) $('pageTeamSize').textContent = count ?? 0;
+  }
 }
+
 
 
 renderAnimals();
