@@ -960,11 +960,22 @@ button:active{transform:scale(.97)}
     </a>
   </div>
 
-  <div style="background:#fff3cd;padding:15px;border-radius:12px;margin-top:12px;text-align:center;">
-    <h3>🐄 ACTIVE RANCHERS GROUP</h3>
-    <p>NOTE: Active ranchers can join our WhatsApp group after purchasing a Rearing Package.</p>
-  </div>
+  
+<div style="background:#fff3cd;padding:15px;border-radius:12px;margin-top:12px;text-align:center;">
+  <h3>🐄 ACTIVE RANCHERS GROUP</h3>
+
+  <p>Join our official RANCH PRO WhatsApp community for updates and announcements.</p>
+
+  <button class="buy" onclick="joinRanchersGroup()">
+    💬 JOIN RANCHERS GROUP
+  </button>
+
+  <p style="font-size:12px;color:#856404;">
+    Available to members who have purchased a Rearing Package.
+  </p>
+</div>
 </section>
+
 
 
 
@@ -1295,6 +1306,36 @@ button:active{transform:scale(.97)}
 <div class="toast" id="toast"></div>
 
 <script>
+ async function joinRanchersGroup() {
+  const { data: authData, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (authError || !authData.user) {
+    alert("Please log in first.");
+    return;
+  }
+
+  const { count, error } = await supabaseClient
+    .from("investments")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", authData.user.id)
+    .eq("status", "ACTIVE");
+
+  if (error) {
+    alert("Unable to verify your package. Try again.");
+    return;
+  }
+
+  if (!count) {
+    alert("Please purchase an active Rearing Package first.");
+    return;
+  }
+
+  window.open(
+    "https://chat.whatsapp.com/F8iaZVYiHI967tn3ttNVzO?s=cl&p=a&iam=2",
+    "_blank"
+  );
+ }
  
 async function openCDKExchange() {
   try {
