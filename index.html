@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+ <link rel="manifest" href="/ranch-pro/manifest.webmanifest">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#83bd45">
@@ -3721,6 +3722,14 @@ window.submitRegister = submitRegister;
 window.submitLogin = submitLogin;
 
 </script>
+ <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/ranch-pro/service-worker.js")
+      .catch(error => console.error("Service worker error:", error));
+  });
+}
+ </script>
 </body>
 </html>
 
