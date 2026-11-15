@@ -1,0 +1,20 @@
+{
+  "id": "/ranch-pro/",
+  "name": "RANCH PRO",
+  "short_name": "RANCH PRO",
+  "description": "RANCH PRO Digital Ranch",
+  "start_url": "/ranch-pro/",
+  "scope": "/ranch-pro/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#83bd45",
+  "theme_color": "#83bd45",
+  "icons": [
+    {
+      "src": "/ranch-pro/ranch-pro-logo%201.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
