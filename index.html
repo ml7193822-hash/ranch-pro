@@ -1929,28 +1929,35 @@ if (user) {
   $('pageTeamIncome').textContent = money(0);
 }
 
-// LOAD TEAM SIZE
+
+ // LOAD TEAM SIZE
+const teamSizeEl = $('teamSize');
+const pageTeamSizeEl = $('pageTeamSize');
+
+if (teamSizeEl) teamSizeEl.textContent = '0';
+if (pageTeamSizeEl) pageTeamSizeEl.textContent = '0';
+
 if (user) {
-  const { data: authData } =
+  const { data: authData, error: authError } =
     await supabaseClient.auth.getUser();
 
-  if (authData?.user) {
+  if (authError) {
+    console.error('Team authentication error:', authError);
+  } else if (authData?.user) {
     const { count, error } = await supabaseClient
       .from('referrals')
-      .select('id', { count: 'exact', head: true })
+      .select('*', { count: 'exact', head: true })
       .eq('referrer_id', authData.user.id);
 
     if (error) {
       console.error('Team size error:', error);
     } else {
-      $('teamSize').textContent = count ?? 0;
-      $('pageTeamSize').textContent = count ?? 0;
+      if (teamSizeEl) teamSizeEl.textContent = count ?? 0;
+      if (pageTeamSizeEl) pageTeamSizeEl.textContent = count ?? 0;
     }
   }
-} else {
-  $('teamSize').textContent = 0;
-  $('pageTeamSize').textContent = 0;
 }
+
 
 renderAnimals();
 
