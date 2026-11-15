@@ -885,28 +885,58 @@ button:active{transform:scale(.97)}
  </div>
 </section>
 
+
 <section class="panel" id="servicesSection">
- <div class="section-head"><h2>🏡 Ranch Services</h2></div>
- <div class="menu">
-  <button onclick="showPage('Company','Welcome to RANCH PRO. Your digital ranch dashboard.')"><span class="emoji">🏢</span>Company</button>
-  <button onclick="showPage('My Bill','Your transaction records will appear here.')"><span class="emoji">📩</span>My Bill</button>
-  <button onclick="openMyWallet()">
-  <span class="emoji">🧰</span>My Wallet
-  </button>
-  <button onclick="showPage('CDK Exchange','CDK exchange is not yet connected.')"><span class="emoji">🏘️</span>CDK Exchange</button>
-  <button onclick="showPage('Points System','Your account points are displayed on your dashboard.')"><span class="emoji">💝</span>Points System</button>
-  <button onclick="showPage('Profit','See your livestock package information below.')"><span class="emoji">🪙</span>Profit</button>
-  <button onclick="showPage('Password','Secure password management requires a connected authentication service.')"><span class="emoji">🔐</span>Password</button>
-  <button onclick="showPage('Download','Use your browser menu to save or download this page.')"><span class="emoji">📥</span>Download</button>
-  <button onclick="logout()"><span class="emoji">🚪</span>Exit</button>
-  <button id="adminMenuButton"
-  style="display:none;"
-  onclick="openAdminDashboard()">
-  <span class="emoji">🛡️</span>
-  Admin Dashboard
-  </button>
- </div>
+  <div class="section-head">
+    <h2>🏡 Ranch Services</h2>
+  </div>
+
+  <div class="menu">
+    <button onclick="openCompany()">
+      <span class="emoji">🏢</span>Company
+    </button>
+
+    <button onclick="openMyBill()">
+      <span class="emoji">📩</span>My Bill
+    </button>
+
+    <button onclick="openMyWallet()">
+      <span class="emoji">🧰</span>My Wallet
+    </button>
+
+    <button onclick="openCDKExchange()">
+      <span class="emoji">🏘️</span>CDK Exchange
+    </button>
+
+    <button onclick="openPointsSystem()">
+      <span class="emoji">💝</span>Points System
+    </button>
+
+    <button onclick="openProfit()">
+      <span class="emoji">🪙</span>Profit
+    </button>
+
+    <button onclick="openPassword()">
+      <span class="emoji">🔐</span>Password
+    </button>
+
+    <button onclick="openDownload()">
+      <span class="emoji">📥</span>Download
+    </button>
+
+    <button onclick="logout()">
+      <span class="emoji">🚪</span>Exit
+    </button>
+
+    <button id="adminMenuButton"
+      style="display:none;"
+      onclick="openAdminDashboard()">
+      <span class="emoji">🛡️</span>
+      Admin Dashboard
+    </button>
+  </div>
 </section>
+
 
 
 <section class="panel" id="shop">
@@ -1236,6 +1266,181 @@ button:active{transform:scale(.97)}
 <div class="toast" id="toast"></div>
 
 <script>
+ 
+async function openCDKExchange() {
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+      toast("Please log in first.");
+      return;
+    }
+
+    const userId = authData.user.id;
+
+    showPage(
+      "🏘️ CDK Exchange",
+      "Convert your RANCH PRO points into wallet cash."
+    );
+
+    const fields = document.getElementById("modalFields");
+    fields.innerHTML = "Loading CDK Exchange...";
+
+    const { data: profile, error: profileError } =
+      await supabaseClient
+        .from("profiles")
+        .select("points, balance")
+        .eq("id", userId)
+        .single();
+
+    if (profileError) throw profileError;
+
+    const { data: history, error: historyError } =
+      await supabaseClient
+        .from("cdk_exchanges")
+        .select("points_spent, cash_amount, exchange_reference, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+    if (historyError) throw historyError;
+
+    const points = Number(profile.points || 0);
+
+    fields.innerHTML = `
+      <div class="product">
+        <h2>💝 Your CDK Points</h2>
+
+        <h1 style="color:#078747;">
+          ${points.toLocaleString()} Points
+        </h1>
+
+        <p>Wallet Balance: ${money(profile.balance || 0)}</p>
+
+        <hr>
+
+        <h3>💰 Exchange Points into Cash</h3>
+
+        <p>Exchange rate: 100 Points = UGX 1,000</p>
+        <p>Minimum exchange: 100 Points</p>
+
+        <label>Enter points to exchange</label>
+
+        <input
+          type="number"
+          id="cdkPointsInput"
+          min="100"
+          step="1"
+          max="${points}"
+          value="${points >= 100 ? 100 : ""}"
+          placeholder="Enter points"
+          oninput="updateCDKEstimate()"
+          style="width:100%;padding:12px;margin:10px 0;"
+        >
+
+        <h3 id="cdkCashEstimate">
+          Cash received: UGX 1,000
+        </h3>
+
+        <button
+          id="cdkExchangeButton"
+          onclick="exchangeCDKPoints()"
+          style="width:100%;padding:14px;background:#078747;color:white;border:0;border-radius:10px;"
+          ${points < 100 ? "disabled" : ""}
+        >
+          Exchange Points
+        </button>
+      </div>
+
+      <div class="product">
+        <h3>📜 Exchange History</h3>
+
+        ${
+          !history || history.length === 0
+            ? "<p>No exchanges yet.</p>"
+            : history.map(item => `
+                <div style="padding:10px 0;border-bottom:1px solid #ddd;">
+                  <strong>${Number(item.points_spent).toLocaleString()} Points</strong>
+                  <p>Cash received: ${money(item.cash_amount)}</p>
+                  <p>Reference: ${String(item.exchange_reference).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</p>
+                  <small>${new Date(item.created_at).toLocaleString()}</small>
+                </div>
+              `).join("")
+        }
+      </div>
+    `;
+
+    updateCDKEstimate();
+
+  } catch (error) {
+    console.error("CDK Exchange error:", error);
+    toast(error.message || "Unable to open CDK Exchange.");
+  }
+}
+
+
+function updateCDKEstimate() {
+  const input = document.getElementById("cdkPointsInput");
+  const estimate = document.getElementById("cdkCashEstimate");
+
+  if (!input || !estimate) return;
+
+  const points = Math.floor(Number(input.value) || 0);
+  const cash = points * 10;
+
+  estimate.textContent =
+    "Cash received: " + money(cash);
+}
+
+
+async function exchangeCDKPoints() {
+  const input = document.getElementById("cdkPointsInput");
+  const button = document.getElementById("cdkExchangeButton");
+
+  if (!input || !button) return;
+
+  const points = Number(input.value);
+
+  if (!Number.isSafeInteger(points) || points < 100) {
+    toast("Enter at least 100 whole points.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Processing Exchange...";
+
+  try {
+    const { data, error } = await supabaseClient.rpc(
+      "exchange_ranch_points",
+      { p_points: points }
+    );
+
+    if (error) throw error;
+
+    const result = Array.isArray(data) ? data[0] : data;
+
+    if (!result) {
+      throw new Error("Exchange result was not returned.");
+    }
+
+    toast(
+      "Success! " +
+      result.points_spent +
+      " points exchanged for " +
+      money(result.cash_received)
+    );
+
+    await openCDKExchange();
+
+  } catch (error) {
+    console.error("CDK exchange failed:", error);
+    toast(error.message || "Exchange failed.");
+    button.disabled = false;
+    button.textContent = "Exchange Points";
+  }
+}
+
  
  
  function showRanchWelcome() {
