@@ -1899,7 +1899,8 @@ async function updateDashboard() {
   );
 
   $('ranchIncome').textContent = money(totalValue);
-  // LOAD TEAM COMMISSION INCOME
+  
+// LOAD TEAM COMMISSION INCOME
 if (user) {
   const { data: teamAuth, error: teamAuthError } =
     await supabaseClient.auth.getUser();
@@ -1913,7 +1914,6 @@ if (user) {
 
     if (error) {
       console.error('Team income error:', error);
-      $('teamIncome').textContent = money(0);
     } else {
       const total = (commissions || []).reduce(
         (sum, item) => sum + Number(item.commission_amount || 0),
@@ -1921,12 +1921,15 @@ if (user) {
       );
 
       $('teamIncome').textContent = money(total);
+      $('pageTeamIncome').textContent = money(total);
     }
   }
 } else {
   $('teamIncome').textContent = money(0);
+  $('pageTeamIncome').textContent = money(0);
 }
-  
+
+// LOAD TEAM SIZE
 if (user) {
   const { data: authData } =
     await supabaseClient.auth.getUser();
@@ -1940,23 +1943,21 @@ if (user) {
     if (error) {
       console.error('Team size error:', error);
     } else {
-      $('teamSize').textContent = count || 0;
+      $('teamSize').textContent = count ?? 0;
+      $('pageTeamSize').textContent = count ?? 0;
     }
   }
 } else {
-  $('teamSize').textContent = count || 0;
-
-if ($('pageTeamSize')) {
-  $('pageTeamSize').textContent = count || 0;
+  $('teamSize').textContent = 0;
+  $('pageTeamSize').textContent = 0;
 }
 
+renderAnimals();
 
-  renderAnimals();
-
-  if (typeof updateExtraPages === 'function') {
-    updateExtraPages();
-  }
+if (typeof updateExtraPages === 'function') {
+  updateExtraPages();
 }
+
 
 
 
