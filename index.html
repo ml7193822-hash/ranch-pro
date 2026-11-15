@@ -2726,6 +2726,7 @@ if (action.type === 'purchase') {
     });
 
     console.log("Waiting for Supabase...");
+   alert("WAITING FOR SUPABASE");
 
     const { data, error } = await Promise.race([
       rpcPromise,
