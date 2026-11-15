@@ -1943,15 +1943,13 @@ async function updateDashboard() {
     if ($('teamSize')) $('teamSize').textContent = count ?? 0;
     if ($('pageTeamSize')) $('pageTeamSize').textContent = count ?? 0;
   }
-}
+  
 
+  renderAnimals();
 
-
-renderAnimals();
-
-if (typeof updateExtraPages === 'function') {
-  updateExtraPages();
-}
+  if (typeof updateExtraPages === 'function') {
+    updateExtraPages();
+  }
  }
 
 
