@@ -1952,7 +1952,107 @@ function showPage(title,message){
  $('confirmBtn').style.display='none';
  $('modalBg').classList.add('show');
 }
+function openCompany() {
+  showPage(
+    '🏢 RANCH PRO Company',
+    'Welcome to RANCH PRO. Your digital ranch dashboard. Invest in livestock packages, earn daily profits and grow your ranch.'
+  );
+}
 
+async function openMyBill() {
+  showPage('📩 My Bill', 'Loading your transaction history...');
+
+  try {
+    const { data: userData } = await supabaseClient.auth.getUser();
+    if (!userData.user) throw new Error('Please log in first.');
+
+    const { data, error } = await supabaseClient
+      .from('wallet_transactions')
+      .select('transaction_type, direction, amount, status, reference, created_at')
+      .eq('user_id', userData.user.id)
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    if (error) throw error;
+
+    $('modalFields').innerHTML = !data.length
+      ? '<p>No transactions found.</p>'
+      : data.map(t => `
+        <div class="product">
+          <strong>${t.transaction_type}</strong>
+          <p>${t.direction}: ${money(t.amount)}</p>
+          <p>Status: ${t.status}</p>
+          <small>${new Date(t.created_at).toLocaleString()}</small>
+        </div>
+      `).join('');
+  } catch (e) {
+    $('modalFields').textContent = e.message;
+  }
+}
+
+async function openPointsSystem() {
+  showPage('💝 Points System', 'Loading your points...');
+  try {
+    const { data: u } = await supabaseClient.auth.getUser();
+    if (!u.user) throw new Error('Please log in first.');
+
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .select('points')
+      .eq('id', u.user.id)
+      .single();
+
+    if (error) throw error;
+    $('modalFields').innerHTML =
+      `<h2>${Number(data.points || 0).toLocaleString()} Points</h2>
+       <p>Use CDK Exchange to convert eligible points into wallet cash.</p>`;
+  } catch (e) {
+    $('modalFields').textContent = e.message;
+  }
+}
+
+function openProfit() {
+  showPage(
+    '🪙 Profit',
+    'Your livestock daily profits are calculated according to your purchased packages. Check your ranch income and profit records on your dashboard.'
+  );
+}
+
+function openPassword() {
+  showPage('🔐 Change Password', 'Enter your new password below.');
+
+  $('modalFields').innerHTML = `
+    <input id="newRanchPassword" type="password"
+      placeholder="New password" style="width:100%;padding:12px;">
+    <button onclick="saveRanchPassword()"
+      style="width:100%;padding:12px;margin-top:10px;">
+      Update Password
+    </button>`;
+}
+
+async function saveRanchPassword() {
+  const password = $('newRanchPassword').value;
+  if (!password || password.length < 6) {
+    toast('Password must be at least 6 characters.');
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.updateUser({
+    password: password
+  });
+
+  if (error) {
+    toast(error.message);
+    return;
+  }
+
+  toast('Password updated successfully.');
+}
+
+function openDownload() {
+  showPage('📥 Download RANCH PRO',
+    'To install RANCH PRO, open this website in Chrome, tap the three dots, then choose Add to Home screen or Install app if available.');
+           }
 
 async function openMyWallet() {
   const modalBg = document.getElementById("modalBg");
