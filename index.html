@@ -2747,6 +2747,8 @@ if (action.type === 'purchase') {
 
     if (!result) {
       throw new Error('No purchase confirmation received.');
+     console.log("CONFIRMED PURCHASE:", result);
+alert("PURCHASE CONFIRMED");
     }
 
     pendingAction = null;
