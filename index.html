@@ -1944,7 +1944,10 @@ if (user) {
     }
   }
 } else {
-  $('teamSize').textContent = '0';
+  $('teamSize').textContent = count || 0;
+
+if ($('pageTeamSize')) {
+  $('pageTeamSize').textContent = count || 0;
 }
 
 
