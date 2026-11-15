@@ -1932,6 +1932,7 @@ if (user) {
 
  // LOAD TEAM SIZE
 const teamSizeEl = $('teamSize');
+ console.log('Logged-in team account:', (await supabaseClient.auth.getUser()).data?.user?.id);
 const pageTeamSizeEl = $('pageTeamSize');
 
 if (teamSizeEl) teamSizeEl.textContent = '0';
