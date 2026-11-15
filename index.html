@@ -1929,6 +1929,7 @@ async function updateDashboard() {
     if ($('teamIncome')) $('teamIncome').textContent = money(total);
     if ($('pageTeamIncome')) $('pageTeamIncome').textContent = money(total);
   }
+ console.log('CURRENT USER:', userId);
 
   // TEAM SIZE
   const { count, error: teamError } =
