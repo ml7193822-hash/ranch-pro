@@ -2053,6 +2053,26 @@ function openDownload() {
   showPage('📥 Download RANCH PRO',
     'To install RANCH PRO, open this website in Chrome, tap the three dots, then choose Add to Home screen or Install app if available.');
            }
+ async function logout() {
+  if (!confirm('Are you sure you want to exit RANCH PRO?')) {
+    return;
+  }
+
+  try {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) throw error;
+
+    currentUser = null;
+    toast('You have been logged out.');
+
+    location.reload();
+
+  } catch (error) {
+    console.error('Logout error:', error);
+    toast(error.message || 'Unable to log out.');
+  }
+ }
 
 async function openMyWallet() {
   const modalBg = document.getElementById("modalBg");
