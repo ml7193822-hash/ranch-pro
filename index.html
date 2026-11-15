@@ -2738,10 +2738,12 @@ rpcPromise.then(result => {
    
    
 
-const { data, error } = await Promise.race([
-  rpcPromise,
-  timeoutPromise
-]);
+const { data, error } = await rpcPromise;
+
+clearTimeout(timeoutId);
+
+console.log("PURCHASE RESULT:", data);
+console.log("PURCHASE ERROR:", error);
 
 console.log("Purchase RPC finished:", { data, error });
    
