@@ -1362,6 +1362,7 @@ async function loadLivestockPackages() {
 
  
 
+
 async function loadMyRanch() {
   const area = document.getElementById("myAnimals");
 
@@ -1382,51 +1383,44 @@ async function loadMyRanch() {
 
     const userId = authData.user.id;
 
-    // 1. Load livestock ownership
-    const { data: packages, error: packageError } =
+    // Load purchased livestock directly from investments
+    const { data: investments, error } =
       await supabaseClient
-        .from("user_packages")
-        .select("id, package_id, amount_paid, purchase_reference, status, created_at")
+        .from("investments")
+        .select(`
+          id,
+          package_id,
+          amount_paid,
+          daily_profit,
+          duration_days,
+          total_profit_paid,
+          status,
+          start_date,
+          end_date,
+          purchase_reference,
+          created_at
+        `)
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
-    if (packageError) throw packageError;
+    if (error) throw error;
 
-    if (!packages || packages.length === 0) {
+    if (!investments || investments.length === 0) {
       area.textContent =
         "🏡 Your ranch is waiting! Purchase livestock to start building your ranch.";
       return;
     }
 
-    // 2. Load matching investment records
-    const { data: investments, error: investmentError } =
-      await supabaseClient
-        .from("investments")
-        .select("package_id, amount_paid, daily_profit, duration_days, total_profit_paid, status, start_date, end_date, purchase_reference")
-        .eq("user_id", userId);
-
-    if (investmentError) throw investmentError;
-
-    // 3. Match ownership with investment records
-    const investmentMap = new Map(
-      (investments || []).map(inv => [
-        inv.purchase_reference,
-        inv
-      ])
-    );
-
-    area.innerHTML = packages.map(item => {
+    area.innerHTML = investments.map(item => {
       const pkg = livestockPackages.find(
         p => String(p.id) === String(item.package_id)
       );
 
-      if (!pkg) return "";
-
-      const investment =
-        investmentMap.get(item.purchase_reference);
+      const animalName = pkg?.animal_name || "Livestock";
+      const packageName = pkg?.package_name || "Livestock Package";
 
       const emoji =
-        animalEmojis[pkg.animal_name] || "🐄";
+        animalEmojis[animalName] || "🐄";
 
       const dateFormat = value =>
         value
@@ -1437,52 +1431,49 @@ async function loadMyRanch() {
         <div class="product">
           <div class="animal">${emoji}</div>
 
-          <h3>${emoji} ${pkg.animal_name}</h3>
+          <h3>${emoji} ${animalName}</h3>
 
-          <p>${pkg.package_name}</p>
+          <p>${packageName}</p>
 
           <p>
             Amount invested:
-            ${money(investment?.amount_paid ?? item.amount_paid)}
+            ${money(item.amount_paid)}
           </p>
 
           <p>
             Daily profit:
-            ${investment
-              ? money(investment.daily_profit)
-              : "Pending"}
+            ${money(item.daily_profit)}
           </p>
 
           <p>
             Duration:
-            ${investment
-              ? investment.duration_days + " days"
-              : "Pending"}
+            ${item.duration_days} days
           </p>
 
           <p>
             Total profit paid:
-            ${investment
-              ? money(investment.total_profit_paid)
-              : money(0)}
+            ${money(item.total_profit_paid || 0)}
           </p>
 
           <p>
             Investment status:
-            ${investment?.status || "Pending"}
+            ${item.status}
           </p>
 
           <p>
             Start date:
-            ${dateFormat(investment?.start_date)}
+            ${dateFormat(item.start_date)}
           </p>
 
           <p>
             End date:
-            ${dateFormat(investment?.end_date)}
+            ${dateFormat(item.end_date)}
           </p>
 
-          <p>Reference: ${item.purchase_reference}</p>
+          <p>
+            Reference:
+            ${item.purchase_reference || "N/A"}
+          </p>
         </div>
       `;
     }).join("");
@@ -1494,6 +1485,7 @@ async function loadMyRanch() {
       "Unable to load your ranch. Please try again.";
   }
 }
+
 
 
  
