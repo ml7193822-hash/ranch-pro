@@ -1381,8 +1381,12 @@ button:active{transform:scale(.97)}
     return;
   }
 
-  if (!count) {
-  showRanchAccessModal();
+  if (!count || count === 0) {
+  alert(
+    "🐄 RANCH PRO\n\n" +
+    "Purchase an active Rearing Package first to unlock access to the RANCHERS WhatsApp community.\n\n" +
+    "Start building your ranch today!"
+  );
   return;
   }
 
