@@ -1395,6 +1395,58 @@ button:active{transform:scale(.97)}
     "_blank"
   );
  }
+ function showRanchPopup(title, message, footer) {
+  const oldPopup = document.getElementById("ranchGoldPopup");
+  if (oldPopup) oldPopup.remove();
+
+  const popup = document.createElement("div");
+  popup.id = "ranchGoldPopup";
+
+  popup.innerHTML = `
+    <div style="
+      background:linear-gradient(145deg,#fff9e6,#f5d77e);
+      border:2px solid #d4a017;
+      border-radius:18px;
+      padding:25px;
+      width:85%;
+      max-width:350px;
+      text-align:center;
+      box-shadow:0 10px 35px rgba(0,0,0,.25);
+      color:#654900;
+    ">
+      <div style="font-size:42px;">🐄</div>
+      <h3 style="color:#9b7200;">${title}</h3>
+      <p>${message}</p>
+      <strong style="color:#805c00;">${footer}</strong>
+      <button onclick="document.getElementById('ranchGoldPopup').remove()"
+        style="
+          display:block;
+          width:100%;
+          margin-top:20px;
+          padding:13px;
+          border:0;
+          border-radius:10px;
+          background:linear-gradient(135deg,#d4a017,#f5d77e);
+          color:#503800;
+          font-weight:bold;
+        ">
+        OK, GOT IT
+      </button>
+    </div>
+  `;
+
+  Object.assign(popup.style, {
+    position:"fixed",
+    inset:"0",
+    background:"rgba(0,0,0,.55)",
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"center",
+    zIndex:"99999"
+  });
+
+  document.body.appendChild(popup);
+   }
  
 function showRanchAccessModal() {
   document.getElementById("ranchAccessModal").style.display = "flex";
