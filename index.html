@@ -756,6 +756,40 @@ button:active{transform:scale(.97)}
   border-radius: 50%;
 }
 
+/* RANCH PRO DASHBOARD-MATCHED POPUP */
+.ranch-access-card {
+  background: #173D2B;
+  border: 1px solid #83BD45;
+  border-radius: 22px;
+  color: #F0E8D2;
+}
+
+.ranch-access-card h2,
+.ranch-access-card h3 {
+  color: #A5D66A;
+}
+
+.ranch-access-line {
+  background: #83BD45;
+}
+
+.ranch-access-card p {
+  color: #E4EBD9;
+}
+
+.ranch-access-footer {
+  background: #244B2D;
+  color: #A5D66A;
+  border: 1px solid #527D42;
+}
+
+.ranch-access-card button {
+  background: #83BD45;
+  color: #173D2B;
+  border-radius: 12px;
+  font-weight: 800;
+}
+
 
 </style>
 </head>
@@ -1330,8 +1364,8 @@ button:active{transform:scale(.97)}
   }
 
   if (!count) {
-    alert("Please purchase an active Rearing Package first.");
-    return;
+  showRanchAccessModal();
+  return;
   }
 
   window.open(
@@ -1339,6 +1373,15 @@ button:active{transform:scale(.97)}
     "_blank"
   );
  }
+ 
+function showRanchAccessModal() {
+  document.getElementById("ranchAccessModal").style.display = "flex";
+}
+
+function closeRanchAccessModal() {
+  document.getElementById("ranchAccessModal").style.display = "none";
+}
+
  
 async function openCDKExchange() {
   try {
