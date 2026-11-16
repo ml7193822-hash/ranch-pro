@@ -2855,14 +2855,15 @@ if (action.type === 'purchase') {
     return;
   }
 
+  
   // 4. WITHDRAWAL
   if (action.type === 'Withdraw') {
     const amount = Number($('requestAmount').value);
     const destination = $('requestPhone').value.trim();
     const method = $('withdrawMethod').value;
 
-    if (!Number.isFinite(amount) || amount < 1000) {
-      toast('Enter at least UGX 1,000.');
+    if (!Number.isFinite(amount) || amount < 1200) {
+      toast('Minimum withdrawal is UGX 1,200.');
       return;
     }
 
@@ -2880,7 +2881,7 @@ if (action.type === 'purchase') {
 
     const button = $('confirmBtn');
     button.disabled = true;
-    button.textContent = 'Submitting...';
+    button.textContent = 'Processing Withdrawal...';
 
     try {
       const { data, error } = await supabaseClient.rpc(
@@ -2894,12 +2895,26 @@ if (action.type === 'purchase') {
 
       if (error) throw error;
 
+      if (
+        typeof data !== 'string' ||
+        !data.startsWith('Withdrawal request submitted successfully.')
+      ) {
+        toast(data || 'Withdrawal could not be submitted.');
+        return;
+      }
+
+      pendingAction = null;
       closeModal();
-      toast('Withdrawal request submitted successfully!');
+
+      toast('Withdrawal submitted! UGX ' +
+        amount.toLocaleString() + ' deducted from your wallet.');
+
+      await updateDashboard();
 
     } catch (error) {
       console.error('Withdrawal error:', error);
       toast(error.message || 'Withdrawal submission failed.');
+
     } finally {
       button.disabled = false;
       button.textContent = '💎 SUBMIT WITHDRAWAL REQUEST';
@@ -2908,6 +2923,7 @@ if (action.type === 'purchase') {
     return;
   }
 } // End of confirmAction()
+
 
 
 function addTransaction(type, amount, status, details = '') {
