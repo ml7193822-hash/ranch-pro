@@ -927,8 +927,8 @@ button:active{transform:scale(.97)}
   </div>
 
   <div class="menu">
-    <button onclick=" Raffle ()">
-      <span class="emoji">🎟️</span>Raffle
+    <button onclick="openRaffle()">
+  <span class="emoji">🎟️</span>Raffle
     </button>
 
     <button onclick="openMyBill()">
@@ -971,6 +971,22 @@ button:active{transform:scale(.97)}
     </button>
   </div>
 </section>
+ 
+<!-- RANCH PRO RAFFLE SECTION -->
+<section class="panel" id="raffleSection" style="display:none;">
+
+  <div class="section-head">
+    <h2>🎟️ RANCH PRO Raffles</h2>
+    <button onclick="go('dashboard')">⬅ Back</button>
+  </div>
+
+  <div id="raffleList">
+    <p>Loading available raffles...</p>
+  </div>
+
+</section>
+
+     
  
 
 <!-- RANCH PRO SUPPORT -->
