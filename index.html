@@ -1021,28 +1021,30 @@ button:active{transform:scale(.97)}
   box-shadow:0 4px 12px rgba(0,0,0,0.06);
 ">
 
-  <div style="font-size:38px;">🐄</div>
+  
+<div style="font-size:38px;">🐄</div>
 
-  <h3 style="color:#654900;margin:8px 0;">
-    ACTIVE RANCHERS COMMUNITY
-  </h3>
+<h3 style="color:#654900;margin:8px 0;">
+  ACTIVE RANCHERS COMMUNITY
+</h3>
 
-  <p style="color:#66552b;font-size:14px;line-height:1.6;">
-    Connect with fellow ranchers, receive important announcements,
-    ranch updates and exclusive community information.
-  </p>
+<p style="color:#66552b;font-size:14px;line-height:1.6;">
+  Connect with fellow ranchers on Telegram, receive important
+  announcements, ranch updates and exclusive community information.
+</p>
 
-  <button class="buy"
-    onclick="joinRanchersGroup()"
-    style="width:100%;border-radius:10px;padding:14px;">
-    💬 JOIN RANCHERS COMMUNITY
-  </button>
+<button class="buy"
+  onclick="joinRanchersGroup()"
+  style="width:100%;border-radius:10px;padding:14px;">
+  ✈️ JOIN RANCH PRO TELEGRAM
+</button>
 
-  <p style="font-size:12px;color:#856404;margin-bottom:0;">
-    🔒 Exclusive access for members with an active Rearing Package.
-  </p>
+<p style="font-size:12px;color:#856404;margin-bottom:0;">
+  🔒 Exclusive access for members with an active Rearing Package.
+</p>
 </div>
 </section>
+
 
 
 
@@ -1393,7 +1395,9 @@ button:active{transform:scale(.97)}
 <div class="toast" id="toast"></div>
 
 <script>
- async function joinRanchersGroup() {
+ 
+
+async function joinRanchersGroup() {
   const { data: authData, error: authError } =
     await supabaseClient.auth.getUser();
 
@@ -1414,19 +1418,21 @@ button:active{transform:scale(.97)}
   }
 
   if (!count || count === 0) {
-  alert(
-    "🐄 RANCH PRO\n\n" +
-    "Purchase an active Rearing Package first to unlock access to the RANCHERS WhatsApp community.\n\n" +
-    "Start building your ranch today!"
-  );
-  return;
+    alert(
+      "🐄 RANCH PRO\n\n" +
+      "Purchase an active Rearing Package first to unlock access to the RANCH PRO Telegram community.\n\n" +
+      "Start building your ranch today!"
+    );
+    return;
   }
 
   window.open(
-    "https://chat.whatsapp.com/F8iaZVYiHI967tn3ttNVzO?s=cl&p=a&iam=2",
+    "https://t.me/+unMtqd_3ESJiZjg0",
     "_blank"
   );
- }
+}
+
+
  function showRanchPopup(title, message, footer) {
   const oldPopup = document.getElementById("ranchGoldPopup");
   if (oldPopup) oldPopup.remove();
