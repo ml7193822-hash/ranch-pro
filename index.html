@@ -1357,6 +1357,22 @@ button:active{transform:scale(.97)}
     <p>Tap Refresh Withdrawals to view requests.</p>
   </div>
 </div>
+ 
+<!-- ADMIN RAFFLE MANAGEMENT -->
+<div class="panel" style="margin-top:15px;">
+  <h3>🎟️ Raffle Management</h3>
+
+  <p>Manage raffle availability and control which prizes members can see.</p>
+
+  <button onclick="loadAdminRaffles()">
+    🔄 Refresh Raffles
+  </button>
+
+  <div id="adminRafflesList">
+    <p>Tap Refresh Raffles to view all raffles.</p>
+  </div>
+</div>
+
 
 </section>
 
@@ -1684,6 +1700,145 @@ async function loadRaffles() {
     fields.innerHTML = "<p>Unable to load raffles. Please try again.</p>";
   }
 }
+ 
+async function loadAdminRaffles() {
+  const area = document.getElementById("adminRafflesList");
+
+  area.innerHTML = "🎟️ Loading raffle management...";
+
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+      throw new Error("Please log in again.");
+    }
+
+    const { data: profile, error: profileError } =
+      await supabaseClient
+        .from("profiles")
+        .select("role")
+        .eq("id", authData.user.id)
+        .single();
+
+    if (profileError || profile?.role !== "admin") {
+      throw new Error("Admin access denied.");
+    }
+
+    const { data: raffles, error } = await supabaseClient
+      .from("raffles")
+      .select("id, title, description, active")
+      .order("id", { ascending: true });
+
+    if (error) throw error;
+
+    if (!raffles || raffles.length === 0) {
+      area.innerHTML = "<p>No raffles found.</p>";
+      return;
+    }
+
+    const ids = raffles.map(r => r.id);
+
+    const { data: prizes, error: prizeError } =
+      await supabaseClient
+        .from("raffle_prizes")
+        .select("id, raffle_id, prize_name, prize_type, active")
+        .in("raffle_id", ids)
+        .order("id", { ascending: true });
+
+    if (prizeError) throw prizeError;
+
+    area.innerHTML = raffles.map(raffle => {
+      const rafflePrizes = (prizes || []).filter(
+        p => p.raffle_id === raffle.id
+      );
+
+      return `
+        <div class="product" style="margin-top:12px;">
+          <h3>🎟️ ${escapeRaffleText(raffle.title)}</h3>
+
+          <p>Status:
+            <strong>${raffle.active ? "ACTIVE" : "INACTIVE"}</strong>
+          </p>
+
+          <button
+            onclick="changeRaffleStatus(${Number(raffle.id)}, ${!raffle.active})">
+            ${raffle.active ? "🔴 Deactivate Raffle" : "🟢 Activate Raffle"}
+          </button>
+
+          <hr>
+
+          <h4>🏆 Prize Management</h4>
+
+          ${
+            rafflePrizes.length
+              ? rafflePrizes.map(prize => `
+                  <div style="padding:10px;border-bottom:1px solid #ddd;">
+                    <strong>${escapeRaffleText(prize.prize_name)}</strong>
+
+                    <p>Status: ${prize.active ? "Visible" : "Hidden"}</p>
+
+                    <button
+                      onclick="changePrizeStatus(${Number(prize.id)}, ${!prize.active})">
+                      ${prize.active ? "Hide Prize" : "Show Prize"}
+                    </button>
+                  </div>
+                `).join("")
+              : "<p>No prizes found.</p>"
+          }
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Admin raffle error:", error);
+    area.innerHTML = "<p>" + escapeRaffleText(error.message) + "</p>";
+  }
+}
+
+async function changeRaffleStatus(raffleId, active) {
+  try {
+    const { error } = await supabaseClient.rpc(
+      "admin_set_raffle_active",
+      {
+        p_raffle_id: raffleId,
+        p_active: active
+      }
+    );
+
+    if (error) throw error;
+
+    toast("Raffle status updated.");
+    await loadAdminRaffles();
+
+  } catch (error) {
+    console.error(error);
+    toast(error.message || "Could not update raffle.");
+  }
+}
+
+async function changePrizeStatus(prizeId, active) {
+  try {
+    const { error } = await supabaseClient.rpc(
+      "admin_set_prize_active",
+      {
+        p_prize_id: prizeId,
+        p_active: active
+      }
+    );
+
+    if (error) throw error;
+
+    toast("Prize visibility updated.");
+    await loadAdminRaffles();
+
+  } catch (error) {
+    console.error(error);
+    toast(error.message || "Could not update prize.");
+  }
+}
+
+ 
 
 function escapeRaffleText(value) {
   return String(value).replace(/[&<>"']/g, char => ({
