@@ -1850,6 +1850,7 @@ function escapeRaffleText(value) {
   }[char]));
 }
 
+
 async function enterRaffle(raffleId) {
   try {
     const { data, error } = await supabaseClient.rpc(
@@ -1857,7 +1858,13 @@ async function enterRaffle(raffleId) {
       { p_raffle_id: raffleId }
     );
 
-    if (error) throw error;
+    if (error) {
+      console.error("RAFFLE RPC ERROR:", error);
+      toast("Raffle error: " + error.message);
+      return;
+    }
+
+    console.log("Raffle entry successful:", data);
 
     toast("🎉 You have successfully entered the raffle!");
 
@@ -1865,7 +1872,7 @@ async function enterRaffle(raffleId) {
 
   } catch (error) {
     console.error("Raffle entry failed:", error);
-    toast(error.message || "Unable to join raffle.");
+    toast("Unable to join: " + error.message);
   }
 }
 
