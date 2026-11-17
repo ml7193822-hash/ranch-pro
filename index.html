@@ -1584,6 +1584,135 @@ async function openCDKExchange() {
     toast(error.message || "Unable to open CDK Exchange.");
   }
 }
+ 
+async function openRaffle() {
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+      toast("Please log in first.");
+      return;
+    }
+
+    showPage(
+      "🎟️ RANCH PRO Raffles",
+      "Exclusive rewards for active ranchers."
+    );
+
+    const fields = document.getElementById("modalFields");
+
+    fields.innerHTML = "Loading available raffles...";
+
+    await loadRaffles();
+
+  } catch (error) {
+    console.error("Raffle error:", error);
+    toast(error.message || "Unable to open Raffles.");
+  }
+}
+
+
+async function loadRaffles() {
+  const fields = document.getElementById("modalFields");
+
+  fields.innerHTML = "🎟️ Loading raffles...";
+
+  try {
+    const { data: raffles, error } = await supabaseClient
+      .from("raffles")
+      .select("id, title, description")
+      .eq("active", true)
+      .order("id", { ascending: true });
+
+    if (error) throw error;
+
+    if (!raffles || raffles.length === 0) {
+      fields.innerHTML = `
+        <div class="product" style="text-align:center;">
+          <div style="font-size:45px;">🎟️</div>
+          <h3>No Active Raffles Yet</h3>
+          <p>New ranch rewards will appear here when the admin opens a raffle.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const raffleIds = raffles.map(r => r.id);
+
+    const { data: prizes, error: prizeError } =
+      await supabaseClient
+        .from("raffle_prizes")
+        .select("id, raffle_id, prize_name, prize_type, prize_value")
+        .in("raffle_id", raffleIds)
+        .eq("active", true);
+
+    if (prizeError) throw prizeError;
+
+    fields.innerHTML = raffles.map(raffle => {
+      const rafflePrizes = (prizes || []).filter(
+        prize => prize.raffle_id === raffle.id
+      );
+
+      return `
+        <div class="product" style="margin-bottom:15px;">
+          <h3>🎟️ ${escapeRaffleText(raffle.title)}</h3>
+
+          <p>${escapeRaffleText(raffle.description || "")}</p>
+
+          <h4>🏆 Available Rewards</h4>
+
+          ${
+            rafflePrizes.length
+              ? rafflePrizes.map(prize => `
+                  <p>🎁 ${escapeRaffleText(prize.prize_name)}</p>
+                `).join("")
+              : "<p>Prizes coming soon.</p>"
+          }
+
+          <button
+            onclick="enterRaffle(${Number(raffle.id)})"
+            style="width:100%;padding:13px;background:#078747;color:white;border:0;border-radius:10px;font-weight:bold;">
+            JOIN RAFFLE
+          </button>
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Loading raffles failed:", error);
+    fields.innerHTML = "<p>Unable to load raffles. Please try again.</p>";
+  }
+}
+
+function escapeRaffleText(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
+
+async function enterRaffle(raffleId) {
+  try {
+    const { data, error } = await supabaseClient.rpc(
+      "enter_ranch_raffle",
+      { p_raffle_id: raffleId }
+    );
+
+    if (error) throw error;
+
+    toast("🎉 You have successfully entered the raffle!");
+
+    await loadRaffles();
+
+  } catch (error) {
+    console.error("Raffle entry failed:", error);
+    toast(error.message || "Unable to join raffle.");
+  }
+}
 
 
 function updateCDKEstimate() {
