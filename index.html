@@ -3317,14 +3317,19 @@ if (action.type === 'purchase') {
     button.textContent = 'Processing Withdrawal...';
 
     try {
-      const { data, error } = await supabaseClient.rpc(
-        'submit_withdrawal_request',
-        {
-          p_amount: amount,
-          p_payment_method: method,
-          p_payment_details: details
-        }
-      );
+      
+const submissionKey = crypto.randomUUID();
+
+const { data, error } = await supabaseClient.rpc(
+  'submit_withdrawal_request',
+  {
+    p_amount: amount,
+    p_payment_method: method,
+    p_payment_details: details,
+    p_submission_key: submissionKey
+  }
+);
+
 
       if (error) throw error;
 
